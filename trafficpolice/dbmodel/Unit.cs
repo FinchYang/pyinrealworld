@@ -7,13 +7,16 @@ namespace trafficpolice.dbmodel
     {
         public Unit()
         {
+            Reportlog = new HashSet<Reportlog>();
             User = new HashSet<User>();
         }
 
         public string Id { get; set; }
         public string Ip { get; set; }
+        public bool Level { get; set; }
         public string Name { get; set; }
 
-        public ICollection<User> User { get; set; }
+        public virtual ICollection<Reportlog> Reportlog { get; set; }
+        public virtual ICollection<User> User { get; set; }
     }
 }

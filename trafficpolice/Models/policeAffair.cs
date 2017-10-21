@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace trafficpolice.Models
 {
-    public class policeAffair
+    public class policeAffair:commonresponse
     {
         public List<dataitem> datalist { set; get; }
     }
