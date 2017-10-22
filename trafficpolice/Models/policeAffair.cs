@@ -9,7 +9,15 @@ namespace trafficpolice.Models
     {
         public List<dataitem> datalist { set; get; }
     }
-
+    public class todaydatares : commonresponse
+    {
+        public submitreq todaydata { set; get; }
+    }
+    public class submitreq
+    {
+        public List<dataitem> datalist { set; get; }
+        public bool draft { set; get; }//true--草稿，false-正式提交
+    }
     public class dataitem
     {
         public string content { set; get; }//数据项基本内容

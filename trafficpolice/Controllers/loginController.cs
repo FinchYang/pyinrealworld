@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using trafficpolice.dbmodel;
 using trafficpolice.Models;
 using Newtonsoft.Json;
+using static trafficpolice.global;
 
 namespace trafficpolice.Controllers
 {
@@ -46,8 +47,6 @@ namespace trafficpolice.Controllers
             try
             {
                 var input = JsonConvert.SerializeObject(inputRequest);
-                //   LogRequest(input, "SignatureQuery", Request.HttpContext.Connection.RemoteIpAddress.ToString());
-
                 if (inputRequest == null)
                 {
                     _log.LogInformation("login,{0}", responseStatus.requesterror);
@@ -78,10 +77,11 @@ namespace trafficpolice.Controllers
                 var toke1n = GetToken();
                 var found = false;
 
-                foreach (var a in tokens)
+                foreach (var a in global. tokens)
                 {
-                    if (a.Identity == identity)
+                    if (a.idinfo.Identity == identity)
                     {
+                        a.idinfo.unitid = theuser.Unitid;
                         a.Token = toke1n;
                         found = true;
                         break;
@@ -89,7 +89,11 @@ namespace trafficpolice.Controllers
                 }
                 if (!found)
                 {
-                    tokens.Add(new Ptoken { Identity = identity, Token = toke1n, });
+                    global.tokens.Add(new Ptoken { idinfo = new idinfo {
+                        Identity = identity,
+                        unitid = theuser.Unitid, }, Token = toke1n
+                    });
+
                 }
                 theuser.Token = toke1n;
                 _db1.SaveChanges();
@@ -109,13 +113,7 @@ namespace trafficpolice.Controllers
                 };
             }
         }
-        static List<Ptoken> tokens = new List<Ptoken>();
-        class Ptoken
-        {
-            public string Identity { get; set; }
-            public string Token { get; set; }
-
-        }
+     
         private string GetToken()
         {
             var seed = Guid.NewGuid().ToString("N");

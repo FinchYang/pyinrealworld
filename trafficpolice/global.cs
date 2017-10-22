@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,9 +10,63 @@ namespace trafficpolice
 {
     public class global
     {
+        public class idinfo
+        {
+            public string Identity { get; set; }
+            public string unitid { get; set; }
+          
+        }
+        public class Ptoken
+        {
+            public idinfo idinfo { get; set; }
+            public string Token { get; set; }
+        }
+        public static List<Ptoken> tokens = new List<Ptoken>();
         public static commonresponse commonreturn(responseStatus rs)
         {
             return new commonresponse { status = rs, content = rs.ToString() };
+        }
+        public static access_idinfo GetInfoByToken(IHeaderDictionary header)
+        {
+            try
+            {
+                var htoken = header["token"].First();
+                if (string.IsNullOrEmpty(htoken))
+                {
+                    return new access_idinfo { status = responseStatus.tokenerror };
+                }
+                var found = false;
+                var acc = new access_idinfo { Identity = string.Empty,  status = responseStatus.ok };
+                foreach (var a in global.tokens)
+                {
+                    if (a.Token == htoken)
+                    {
+                        acc.Identity = a.idinfo.Identity;
+                        acc.unitid = a.idinfo.unitid;
+                       
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    using(var db=new tpContext())
+                    {
+                        var theuser = db.User.FirstOrDefault(c => c.Token == htoken);
+                        if (theuser != null)
+                        {
+                            acc.Identity = theuser.Id;
+                            acc.unitid = theuser.Unitid;
+                        }
+                        else return new access_idinfo { status = responseStatus.tokenerror };
+                    }                   
+                }
+                return acc;
+            }
+            catch (Exception ex)
+            {
+                return new access_idinfo { status = responseStatus.tokenerror, content = ex.Message };
+            }
         }
         public static  void LogRequest(string content, string userid , string ip = null, short businessType = 0)
         {

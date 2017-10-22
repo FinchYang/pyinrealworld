@@ -18,6 +18,18 @@ namespace trafficpolice.Models
             public string content { get; set; }
        
     }
+    public class accesstoken
+    {
+        public string access_token { get; set; }
+        public int expires_in { get; set; }
+    }
+
+
+    public class access_idinfo : commonresponse
+    {
+        public string Identity { get; set; }
+        public string unitid { get; set; }
+    }
     public enum responseStatus
     {
         ok, iderror, nameerror, phoneerror, tokenerror,
@@ -25,6 +37,6 @@ namespace trafficpolice.Models
       , postaddrerror, dberror, processerror, livingerror, compareerror
       , nouser, residencepictureerror, acceptingplaceerror, businesstypeerror, pictypeerror
       , vcodeerror, losttimeerror, forbidden, startdateerror, enddateerror
-      , abroadorserviceerror, passerror
+      , abroadorserviceerror, passerror,overdueerror
     };
 }

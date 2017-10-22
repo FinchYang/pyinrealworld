@@ -87,6 +87,10 @@ namespace trafficpolice.dbmodel
                     .HasColumnType("tinyint(1)")
                     .HasDefaultValueSql("1");
 
+                entity.Property(e => e.Time)
+                    .HasColumnName("time")
+                    .HasColumnType("datetime");
+
                 entity.HasOne(d => d.Unit)
                     .WithMany(p => p.Reportlog)
                     .HasForeignKey(d => d.Unitid)
