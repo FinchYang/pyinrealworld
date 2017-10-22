@@ -13,6 +13,22 @@ namespace trafficpolice.Models
     {
         public submitreq todaydata { set; get; }
     }
+    public class hisdatares : commonresponse
+    {
+        public List<onedata> hisdata { set; get; }
+    }
+    public class centerhisdatares : commonresponse
+    {
+        public List<centerdata> hisdata { set; get; }
+    }
+    public class centerdata : onedata
+    {
+        public String unitid { set; get; }
+    }
+    public class onedata:submitreq
+    {       
+        public String date { set; get; }
+    }
     public class submitreq
     {
         public List<dataitem> datalist { set; get; }

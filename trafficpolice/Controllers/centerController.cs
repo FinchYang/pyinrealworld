@@ -10,9 +10,9 @@ using Newtonsoft.Json;
 
 namespace trafficpolice.Controllers
 {
-    public class submitController : Controller
+    public class centerController : Controller
     {
-        public readonly ILogger<submitController> _log;
+        public readonly ILogger<centerController> _log;
         private readonly tpContext _db1 = new tpContext();
 
         protected override void Dispose(bool disposing)
@@ -23,13 +23,13 @@ namespace trafficpolice.Controllers
             }
             base.Dispose(disposing);
         }
-        public submitController(ILogger<submitController> log)
+        public centerController(ILogger<centerController> log)
         {
             _log = log;
         }
-        [Route("GetHistoryData")]
+        [Route("centerGetHistoryData")]
         [HttpGet]
-        public commonresponse GetHistoryData(string  startdate,string enddate)
+        public commonresponse centerGetHistoryData(string  startdate,string enddate,string unitid="")
         {
             var start = DateTime.Now; 
             var end = start;
@@ -43,29 +43,32 @@ namespace trafficpolice.Controllers
             }
             var accinfo = global.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
-            var ret = new hisdatares
+            var ret = new centerhisdatares
             {
                 status = 0,
-                hisdata = new List<onedata>()
+                hisdata = new List<centerdata>()
             };
             var today = DateTime.Now.ToString("yyyy-MM-dd");
             try
             {
-                var data = _db1.Reportlog.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd"))>=0 
+                var data = _db1.Reportlog.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
                 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
-                && c.Unitid == accinfo.unitid);
+               // && c.Unitid == accinfo.unitid
+               );
+                if (unitid != "") data = data.Where(c => c.Unitid == unitid);
                foreach(var d in data)
                 {
-                    var one = new onedata();
-                    one =(onedata) JsonConvert.DeserializeObject<submitreq>(d.Content);
+                    var one = new centerdata();
+                    one =(centerdata) JsonConvert.DeserializeObject<submitreq>(d.Content);
                     one.date = d.Date;
+                    one.unitid = d.Unitid;
                     ret.hisdata.Add(one);
                 }
                 return ret;
             }
             catch (Exception ex)
             {
-                _log.LogError("{0}-{1}-{2}", DateTime.Now, "GetHistoryData", ex.Message);
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "centerGetHistoryData", ex.Message);
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
