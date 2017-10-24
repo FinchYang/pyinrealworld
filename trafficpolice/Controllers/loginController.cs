@@ -97,11 +97,21 @@ namespace trafficpolice.Controllers
                 }
                 theuser.Token = toke1n;
                 _db1.SaveChanges();
+                var theu = _db1.Unit.FirstOrDefault(c => c.Id == theuser.Unitid);
+                if(theu==null)
+                {
+                    _log.LogInformation("login,{0}", responseStatus.nounit);
+                    return global.commonreturn(responseStatus.nounit);
+                }
+                var name = theu.Name;
+                var unit = theu.Level;
                 global.LogRequest("login", identity, Request.HttpContext.Connection.RemoteIpAddress.ToString());
                 return new loginres
                 {
                     status = 0,
                     token = toke1n,
+                    name=name,
+                    unit=unit,
                 };
             }
             catch (Exception ex)

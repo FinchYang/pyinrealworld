@@ -72,7 +72,7 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
-        [Route("GetTodayData")]
+        [Route("GetTodayData-")]
         [HttpGet]
         public commonresponse GetTodayData()
         {
@@ -99,7 +99,7 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
-        [Route("GetDataItems")]
+        [Route("GetDataItems-")]
         [HttpGet]
         public commonresponse GetDataItems()
         {
@@ -144,7 +144,7 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
-        [Route("SubmitDataItems")]
+        [Route("SubmitDataItems-")]
         [HttpPost]
         public commonresponse SubmitDataItems([FromBody] submitreq input )
         {           

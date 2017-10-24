@@ -15,7 +15,7 @@ namespace trafficpolice
         public static void Main(string[] args)
         {
 
-            var host = new WebHostBuilder().UseUrls("http://*:8765")
+            var host = new WebHostBuilder().UseUrls("http://*:8000")
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()

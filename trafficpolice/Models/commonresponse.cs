@@ -7,7 +7,8 @@ namespace trafficpolice.Models
 {
     public class loginres:commonresponse
     {
-
+        public string name { get; set; }
+        public bool unit { get; set; }//true 大队，false 中心
         public string token { get; set; }
 
     }
@@ -37,6 +38,6 @@ namespace trafficpolice.Models
       , postaddrerror, dberror, processerror, livingerror, compareerror
       , nouser, residencepictureerror, acceptingplaceerror, businesstypeerror, pictypeerror
       , vcodeerror, losttimeerror, forbidden, startdateerror, enddateerror
-      , abroadorserviceerror, passerror,overdueerror
+      , abroadorserviceerror, passerror,overdueerror,nounit
     };
 }
