@@ -13,11 +13,9 @@ namespace trafficpolice.Models
 
     }
     public class commonresponse
-    {
-     
+    {     
             public responseStatus status { get; set; }
-            public string content { get; set; }
-       
+            public string content { get; set; }       
     }
     public class accesstoken
     {
@@ -38,6 +36,6 @@ namespace trafficpolice.Models
       , postaddrerror, dberror, processerror, livingerror, compareerror
       , nouser, residencepictureerror, acceptingplaceerror, businesstypeerror, pictypeerror
       , vcodeerror, losttimeerror, forbidden, startdateerror, enddateerror
-      , abroadorserviceerror, passerror,overdueerror,nounit
+      , abroadorserviceerror, passerror,overdueerror,nounit,newpasserror
     };
 }
