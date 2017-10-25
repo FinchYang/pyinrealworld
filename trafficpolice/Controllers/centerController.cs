@@ -72,6 +72,52 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
+        [Route("centerVideoSignQuery")]
+        [HttpGet]
+        public commonresponse centerVideoSignQuery(string startdate, string enddate,
+            unittype ut=unittype.unknown,signtype st=signtype.unknown)
+        {
+            var start = DateTime.Now.AddYears(-100);
+            var end = DateTime.Now;
+            if (!DateTime.TryParse(startdate, out start))
+            {
+                return global.commonreturn(responseStatus.startdateerror);
+            }
+            if (!DateTime.TryParse(enddate, out end))
+            {
+                return global.commonreturn(responseStatus.enddateerror);
+            }
+            var accinfo = global.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+            var ret = new centervsqueryres
+            {
+                status = 0,
+                videodata = new List<videosigndata>()
+            };
+            var today = DateTime.Now.ToString("yyyy-MM-dd");
+            try
+            {
+                var data = _db1.Videoreport.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
+                && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
+               );
+                if (st != signtype.unknown) data = data.Where(c => c.Signtype == (short)st);
+                if (ut != unittype.unknown) data = data.Where(c => c.Unitid == ut.ToString());
+                foreach (var d in data)
+                {
+                   // var one = new centerdata();
+                  var  one = JsonConvert.DeserializeObject<videosigndata>(d.Content);
+                    one.date = d.Date;
+                    one.unitid = d.Unitid;
+                    ret.videodata.Add(one);
+                }
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "centerVideoSignQuery", ex.Message);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+            }
+        }
         [Route("GetVideoSignData")]
         [HttpGet]
         public commonresponse GetVideoSignData()
@@ -110,48 +156,46 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
-        [Route("GetDataItems-")]
-        [HttpGet]
-        public commonresponse GetDataItems()
+
+        public class dvsreq
         {
-            var ret = new policeAffair
-            {
-                status = 0,
-                datalist = new List<dataitem>()
-            };
+            public string unitid { get; set; }
+            public string comment { get; set; }
+        }
+        [Route("DeclineVideoSign")]
+        [HttpPost]
+        public commonresponse DeclineVideoSign([FromBody] dvsreq input)
+        {
             try
             {
-                   var data = _db1.Dataitem.Where(c => c.Unitdisplay);
-                foreach(var a in data)
+                var accinfo = global.GetInfoByToken(Request.Headers);
+                if (accinfo.status != responseStatus.ok) return accinfo;
+                var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+                if (unit == null)
                 {
-                    var one = new dataitem
-                    {
-                        secondlist = new List<seconditem>(),
-                        name=a.Comment,
-                        id=a.Id,
-                        unitdisplay=a.Unitdisplay,
-                        mandated=a.Mandated,
-                    };
-                    if (a.Seconditem)
-                    {
-                        var secs = _db1.Seconditem.Where(c => c.Dataitem == a.Id);
-                        foreach(var b in secs)
-                        {
-                            one.secondlist.Add(new seconditem
-                            {
-                                secondtype=(secondItemType)b.Type,
-                                id=b.Id,
-                                name=b.Name
-                            });
-                        }
-                    }
-                    ret.datalist.Add(one);
+                    return global.commonreturn(responseStatus.nounit);
                 }
-                return ret;
+                if (unit.Level)
+                {
+                    return global.commonreturn(responseStatus.forbidden);
+                }
+                var today = DateTime.Now.ToString("yyyy-MM-dd");
+                var thevs = _db1.Videoreport.FirstOrDefault(c => c.Date == today && c.Unitid == input.unitid);
+                if (thevs==null)
+                {
+                    return global.commonreturn(responseStatus.nounit);
+                }
+                thevs.Draft = 2;
+                if (!string.IsNullOrEmpty(input.comment))
+                {
+                    thevs.Declinereason = input.comment;
+                }
+                _db1.SaveChanges();
+                return global.commonreturn(responseStatus.ok);
             }
             catch (Exception ex)
             {
-                _log.LogError("{0}-{1}-{2}", DateTime.Now, "GetDataItems", ex.Message);
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "DeclineVideoSign", ex.Message);
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }

@@ -25,6 +25,10 @@ namespace trafficpolice.Models
     {
         public List<centerdata> hisdata { set; get; }
     }
+    public class centervsqueryres : commonresponse
+    {
+        public List<videosigndata> videodata { set; get; }
+    }
     public class videosignreq
     {
         public List<videosigndata> videodata { set; get; }

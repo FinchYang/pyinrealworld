@@ -83,6 +83,10 @@ namespace trafficpolice.dbmodel
                     .HasColumnName("content")
                     .HasColumnType("varchar(4500)");
 
+                entity.Property(e => e.Declinereason)
+                    .HasColumnName("declinereason")
+                    .HasColumnType("varchar(450)");
+
                 entity.Property(e => e.Draft)
                     .HasColumnName("draft")
                     .HasColumnType("smallint(2)")
@@ -284,6 +288,10 @@ namespace trafficpolice.dbmodel
                     .IsRequired()
                     .HasColumnName("content")
                     .HasColumnType("varchar(4500)");
+
+                entity.Property(e => e.Declinereason)
+                    .HasColumnName("declinereason")
+                    .HasColumnType("varchar(450)");
 
                 entity.Property(e => e.Draft)
                     .HasColumnName("draft")
