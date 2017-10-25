@@ -29,6 +29,15 @@ namespace trafficpolice.Models
         public string Identity { get; set; }
         public string unitid { get; set; }
     }
+    public enum signtype
+    {
+        unknown,
+        sign,
+        substitute,
+        videoerror,
+        notsign,
+        audioerror,
+    }
     public enum responseStatus
     {
         ok, iderror, nameerror, phoneerror, tokenerror,
@@ -37,5 +46,6 @@ namespace trafficpolice.Models
       , nouser, residencepictureerror, acceptingplaceerror, businesstypeerror, pictypeerror
       , vcodeerror, losttimeerror, forbidden, startdateerror, enddateerror
       , abroadorserviceerror, passerror,overdueerror,nounit,newpasserror
+            ,allreadysubmitted
     };
 }

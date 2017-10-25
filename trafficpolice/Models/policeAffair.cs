@@ -9,6 +9,10 @@ namespace trafficpolice.Models
     {
         public List<dataitem> datalist { set; get; }
     }
+    public class getvideosigndatares : commonresponse
+    {
+        public List<submitreq> vsdata { set; get; }
+    }
     public class todaydatares : commonresponse
     {
         public submitreq todaydata { set; get; }
@@ -21,6 +25,15 @@ namespace trafficpolice.Models
     {
         public List<centerdata> hisdata { set; get; }
     }
+    public class videosignreq
+    {
+        public List<videosigndata> videodata { set; get; }
+    }
+    public class videosigndata : centerdata
+    {
+        public String comment { set; get; }
+        public signtype signtype { set; get; }
+    }
     public class centerdata : onedata
     {
         public String unitid { set; get; }
@@ -32,7 +45,7 @@ namespace trafficpolice.Models
     public class submitreq
     {
         public List<dataitem> datalist { set; get; }
-        public bool draft { set; get; }//true--草稿，false-正式提交
+        public short draft { set; get; }//1--草稿，0-正式提交
     }
     public class dataitem
     {

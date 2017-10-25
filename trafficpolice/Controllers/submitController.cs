@@ -172,11 +172,15 @@ namespace trafficpolice.Controllers
                 }
                 else
                 {
-                    if (daylog.Draft)
+                    if (daylog.Draft==1)
                     {
                         daylog.Draft = input.draft;
                         daylog.Content = JsonConvert.SerializeObject(input);
                         daylog. Time = DateTime.Now;
+                    }
+                    else
+                    {
+                        return global.commonreturn(responseStatus.allreadysubmitted);
                     }
                 }
                 _db1.SaveChanges();

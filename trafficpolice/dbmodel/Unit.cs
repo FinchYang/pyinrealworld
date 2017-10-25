@@ -9,6 +9,7 @@ namespace trafficpolice.dbmodel
         {
             Reportlog = new HashSet<Reportlog>();
             User = new HashSet<User>();
+            Videoreport = new HashSet<Videoreport>();
         }
 
         public string Id { get; set; }
@@ -18,5 +19,6 @@ namespace trafficpolice.dbmodel
 
         public virtual ICollection<Reportlog> Reportlog { get; set; }
         public virtual ICollection<User> User { get; set; }
+        public virtual ICollection<Videoreport> Videoreport { get; set; }
     }
 }

@@ -72,30 +72,41 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
-        [Route("GetTodayData-")]
+        [Route("GetVideoSignData")]
         [HttpGet]
-        public commonresponse GetTodayData()
+        public commonresponse GetVideoSignData()
         {
             var accinfo = global.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
-            var ret = new todaydatares
+            var ret = new getvideosigndatares
             {
                 status = 0,
-                todaydata = new submitreq()
+                vsdata = new List<submitreq> ()
             };
             var today = DateTime.Now.ToString("yyyy-MM-dd");
             try
             {
-                var data = _db1.Reportlog.FirstOrDefault(c => c.Date== today && c.Unitid == accinfo.unitid);
-                if (data != null)
+                var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+                if (unit == null)
                 {
-                    ret.todaydata = JsonConvert.DeserializeObject<submitreq>(data.Content);
+                    return global.commonreturn(responseStatus.nounit);
                 }
+                if (unit.Level)
+                {
+                    return global.commonreturn(responseStatus.forbidden);
+                }
+                var data = _db1.Videoreport.Where(c => c.Date== today );
+                foreach(var d in data)
+                {
+                    var a= JsonConvert.DeserializeObject<submitreq>(d.Content);
+                    ret.vsdata.Add(a);
+                }
+              
                 return ret;
             }
             catch (Exception ex)
             {
-                _log.LogError("{0}-{1}-{2}", DateTime.Now, "GetTodayData", ex.Message);
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "GetVideoSignData", ex.Message);
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
@@ -144,55 +155,101 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
-        [Route("SubmitDataItems-")]
+        [Route("SubmitVideoSign")]
         [HttpPost]
-        public commonresponse SubmitDataItems([FromBody] submitreq input )
+        public commonresponse SubmitVideoSign([FromBody] videosignreq input )
         {           
             try
             {
-                if (input == null||input.datalist==null)
+                if (input == null||input.videodata == null)
                 {
                     return global.commonreturn(responseStatus.requesterror);
                 }
                 var accinfo = global.GetInfoByToken(Request.Headers);
                 if (accinfo.status != responseStatus.ok) return accinfo;
-                var today = DateTime.Now.ToString("yyyy-MM-dd");
-                if(DateTime.Now.Hour>22)
-                {
-                    return global.commonreturn(responseStatus.overdueerror);
-                }
-                var daylog = _db1.Reportlog.FirstOrDefault(c => c.Unitid == accinfo.unitid && c.Date == today);
-                if (daylog == null)
-                {
-                    _db1.Reportlog.Add(new Reportlog
-                    {
-                        Date=today,
-                        Unitid=accinfo.unitid,
-                        Content=JsonConvert.SerializeObject(input),
-                        Draft=input.draft,
-                        Time=DateTime.Now,
-                    });
-                }
-                else
-                {
-                    if (daylog.Draft)
-                    {
-                        daylog.Draft = input.draft;
-                        daylog.Content = JsonConvert.SerializeObject(input);
-                        daylog. Time = DateTime.Now;
-                    }
-                }
-                _db1.SaveChanges();
-                //foreach(var fd in input.datalist)
-                //{
 
-                //}
+                var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+                if (unit == null)
+                {
+                    return global.commonreturn(responseStatus.nounit);
+                }
+                if (unit.Level)
+                {
+                    return global.commonreturn(responseStatus.forbidden);
+                }
+                var today = DateTime.Now.ToString("yyyy-MM-dd");
+                foreach (var d in input.videodata)
+                {
+                    var thed = _db1.Videoreport.FirstOrDefault(c => c.Date == today && c.Unitid == d.unitid);
+                    if (thed == null)
+                    {
+                        continue;
+                    }
+                    if (d.signtype == signtype.unknown) continue;
+                    thed.Signtype =(short) d.signtype;
+                    thed.Draft = 2;
+                    if (!string.IsNullOrEmpty(d.comment)) thed.Comment = d.comment;
+                    thed.Content = JsonConvert.SerializeObject(d);
+
+                    _db1.SaveChanges();
+                }              
                 
                 return global.commonreturn(responseStatus.ok);
             }
             catch (Exception ex)
             {
-                _log.LogError("{0}-{1}-{2}", DateTime.Now, "GetDataItems", ex.Message);
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "SubmitVideoSign", ex.Message);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+            }
+        }
+
+        public class reset
+        {
+            public string id { get; set; }
+            public string name { get; set; }
+        }
+        [Route("resetinfo")]
+        [HttpPost]
+        public commonresponse resetinfo([FromBody] reset input)
+        {
+            var accinfo = global.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+            if (input == null)
+            {
+                return global.commonreturn(responseStatus.requesterror);
+            }
+            try
+            {
+                var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+                if (unit == null)
+                {
+                    return global.commonreturn(responseStatus.nounit);
+                }
+                if (unit.Level)
+                {
+                    return global.commonreturn(responseStatus.forbidden);
+                }
+                if (string.IsNullOrEmpty(input.id))
+                {
+                    return global.commonreturn(responseStatus.iderror);
+                }
+                if (string.IsNullOrEmpty(input.name))
+                {
+                    return global.commonreturn(responseStatus.nameerror);
+                }
+                var theuser = _db1.User.FirstOrDefault(c => c.Id == input.id && c.Name == input.name);
+                if (theuser == null)
+                {
+                    return global.commonreturn(responseStatus.iderror);
+                }
+
+                theuser.Pass = "123456";
+                _db1.SaveChanges();
+                return global.commonreturn(responseStatus.ok);
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "resetinfo", ex.Message);
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }

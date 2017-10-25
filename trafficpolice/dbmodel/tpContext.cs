@@ -13,6 +13,7 @@ namespace trafficpolice.dbmodel
         public virtual DbSet<Unit> Unit { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<Userlog> Userlog { get; set; }
+        public virtual DbSet<Videoreport> Videoreport { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -84,7 +85,7 @@ namespace trafficpolice.dbmodel
 
                 entity.Property(e => e.Draft)
                     .HasColumnName("draft")
-                    .HasColumnType("tinyint(1)")
+                    .HasColumnType("smallint(2)")
                     .HasDefaultValueSql("1");
 
                 entity.Property(e => e.Time)
@@ -251,6 +252,58 @@ namespace trafficpolice.dbmodel
                     .HasForeignKey(d => d.Userid)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("userid");
+            });
+
+            modelBuilder.Entity<Videoreport>(entity =>
+            {
+                entity.HasKey(e => new { e.Date, e.Unitid })
+                    .HasName("PK_videoreport");
+
+                entity.ToTable("videoreport");
+
+                entity.HasIndex(e => e.Date)
+                    .HasName("date_UNIQUE")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.Unitid)
+                    .HasName("reportlogunitid_idx");
+
+                entity.Property(e => e.Date)
+                    .HasColumnName("date")
+                    .HasColumnType("varchar(10)");
+
+                entity.Property(e => e.Unitid)
+                    .HasColumnName("unitid")
+                    .HasColumnType("varchar(50)");
+
+                entity.Property(e => e.Comment)
+                    .HasColumnName("comment")
+                    .HasColumnType("varchar(450)");
+
+                entity.Property(e => e.Content)
+                    .IsRequired()
+                    .HasColumnName("content")
+                    .HasColumnType("varchar(4500)");
+
+                entity.Property(e => e.Draft)
+                    .HasColumnName("draft")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.Signtype)
+                    .HasColumnName("signtype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.Time)
+                    .HasColumnName("time")
+                    .HasColumnType("datetime");
+
+                entity.HasOne(d => d.Unit)
+                    .WithMany(p => p.Videoreport)
+                    .HasForeignKey(d => d.Unitid)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("videoreportunitid");
             });
         }
     }
