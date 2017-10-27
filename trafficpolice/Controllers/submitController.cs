@@ -69,24 +69,75 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
+        [Route("GetRejectData")]
+        [HttpGet]
+        public commonresponse GetRejectData(dataItemType dit = dataItemType.all)
+        {
+            var accinfo = global.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+            var ret = new getrejectres
+            {
+                status = 0,
+                todaydata = new rejectdata(),
+                todayninedata = new rejectdata(),
+            };
+            var today = DateTime.Now.ToString("yyyy-MM-dd");
+            try
+            {
+                var data = _db1.Reportlog.FirstOrDefault(c => c.Date == today
+                && c.Unitid == accinfo.unitid
+                && c.Draft == 2);
+                if (data != null)
+                {
+                    ret.todaydata.data = JsonConvert.DeserializeObject<submitreq>(data.Content);
+                    ret.todaydata.reason = data.Declinereason;
+                }
+
+                var datanine = _db1.Videoreport.FirstOrDefault(c => c.Date == today
+               && c.Unitid == accinfo.unitid
+               && c.Draft == 1);
+                if (datanine != null)
+                {
+                    ret.todayninedata.data = JsonConvert.DeserializeObject<submitreq>(datanine.Content);
+                    ret.todayninedata.reason = datanine.Declinereason;
+                }
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "GetRejectData", ex.Message);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+            }
+        }
         [Route("GetTodayData")]
         [HttpGet]
-        public commonresponse GetTodayData()
+        public commonresponse GetTodayData(dataItemType dit=dataItemType.all)
         {
             var accinfo = global.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
             var ret = new todaydatares
             {
                 status = 0,
-                todaydata = new submitreq()
+                todaydata = new submitreq(),
+                todayninedata = new submitreq(),
             };
             var today = DateTime.Now.ToString("yyyy-MM-dd");
             try
             {
-                var data = _db1.Reportlog.FirstOrDefault(c => c.Date== today && c.Unitid == accinfo.unitid);
+                var data = _db1.Reportlog.FirstOrDefault(c => c.Date== today 
+                && c.Unitid == accinfo.unitid
+                &&c.Draft==1);
                 if (data != null)
                 {
                     ret.todaydata = JsonConvert.DeserializeObject<submitreq>(data.Content);
+                }
+
+                var datanine = _db1.Videoreport.FirstOrDefault(c => c.Date == today
+               && c.Unitid == accinfo.unitid
+               && c.Draft == 1);
+                if (datanine != null)
+                {
+                    ret.todayninedata = JsonConvert.DeserializeObject<submitreq>(datanine.Content);
                 }
                 return ret;
             }
@@ -100,7 +151,7 @@ namespace trafficpolice.Controllers
         [HttpGet]
         public commonresponse GetDataItemsNine()
         {
-            var ret = new policeAffair
+            var ret = new getdatadefreq
             {
                 status = 0,
                 datalist = new List<dataitemdef>()
@@ -116,11 +167,11 @@ namespace trafficpolice.Controllers
                     var one = new dataitemdef
                     {
                         secondlist = new List<seconditem>(),
-                        name = a.Name,
+                        Name = a.Name,
                         id = a.Id,
-                        comment = a.Comment,
-                        unitdisplay = a.Unitdisplay,
-                        mandated = a.Mandated,
+                        Comment = a.Comment,
+                        Unitdisplay = a.Unitdisplay,
+                        Mandated = a.Mandated,
                         dataItemType = (dataItemType)a.Datatype,
                         inputtype = (secondItemType)a.Inputtype,
                     };
@@ -142,7 +193,7 @@ namespace trafficpolice.Controllers
         [HttpGet]
         public commonresponse GetDataItems()
         {
-            var ret = new policeAffair
+            var ret = new getdatadefreq
             {
                 status = 0,
                 datalist = new List<dataitemdef>()
@@ -158,11 +209,11 @@ namespace trafficpolice.Controllers
                     var one = new dataitemdef
                     {
                         secondlist = new List<seconditem>(),
-                        name=a.Name,
+                        Name=a.Name,
                         id=a.Id,
-                        comment=a.Comment,
-                        unitdisplay=a.Unitdisplay,
-                        mandated=a.Mandated,
+                        Comment=a.Comment,
+                        Unitdisplay=a.Unitdisplay,
+                        Mandated=a.Mandated,
                         dataItemType=(dataItemType)a.Datatype,
                         inputtype= (secondItemType)a.Inputtype,
                     };
@@ -193,10 +244,10 @@ namespace trafficpolice.Controllers
                 var accinfo = global.GetInfoByToken(Request.Headers);
                 if (accinfo.status != responseStatus.ok) return accinfo;
                 var today = DateTime.Now.ToString("yyyy-MM-dd");
-                if(DateTime.Now.Hour>22)
-                {
-                    return global.commonreturn(responseStatus.overdueerror);
-                }
+                //if(DateTime.Now.Hour>22)
+                //{
+                //    return global.commonreturn(responseStatus.overdueerror);
+                //}
                 var daylog = _db1.Reportlog.FirstOrDefault(c => c.Unitid == accinfo.unitid && c.Date == today);
                 if (daylog == null)
                 {
@@ -223,16 +274,60 @@ namespace trafficpolice.Controllers
                     }
                 }
                 _db1.SaveChanges();
-                //foreach(var fd in input.datalist)
-                //{
-
-                //}
-                
+                            
                 return global.commonreturn(responseStatus.ok);
             }
             catch (Exception ex)
             {
-                _log.LogError("{0}-{1}-{2}", DateTime.Now, "GetDataItems", ex.Message);
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "SubmitDataItems", ex.Message);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+            }
+        }
+        [Route("SubmitDataItemsNine")]
+        [HttpPost]
+        public commonresponse SubmitDataItemsNine([FromBody] submitreq input)
+        {
+            try
+            {
+                if (input == null || input.datalist == null)
+                {
+                    return global.commonreturn(responseStatus.requesterror);
+                }
+                var accinfo = global.GetInfoByToken(Request.Headers);
+                if (accinfo.status != responseStatus.ok) return accinfo;
+                var today = DateTime.Now.ToString("yyyy-MM-dd");
+                var daylog = _db1.Videoreport.FirstOrDefault(c => c.Unitid == accinfo.unitid && c.Date == today);
+                if (daylog == null)
+                {
+                    _db1.Videoreport.Add(new Videoreport
+                    {
+                        Date = today,
+                        Unitid = accinfo.unitid,
+                        Content = JsonConvert.SerializeObject(input),
+                        Draft = input.draft,
+                        Time = DateTime.Now,
+                    });
+                }
+                else
+                {
+                    if (daylog.Draft == 1)
+                    {
+                        daylog.Draft = input.draft;
+                        daylog.Content = JsonConvert.SerializeObject(input);
+                        daylog.Time = DateTime.Now;
+                    }
+                    else
+                    {
+                        return global.commonreturn(responseStatus.allreadysubmitted);
+                    }
+                }
+                _db1.SaveChanges();
+
+                return global.commonreturn(responseStatus.ok);
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "SubmitDataItemsNine", ex.Message);
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }

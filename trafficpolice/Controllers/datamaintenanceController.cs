@@ -50,28 +50,28 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }
-               if(string.IsNullOrEmpty(input.name))
+               if(string.IsNullOrEmpty(input.Name))
                 {
                     return global.commonreturn(responseStatus.requesterror);
                 }
-                var thevs = _db1.Dataitem.FirstOrDefault(c => c.Name == input.name );
+                var thevs = _db1.Dataitem.FirstOrDefault(c => c.Name == input.Name );
                 if (thevs!=null)
                 {
                     return global.commonreturn(responseStatus.dataitemallreadyexist);
                 }
                 var second = input.secondlist == null || input.secondlist.Count == 0 ? string.Empty : JsonConvert.SerializeObject(input.secondlist);
-                var comment = string.IsNullOrEmpty(input.comment) ? string.Empty : input.comment;
-                _db1.Dataitem.Add(new Dataitem
+                var comment = string.IsNullOrEmpty(input.Comment) ? string.Empty : input.Comment;
+                _db1.Dataitem.Add(new perfectmsg.dbmodel.Dataitem
                 {
-                    Time=DateTime.Now,
+                    Time= DateTime.Now,
                     Datatype=(short)input.dataItemType,
-                    Name=input.name,
+                    Name= input.Name,
                     Deleted=false,
                     Inputtype=(short)input.inputtype,
-                    Seconditem=second,
-                    Unitdisplay=input.unitdisplay,
-                    Comment=input.comment,
-                    Mandated=input.mandated,
+                    Seconditem= second,
+                    Unitdisplay= input.Unitdisplay,
+                    Comment= input.Comment,
+                    Mandated= input.Mandated,
                 });
                 _db1.SaveChanges();
                 return global.commonreturn(responseStatus.ok);
