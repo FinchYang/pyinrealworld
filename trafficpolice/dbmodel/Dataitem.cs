@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace trafficpolice.dbmodel
+namespace perfectmsg.dbmodel
 {
     public partial class Dataitem
     {
-        public Dataitem()
-        {
-            SeconditemNavigation = new HashSet<Seconditem>();
-        }
-
-        public string Id { get; set; }
+        public int Id { get; set; }
         public bool Centerdisplay { get; set; }
         public string Comment { get; set; }
+        public short? Datatype { get; set; }
+        public bool Deleted { get; set; }
         public bool Mandated { get; set; }
-        public bool Seconditem { get; set; }
+        public string Name { get; set; }
+        public string Seconditem { get; set; }
+        public DateTime Time { get; set; }
         public bool Unitdisplay { get; set; }
-
-        public virtual ICollection<Seconditem> SeconditemNavigation { get; set; }
     }
 }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using trafficpolice.dbmodel;
 using trafficpolice.Models;
 using Newtonsoft.Json;
+using perfectmsg.dbmodel;
 
 namespace trafficpolice.Controllers
 {
@@ -112,24 +112,16 @@ namespace trafficpolice.Controllers
                 {
                     var one = new dataitem
                     {
-                        secondlist = new List<seconditem>(),
+                        secondlist = new List<seconditemdata>(),
                         name=a.Comment,
                         id=a.Id,
                         unitdisplay=a.Unitdisplay,
                         mandated=a.Mandated,
                     };
-                    if (a.Seconditem)
+                    if (!string.IsNullOrEmpty( a.Seconditem))
                     {
-                        var secs = _db1.Seconditem.Where(c => c.Dataitem == a.Id);
-                        foreach(var b in secs)
-                        {
-                            one.secondlist.Add(new seconditem
-                            {
-                                secondtype=(secondItemType)b.Type,
-                                id=b.Id,
-                                name=b.Name
-                            });
-                        }
+                        one.secondlist = JsonConvert.DeserializeObject<List<seconditemdata>>(a.Seconditem);
+                       
                     }
                     ret.datalist.Add(one);
                 }

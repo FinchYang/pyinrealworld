@@ -2,13 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace trafficpolice.dbmodel
+namespace perfectmsg.dbmodel
 {
     public partial class tpContext : DbContext
     {
         public virtual DbSet<Dataitem> Dataitem { get; set; }
         public virtual DbSet<Reportlog> Reportlog { get; set; }
-        public virtual DbSet<Seconditem> Seconditem { get; set; }
         public virtual DbSet<Template> Template { get; set; }
         public virtual DbSet<Unit> Unit { get; set; }
         public virtual DbSet<User> User { get; set; }
@@ -27,33 +26,55 @@ namespace trafficpolice.dbmodel
             {
                 entity.ToTable("dataitem");
 
+                entity.HasIndex(e => e.Name)
+                    .HasName("name_UNIQUE")
+                    .IsUnique();
+
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .HasColumnType("varchar(50)");
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Centerdisplay)
                     .HasColumnName("centerdisplay")
                     .HasColumnType("tinyint(1)")
-                    .HasDefaultValueSql("0");
+                    .HasDefaultValueSql("1");
 
                 entity.Property(e => e.Comment)
                     .HasColumnName("comment")
                     .HasColumnType("varchar(146)");
 
-                entity.Property(e => e.Mandated)
-                    .HasColumnName("mandated")
+                entity.Property(e => e.Datatype)
+                    .HasColumnName("datatype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.Deleted)
+                    .HasColumnName("deleted")
                     .HasColumnType("tinyint(1)")
                     .HasDefaultValueSql("0");
 
+                entity.Property(e => e.Mandated)
+                    .HasColumnName("mandated")
+                    .HasColumnType("tinyint(1)")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasColumnType("varchar(45)");
+
                 entity.Property(e => e.Seconditem)
                     .HasColumnName("seconditem")
-                    .HasColumnType("tinyint(1)")
-                    .HasDefaultValueSql("0");
+                    .HasColumnType("varchar(500)");
+
+                entity.Property(e => e.Time)
+                    .HasColumnName("time")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.Unitdisplay)
                     .HasColumnName("unitdisplay")
                     .HasColumnType("tinyint(1)")
-                    .HasDefaultValueSql("0");
+                    .HasDefaultValueSql("1");
             });
 
             modelBuilder.Entity<Reportlog>(entity =>
@@ -101,39 +122,6 @@ namespace trafficpolice.dbmodel
                     .HasForeignKey(d => d.Unitid)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("reportlogunitid");
-            });
-
-            modelBuilder.Entity<Seconditem>(entity =>
-            {
-                entity.ToTable("seconditem");
-
-                entity.HasIndex(e => e.Dataitem)
-                    .HasName("dataitem_idx");
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("varchar(50)");
-
-                entity.Property(e => e.Dataitem)
-                    .IsRequired()
-                    .HasColumnName("dataitem")
-                    .HasColumnType("varchar(50)");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasColumnName("name")
-                    .HasColumnType("varchar(45)");
-
-                entity.Property(e => e.Type)
-                    .HasColumnName("type")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("0");
-
-                entity.HasOne(d => d.DataitemNavigation)
-                    .WithMany(p => p.SeconditemNavigation)
-                    .HasForeignKey(d => d.Dataitem)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("dataitem");
             });
 
             modelBuilder.Entity<Template>(entity =>
