@@ -2,7 +2,6 @@
 
 namespace trafficpolice.Models
 {
-  
     public class dataitemAddreq
     {     
         public dataItemType dataItemType { set; get; } //数据项类别
@@ -13,8 +12,4 @@ namespace trafficpolice.Models
         public bool Mandated { set; get; } //必输项
         public string Comment { get; set; }//数据项备注
 }
-    public class dataitemdef:dataitemAddreq
-    {
-        public int id { set; get; }//唯一标识
-    }
 }
