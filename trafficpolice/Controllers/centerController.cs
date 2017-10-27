@@ -119,7 +119,7 @@ namespace trafficpolice.Controllers
             }
         }
         [Route("GetVideoSignData")]
-        [HttpGet]
+        [HttpGet]//指挥中心视频签到数据获取接口
         public commonresponse GetVideoSignData()
         {
             var accinfo = global.GetInfoByToken(Request.Headers);
@@ -157,50 +157,9 @@ namespace trafficpolice.Controllers
             }
         }
 
-        public class dvsreq
-        {
-            public string unitid { get; set; }
-            public string comment { get; set; }
-        }
-        [Route("DeclineVideoSign")]
-        [HttpPost]
-        public commonresponse DeclineVideoSign([FromBody] dvsreq input)
-        {
-            try
-            {
-                var accinfo = global.GetInfoByToken(Request.Headers);
-                if (accinfo.status != responseStatus.ok) return accinfo;
-                var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
-                if (unit == null)
-                {
-                    return global.commonreturn(responseStatus.nounit);
-                }
-                if (unit.Level)
-                {
-                    return global.commonreturn(responseStatus.forbidden);
-                }
-                var today = DateTime.Now.ToString("yyyy-MM-dd");
-                var thevs = _db1.Videoreport.FirstOrDefault(c => c.Date == today && c.Unitid == input.unitid);
-                if (thevs==null)
-                {
-                    return global.commonreturn(responseStatus.nounit);
-                }
-                thevs.Draft = 2;
-                if (!string.IsNullOrEmpty(input.comment))
-                {
-                    thevs.Declinereason = input.comment;
-                }
-                _db1.SaveChanges();
-                return global.commonreturn(responseStatus.ok);
-            }
-            catch (Exception ex)
-            {
-                _log.LogError("{0}-{1}-{2}", DateTime.Now, "DeclineVideoSign", ex.Message);
-                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
-            }
-        }
+      
         [Route("SubmitVideoSign")]
-        [HttpPost]
+        [HttpPost]//指挥中心确认视频签到
         public commonresponse SubmitVideoSign([FromBody] videosignreq input )
         {           
             try
