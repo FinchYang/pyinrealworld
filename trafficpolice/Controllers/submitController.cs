@@ -96,6 +96,48 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
+        [Route("GetDataItemsNine")]
+        [HttpGet]
+        public commonresponse GetDataItemsNine()
+        {
+            var ret = new policeAffair
+            {
+                status = 0,
+                datalist = new List<dataitemdef>()
+            };
+            try
+            {
+                var data = _db1.Dataitem.Where(c => c.Unitdisplay
+                && c.Deleted == false
+                && (c.Datatype == (short)dataItemType.all || c.Datatype == (short)dataItemType.nine)
+                );
+                foreach (var a in data)
+                {
+                    var one = new dataitemdef
+                    {
+                        secondlist = new List<seconditem>(),
+                        name = a.Name,
+                        id = a.Id,
+                        comment = a.Comment,
+                        unitdisplay = a.Unitdisplay,
+                        mandated = a.Mandated,
+                        dataItemType = (dataItemType)a.Datatype,
+                        inputtype = (secondItemType)a.Inputtype,
+                    };
+                    if (!string.IsNullOrEmpty(a.Seconditem))
+                    {
+                        one.secondlist = JsonConvert.DeserializeObject<List<seconditem>>(a.Seconditem);
+                    }
+                    ret.datalist.Add(one);
+                }
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "GetDataItemsNine", ex.Message);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+            }
+        }
         [Route("GetDataItems")]
         [HttpGet]
         public commonresponse GetDataItems()
@@ -103,25 +145,30 @@ namespace trafficpolice.Controllers
             var ret = new policeAffair
             {
                 status = 0,
-                datalist = new List<dataitem>()
+                datalist = new List<dataitemdef>()
             };
             try
             {
-                   var data = _db1.Dataitem.Where(c => c.Unitdisplay);
+                var data = _db1.Dataitem.Where(c => c.Unitdisplay
+                && c.Deleted==false
+                &&( c.Datatype==(short)dataItemType.all || c.Datatype == (short)dataItemType.four)
+                );
                 foreach(var a in data)
                 {
-                    var one = new dataitem
+                    var one = new dataitemdef
                     {
-                        secondlist = new List<seconditemdata>(),
-                        name=a.Comment,
+                        secondlist = new List<seconditem>(),
+                        name=a.Name,
                         id=a.Id,
+                        comment=a.Comment,
                         unitdisplay=a.Unitdisplay,
                         mandated=a.Mandated,
+                        dataItemType=(dataItemType)a.Datatype,
+                        inputtype= (secondItemType)a.Inputtype,
                     };
                     if (!string.IsNullOrEmpty( a.Seconditem))
                     {
-                        one.secondlist = JsonConvert.DeserializeObject<List<seconditemdata>>(a.Seconditem);
-                       
+                        one.secondlist = JsonConvert.DeserializeObject<List<seconditem>>(a.Seconditem);                       
                     }
                     ret.datalist.Add(one);
                 }

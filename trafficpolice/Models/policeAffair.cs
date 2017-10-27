@@ -7,7 +7,7 @@ namespace trafficpolice.Models
 {
     public class policeAffair:commonresponse
     {
-        public List<dataitem> datalist { set; get; }
+        public List<dataitemdef> datalist { set; get; }
     }
     public class getvideosigndatares : commonresponse
     {
@@ -51,6 +51,7 @@ namespace trafficpolice.Models
         public List<dataitem> datalist { set; get; }
         public short draft { set; get; }//1--草稿，0-正式提交
     }
+   
     public class dataitem
     {
         public string content { set; get; }//数据项基本内容

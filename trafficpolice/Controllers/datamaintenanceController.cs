@@ -67,6 +67,7 @@ namespace trafficpolice.Controllers
                     Datatype=(short)input.dataItemType,
                     Name=input.name,
                     Deleted=false,
+                    Inputtype=(short)input.inputtype,
                     Seconditem=second,
                     Unitdisplay=input.unitdisplay,
                     Comment=input.comment,

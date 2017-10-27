@@ -53,6 +53,11 @@ namespace perfectmsg.dbmodel
                     .HasColumnType("tinyint(1)")
                     .HasDefaultValueSql("0");
 
+                entity.Property(e => e.Inputtype)
+                    .HasColumnName("inputtype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("2");
+
                 entity.Property(e => e.Mandated)
                     .HasColumnName("mandated")
                     .HasColumnType("tinyint(1)")
