@@ -27,48 +27,7 @@ namespace trafficpolice.Controllers
         {
             _log = log;
         }
-        [Route("GetHistoryData")]
-        [HttpGet]
-        public commonresponse GetHistoryData(string  startdate,string enddate)
-        {
-            var start = DateTime.Now; 
-            var end = start;
-            if(!DateTime.TryParse(startdate,out start))
-            {
-                return global.commonreturn(responseStatus.startdateerror);
-            }
-            if (!DateTime.TryParse(enddate, out end))
-            {
-                return global.commonreturn(responseStatus.enddateerror);
-            }
-            var accinfo = global.GetInfoByToken(Request.Headers);
-            if (accinfo.status != responseStatus.ok) return accinfo;
-            var ret = new hisdatares
-            {
-                status = 0,
-                hisdata = new List<onedata>()
-            };
-            var today = DateTime.Now.ToString("yyyy-MM-dd");
-            try
-            {
-                var data = _db1.Reportlog.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd"))>=0 
-                && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
-                && c.Unitid == accinfo.unitid);
-               foreach(var d in data)
-                {
-                    var one = new onedata();
-                    one =(onedata) JsonConvert.DeserializeObject<submitreq>(d.Content);
-                    one.date = d.Date;
-                    ret.hisdata.Add(one);
-                }
-                return ret;
-            }
-            catch (Exception ex)
-            {
-                _log.LogError("{0}-{1}-{2}", DateTime.Now, "GetHistoryData", ex.Message);
-                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
-            }
-        }
+       
         [Route("GetRejectData")]
         [HttpGet]
         public commonresponse GetRejectData(dataItemType dit = dataItemType.all)
