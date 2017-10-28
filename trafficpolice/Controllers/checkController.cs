@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using trafficpolice.Models;
 using Newtonsoft.Json;
 using perfectmsg.dbmodel;
+//using trafficpolice.dbmodel;
 
 namespace trafficpolice.Controllers
 {
@@ -46,7 +47,7 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.nounit);
                 }
-                if (unit.Level)
+                if (unit.Level==1)
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }
@@ -86,7 +87,7 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.nounit);
                 }
-                if (unit.Level)
+                if (unit.Level==1)
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }
@@ -126,7 +127,7 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.nounit);
                 }
-                if (unit.Level)
+                if (unit.Level==1)
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }
@@ -163,7 +164,7 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.nounit);
                 }
-                if (unit.Level)
+                if (unit.Level==1)
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }

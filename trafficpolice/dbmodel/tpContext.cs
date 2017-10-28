@@ -37,7 +37,7 @@ namespace perfectmsg.dbmodel
 
                 entity.Property(e => e.Centerdisplay)
                     .HasColumnName("centerdisplay")
-                    .HasColumnType("tinyint(1)")
+                    .HasColumnType("smallint(1)")
                     .HasDefaultValueSql("1");
 
                 entity.Property(e => e.Comment)
@@ -51,7 +51,7 @@ namespace perfectmsg.dbmodel
 
                 entity.Property(e => e.Deleted)
                     .HasColumnName("deleted")
-                    .HasColumnType("tinyint(1)")
+                    .HasColumnType("smallint(1)")
                     .HasDefaultValueSql("0");
 
                 entity.Property(e => e.Inputtype)
@@ -61,7 +61,7 @@ namespace perfectmsg.dbmodel
 
                 entity.Property(e => e.Mandated)
                     .HasColumnName("mandated")
-                    .HasColumnType("tinyint(1)")
+                    .HasColumnType("smallint(1)")
                     .HasDefaultValueSql("1");
 
                 entity.Property(e => e.Name)
@@ -79,7 +79,7 @@ namespace perfectmsg.dbmodel
 
                 entity.Property(e => e.Unitdisplay)
                     .HasColumnName("unitdisplay")
-                    .HasColumnType("tinyint(1)")
+                    .HasColumnType("smallint(1)")
                     .HasDefaultValueSql("1");
             });
 
@@ -199,7 +199,7 @@ namespace perfectmsg.dbmodel
 
                 entity.Property(e => e.Level)
                     .HasColumnName("level")
-                    .HasColumnType("tinyint(1)")
+                    .HasColumnType("smallint(1)")
                     .HasDefaultValueSql("0");
 
                 entity.Property(e => e.Name)

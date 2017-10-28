@@ -22,6 +22,10 @@ namespace trafficpolice
             public string Token { get; set; }
         }
         public static List<Ptoken> tokens = new List<Ptoken>();
+        public static short booltoshort(bool mandated)
+        {
+            return (short)(mandated ? 1 : 0);
+        }
         public static commonresponse commonreturn(responseStatus rs)
         {
             return new commonresponse { status = rs, content = rs.ToString() };

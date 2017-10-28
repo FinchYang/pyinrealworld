@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 using trafficpolice.Models;
 using Newtonsoft.Json;
 using perfectmsg.dbmodel;
+//using trafficpolice.dbmodel;
+//ing perfectmsg.dbmodel;
 
 namespace trafficpolice.Controllers
 {
@@ -46,7 +48,7 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.nounit);
                 }
-                if (unit.Level)
+                if (unit.Level==1)
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }
@@ -66,12 +68,12 @@ namespace trafficpolice.Controllers
                     Time= DateTime.Now,
                     Datatype=(short)input.dataItemType,
                     Name= input.Name,
-                    Deleted=false,
+                    Deleted=0,
                     Inputtype=(short)input.inputtype,
                     Seconditem= second,
-                    Unitdisplay= input.Unitdisplay,
+                    Unitdisplay= (short)(input.Unitdisplay?1:0),
                     Comment= input.Comment,
-                    Mandated= input.Mandated,
+                    Mandated=booltoshort( input.Mandated),
                 });
                 _db1.SaveChanges();
                 return global.commonreturn(responseStatus.ok);
@@ -82,6 +84,12 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
+
+        private short booltoshort(bool mandated)
+        {
+            return (short)(mandated ? 1 : 0);
+        }
+
         [Route("updateDataItem")]
         [HttpPost]//数据项修改接口
         public commonresponse updateDataItem([FromBody] dataitemdef input)
@@ -100,7 +108,7 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.nounit);
                 }
-                if (unit.Level)
+                if (unit.Level==1)
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }
@@ -127,9 +135,9 @@ namespace trafficpolice.Controllers
                 //  old.Deleted = false;
                    old.Inputtype = (short)input.inputtype;
                    old.Seconditem = second;
-                   old.Unitdisplay = input.Unitdisplay;
+                   old.Unitdisplay =booltoshort( input.Unitdisplay);
                    old.Comment = input.Comment;
-                   old.Mandated = input.Mandated;
+                   old.Mandated = booltoshort(input.Mandated);
                
                 _db1.SaveChanges();
                 return global.commonreturn(responseStatus.ok);

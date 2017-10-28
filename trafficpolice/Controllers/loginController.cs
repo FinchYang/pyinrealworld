@@ -8,6 +8,8 @@ using trafficpolice.Models;
 using Newtonsoft.Json;
 using static trafficpolice.global;
 using perfectmsg.dbmodel;
+//using trafficpolice.dbmodel;
+//using perfectmsg.dbmodel;
 
 namespace trafficpolice.Controllers
 {
@@ -147,7 +149,7 @@ namespace trafficpolice.Controllers
                     status = 0,
                     token = toke1n,
                     name=name,
-                    unit=unit,
+                    unit=unit>0?true:false,
                 };
             }
             catch (Exception ex)

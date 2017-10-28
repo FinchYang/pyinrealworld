@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 using trafficpolice.Models;
 using Newtonsoft.Json;
 using perfectmsg.dbmodel;
+//using trafficpolice.dbmodel;
+//using perfectmsg.dbmodel;
 
 namespace trafficpolice.Controllers
 {
@@ -39,8 +41,8 @@ namespace trafficpolice.Controllers
             };
             try
             {
-                var data = _db1.Dataitem.Where(c => c.Unitdisplay
-                && c.Deleted == false
+                var data = _db1.Dataitem.Where(c => c.Unitdisplay==1
+                && c.Deleted == 0
                 && (c.Datatype == (short)dataItemType.all || c.Datatype == (short)dataItemType.nine)
                 );
                 foreach (var a in data)
@@ -51,8 +53,8 @@ namespace trafficpolice.Controllers
                         Name = a.Name,
                         id = a.Id,
                         Comment = a.Comment,
-                        Unitdisplay = a.Unitdisplay,
-                        Mandated = a.Mandated,
+                        Unitdisplay = a.Unitdisplay>0?true:false,
+                        Mandated = a.Mandated > 0 ? true : false,
                         dataItemType = (dataItemType)a.Datatype,
                         inputtype = (secondItemType)a.Inputtype,
                     };
@@ -81,8 +83,8 @@ namespace trafficpolice.Controllers
             };
             try
             {
-                var data = _db1.Dataitem.Where(c => c.Unitdisplay
-                && c.Deleted==false
+                var data = _db1.Dataitem.Where(c => c.Unitdisplay==1
+                && c.Deleted==0
                 &&( c.Datatype==(short)dataItemType.all || c.Datatype == (short)dataItemType.four)
                 );
                 foreach(var a in data)
@@ -93,9 +95,9 @@ namespace trafficpolice.Controllers
                         Name=a.Name,
                         id=a.Id,
                         Comment=a.Comment,
-                        Unitdisplay=a.Unitdisplay,
-                        Mandated=a.Mandated,
-                        dataItemType=(dataItemType)a.Datatype,
+                        Unitdisplay= a.Unitdisplay>0?true:false,
+                        Mandated=a.Mandated > 0 ? true : false,
+                        dataItemType =(dataItemType)a.Datatype,
                         inputtype= (secondItemType)a.Inputtype,
                     };
                     if (!string.IsNullOrEmpty( a.Seconditem))
@@ -158,9 +160,34 @@ namespace trafficpolice.Controllers
                             
                 return global.commonreturn(responseStatus.ok);
             }
+            //catch ( DbEntityValidationException e)
+            //{
+            //    foreach (var eve in e.EntityValidationErrors)
+            //    {
+            //        Log.InfoFormat("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+            //            eve.Entry.Entity.GetType().Name, eve.Entry.State);
+            //        foreach (var ve in eve.ValidationErrors)
+            //        {
+            //            Log.InfoFormat("- Property: \"{0}\", Error: \"{1}\"",
+            //                ve.PropertyName, ve.ErrorMessage);
+            //        }
+            //    }
+            //    return new userresponse
+            //    {
+            //        status = (int)sixerrors.processerror
+            //    };
+            //}
+            //catch (EntityDataSourceValidationException ex)
+            //{
+            //    Log.Error("EntityDataSourceValidationException", ex);
+            //    return new userresponse
+            //    {
+            //        status = (int)sixerrors.processerror
+            //    };
+            //}
             catch (Exception ex)
             {
-                _log.LogError("{0}-{1}-{2}", DateTime.Now, "SubmitDataItems", ex.Message);
+                _log.LogError("{0}-{1}-{2},inner={3}", DateTime.Now, "SubmitDataItems", ex.Message, ex.InnerException.Message);
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
