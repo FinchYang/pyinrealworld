@@ -8,6 +8,7 @@ namespace perfectmsg.dbmodel
     {
         public virtual DbSet<Dataitem> Dataitem { get; set; }
         public virtual DbSet<Reportlog> Reportlog { get; set; }
+        public virtual DbSet<Summarized> Summarized { get; set; }
         public virtual DbSet<Template> Template { get; set; }
         public virtual DbSet<Unit> Unit { get; set; }
         public virtual DbSet<User> User { get; set; }
@@ -127,6 +128,36 @@ namespace perfectmsg.dbmodel
                     .HasForeignKey(d => d.Unitid)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("reportlogunitid");
+            });
+
+            modelBuilder.Entity<Summarized>(entity =>
+            {
+                entity.HasKey(e => e.Date)
+                    .HasName("date_UNIQUE");
+
+                entity.ToTable("summarized");
+
+                entity.Property(e => e.Date)
+                    .HasColumnName("date")
+                    .HasColumnType("varchar(10)");
+
+                entity.Property(e => e.Comment)
+                    .HasColumnName("comment")
+                    .HasColumnType("varchar(450)");
+
+                entity.Property(e => e.Content)
+                    .IsRequired()
+                    .HasColumnName("content")
+                    .HasColumnType("varchar(4500)");
+
+                entity.Property(e => e.Draft)
+                    .HasColumnName("draft")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("1");
+
+                entity.Property(e => e.Time)
+                    .HasColumnName("time")
+                    .HasColumnType("datetime");
             });
 
             modelBuilder.Entity<Template>(entity =>
