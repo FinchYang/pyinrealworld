@@ -124,7 +124,7 @@ namespace trafficpolice.Controllers
                 }
                 ret.sumdata.datalist = new List<Models.Dataitem>();
 
-                var dis = _db1.Dataitem.Where(c => (c.Datatype == (short)dataItemType.all || c.Datatype == (short)dataItemType.four)
+                var dis = _db1.Dataitem.Where(c => (c.Tabletype == (short)dataItemType.all || c.Tabletype == (short)dataItemType.four)
                   && c.Deleted == 0);
                 foreach (var di in dis)
                 {
@@ -132,7 +132,7 @@ namespace trafficpolice.Controllers
                     {
                         secondlist = new List<seconditemdata>(),
                         Name = di.Name,
-                        Unitdisplay = di.Unitdisplay > 0 ? true : false,
+                        units = JsonConvert.DeserializeObject<List<unittype>>( di.Unitdisplay),
                         Mandated = di.Mandated > 0 ? true : false,
                         Comment = di.Comment,
                         inputtype = (secondItemType)di.Inputtype,
@@ -140,7 +140,7 @@ namespace trafficpolice.Controllers
 
                     if (!string.IsNullOrEmpty(di.Seconditem))
                     {
-                        var sis = JsonConvert.DeserializeObject<List<seconditem>>(di.Seconditem);
+                        var sis = JsonConvert.DeserializeObject<List<Seconditem>>(di.Seconditem);
 
                         foreach (var si in sis)
                         {
@@ -249,7 +249,7 @@ namespace trafficpolice.Controllers
                 }
                 ret.sumdata.datalist = new List<Models.Dataitem>();
 
-                var dis = _db1.Dataitem.Where(c => (c.Datatype == (short)dataItemType.all || c.Datatype == (short)dataItemType.four)
+                var dis = _db1.Dataitem.Where(c => (c.Tabletype == (short)dataItemType.all || c.Tabletype == (short)dataItemType.four)
                   && c.Deleted == 0);
                 foreach(var di in dis)
                 {
@@ -257,7 +257,7 @@ namespace trafficpolice.Controllers
                     {
                         secondlist = new List<seconditemdata>(),
                         Name=di.Name,
-                        Unitdisplay=di.Unitdisplay > 0 ? true : false,
+                        units = JsonConvert.DeserializeObject<List<unittype>>(di.Unitdisplay),
                         Mandated =di.Mandated > 0 ? true : false,
                         Comment =di.Comment,
                         inputtype=(secondItemType)di.Inputtype,
@@ -265,7 +265,7 @@ namespace trafficpolice.Controllers
                     
                     if(!string.IsNullOrEmpty(di.Seconditem))
                     {
-                        var sis = JsonConvert.DeserializeObject<List< seconditem>>(di.Seconditem);
+                        var sis = JsonConvert.DeserializeObject<List< Seconditem>>(di.Seconditem);
                         
                         foreach(var si in sis)
                         {

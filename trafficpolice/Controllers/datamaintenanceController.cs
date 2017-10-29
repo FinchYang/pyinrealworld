@@ -29,10 +29,15 @@ namespace trafficpolice.Controllers
         {
             _log = log;
         }
-    
+        [Route("uploadtemplate")]
+        [HttpPost]
+        public commonresponse uploadtemplate()
+        {
+            return global.commonreturn(responseStatus.ok);
+        }
         [Route("addDataItem")]
         [HttpPost]
-        public commonresponse addDataItem([FromBody] dataitemAddreq input)
+        public commonresponse addDataItem([FromBody] FirstLevelDataItem input)
         {
             try
             {
@@ -61,17 +66,20 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.dataitemallreadyexist);
                 }
-                var second = input.secondlist == null || input.secondlist.Count == 0 ? string.Empty : JsonConvert.SerializeObject(input.secondlist);
+                var second = !input.hasSecondItems|| input.secondlist == null || input.secondlist.Count == 0 ? string.Empty : JsonConvert.SerializeObject(input.secondlist);
                 var comment = string.IsNullOrEmpty(input.Comment) ? string.Empty : input.Comment;
                 _db1.Dataitem.Add(new dbmodel.Dataitem
                 {
                     Time= DateTime.Now,
-                    Datatype=(short)input.dataItemType,
+                    Tabletype=(short)input.tabletype,
                     Name= input.Name,
+                    Hassecond=(short)(input.hasSecondItems?1:0),
                     Deleted=0,
                     Inputtype=(short)input.inputtype,
+                    Statisticstype=(short)input.StatisticsType,
+                    Defaultvalue=input.defaultValue,
                     Seconditem= second,
-                    Unitdisplay= (short)(input.Unitdisplay?1:0),
+                    Unitdisplay= JsonConvert.SerializeObject( input.units),
                     Comment= input.Comment,
                     Mandated=booltoshort( input.Mandated),
                 });
@@ -130,12 +138,13 @@ namespace trafficpolice.Controllers
                 }
 
                 old.Time = DateTime.Now;
-                old.Datatype = (short)input.dataItemType;
+                old.Tabletype = (short)input.tabletype;
                   old.Name = input.Name;
                 //  old.Deleted = false;
                    old.Inputtype = (short)input.inputtype;
                    old.Seconditem = second;
-                   old.Unitdisplay =booltoshort( input.Unitdisplay);
+                   old.Unitdisplay =JsonConvert.SerializeObject( input.units);
+            //    units = JsonConvert.DeserializeObject<List<unittype>>(di.Unitdisplay),
                    old.Comment = input.Comment;
                    old.Mandated = booltoshort(input.Mandated);
                

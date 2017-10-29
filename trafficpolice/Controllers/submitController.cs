@@ -41,26 +41,27 @@ namespace trafficpolice.Controllers
             };
             try
             {
-                var data = _db1.Dataitem.Where(c => c.Unitdisplay==1
-                && c.Deleted == 0
-                && (c.Datatype == (short)dataItemType.all || c.Datatype == (short)dataItemType.nine)
+                var data = _db1.Dataitem.Where(c =>
+             //   c.Unitdisplay==1                && 
+                c.Deleted == 0
+                && (c.Tabletype == (short)dataItemType.all || c.Tabletype == (short)dataItemType.nine)
                 );
                 foreach (var a in data)
                 {
                     var one = new dataitemdef
                     {
-                        secondlist = new List<seconditem>(),
+                        secondlist = new List<Seconditem>(),
                         Name = a.Name,
                         id = a.Id,
                         Comment = a.Comment,
-                        Unitdisplay = a.Unitdisplay>0?true:false,
+                        units = JsonConvert.DeserializeObject<List<unittype>>(a.Unitdisplay),
                         Mandated = a.Mandated > 0 ? true : false,
-                        dataItemType = (dataItemType)a.Datatype,
+                        tabletype = (dataItemType)a.Tabletype,
                         inputtype = (secondItemType)a.Inputtype,
                     };
                     if (!string.IsNullOrEmpty(a.Seconditem))
                     {
-                        one.secondlist = JsonConvert.DeserializeObject<List<seconditem>>(a.Seconditem);
+                        one.secondlist = JsonConvert.DeserializeObject<List<Seconditem>>(a.Seconditem);
                     }
                     ret.datalist.Add(one);
                 }
@@ -83,26 +84,28 @@ namespace trafficpolice.Controllers
             };
             try
             {
-                var data = _db1.Dataitem.Where(c => c.Unitdisplay==1
-                && c.Deleted==0
-                &&( c.Datatype==(short)dataItemType.all || c.Datatype == (short)dataItemType.four)
+                var data = _db1.Dataitem.Where(c =>
+                //c.Unitdisplay==1                && 
+                c.Deleted==0
+                &&( c.Tabletype==(short)dataItemType.all || c.Tabletype == (short)dataItemType.four)
                 );
                 foreach(var a in data)
                 {
                     var one = new dataitemdef
                     {
-                        secondlist = new List<seconditem>(),
+                        secondlist = new List<Seconditem>(),
                         Name=a.Name,
                         id=a.Id,
                         Comment=a.Comment,
-                        Unitdisplay= a.Unitdisplay>0?true:false,
-                        Mandated=a.Mandated > 0 ? true : false,
-                        dataItemType =(dataItemType)a.Datatype,
+                       // units= a.Unitdisplay>0?true:false,
+                        units = JsonConvert.DeserializeObject<List<unittype>>(a.Unitdisplay),
+                        Mandated =a.Mandated > 0 ? true : false,
+                        tabletype =(dataItemType)a.Tabletype,
                         inputtype= (secondItemType)a.Inputtype,
                     };
                     if (!string.IsNullOrEmpty( a.Seconditem))
                     {
-                        one.secondlist = JsonConvert.DeserializeObject<List<seconditem>>(a.Seconditem);                       
+                        one.secondlist = JsonConvert.DeserializeObject<List<Seconditem>>(a.Seconditem);                       
                     }
                     ret.datalist.Add(one);
                 }

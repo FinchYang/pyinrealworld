@@ -53,13 +53,17 @@ namespace trafficpolice.dbmodel
                     .HasColumnName("comment")
                     .HasMaxLength(146);
 
-                entity.Property(e => e.Datatype)
-                    .HasColumnName("datatype")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("'0'");
+                entity.Property(e => e.Defaultvalue)
+                    .HasColumnName("defaultvalue")
+                    .HasMaxLength(450);
 
                 entity.Property(e => e.Deleted)
                     .HasColumnName("deleted")
+                    .HasColumnType("smallint(1)")
+                    .HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.Hassecond)
+                    .HasColumnName("hassecond")
                     .HasColumnType("smallint(1)")
                     .HasDefaultValueSql("'0'");
 
@@ -80,15 +84,26 @@ namespace trafficpolice.dbmodel
 
                 entity.Property(e => e.Seconditem)
                     .HasColumnName("seconditem")
-                    .HasMaxLength(500);
+                    .HasMaxLength(5000);
+
+                entity.Property(e => e.Statisticstype)
+                    .HasColumnName("statisticstype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.Tabletype)
+                    .HasColumnName("tabletype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.Time)
                     .HasColumnName("time")
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.Unitdisplay)
+                    .IsRequired()
                     .HasColumnName("unitdisplay")
-                    .HasColumnType("smallint(1)")
+                    .HasMaxLength(300)
                     .HasDefaultValueSql("'1'");
             });
 

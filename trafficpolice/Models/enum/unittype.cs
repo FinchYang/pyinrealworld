@@ -3,6 +3,7 @@
     public enum unittype
     {
         unknown,//未知
+        all,//所有
         one,//一大队
         two,//二大队
         three,//三大队
