@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace perfectmsg.dbmodel
+namespace trafficpolice.dbmodel
 {
     public partial class User
     {
@@ -13,10 +13,10 @@ namespace perfectmsg.dbmodel
         public string Id { get; set; }
         public string Name { get; set; }
         public string Pass { get; set; }
-        public string Token { get; set; }
         public string Unitid { get; set; }
+        public string Token { get; set; }
 
-        public virtual ICollection<Userlog> Userlog { get; set; }
-        public virtual Unit Unit { get; set; }
+        public Unit Unit { get; set; }
+        public ICollection<Userlog> Userlog { get; set; }
     }
 }

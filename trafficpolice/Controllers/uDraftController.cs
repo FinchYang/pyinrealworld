@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using trafficpolice.Models;
 using Newtonsoft.Json;
-using perfectmsg.dbmodel;
 //using perfectmsg.dbmodel;
-//using trafficpolice.dbmodel;
+//using perfectmsg.dbmodel;
+using trafficpolice.dbmodel;
 
 namespace trafficpolice.Controllers
 {

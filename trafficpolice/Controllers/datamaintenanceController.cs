@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using trafficpolice.Models;
 using Newtonsoft.Json;
-using perfectmsg.dbmodel;
-//using trafficpolice.dbmodel;
+//using perfectmsg.dbmodel;
+using trafficpolice.dbmodel;
 //ing perfectmsg.dbmodel;
 
 namespace trafficpolice.Controllers
@@ -63,7 +63,7 @@ namespace trafficpolice.Controllers
                 }
                 var second = input.secondlist == null || input.secondlist.Count == 0 ? string.Empty : JsonConvert.SerializeObject(input.secondlist);
                 var comment = string.IsNullOrEmpty(input.Comment) ? string.Empty : input.Comment;
-                _db1.Dataitem.Add(new perfectmsg.dbmodel.Dataitem
+                _db1.Dataitem.Add(new dbmodel.Dataitem
                 {
                     Time= DateTime.Now,
                     Datatype=(short)input.dataItemType,
