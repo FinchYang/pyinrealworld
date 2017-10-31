@@ -34,11 +34,7 @@ namespace trafficpolice.Controllers
             _log = log;
         }
 
-        //[HttpPost]
-        //public commonresponse uploadtemplate()
-        //{
-        //    return global.commonreturn(responseStatus.ok);
-        //}
+      
         [Route("uploadtemplate")]//enctype="multipart/form-data" 
         [HttpPost]
         public Task<commonresponse> uploadtemplate([FromServices]IHostingEnvironment env,[FromServices] tpContext tp, uploadtemplate user)
@@ -120,6 +116,7 @@ namespace trafficpolice.Controllers
                 }
                 var accinfo = global.GetInfoByToken(Request.Headers);
                 if (accinfo.status != responseStatus.ok) return accinfo;
+
                 var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
                 if (unit == null)
                 {
@@ -129,15 +126,18 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }
+
                 if (string.IsNullOrEmpty(input.Name))
                 {
                     return global.commonreturn(responseStatus.requesterror);
                 }
+
                 var thevs = _db1.Dataitem.FirstOrDefault(c => c.Name == input.Name);
                 if (thevs != null)
                 {
                     return global.commonreturn(responseStatus.dataitemallreadyexist);
                 }
+
                 var second = !input.hasSecondItems || input.secondlist == null || input.secondlist.Count == 0 ? string.Empty : JsonConvert.SerializeObject(input.secondlist);
                 var comment = string.IsNullOrEmpty(input.Comment) ? string.Empty : input.Comment;
                 _db1.Dataitem.Add(new dbmodel.Dataitem
@@ -181,8 +181,10 @@ namespace trafficpolice.Controllers
                     _log.LogInformation("login,{0}", responseStatus.requesterror);
                     return global.commonreturn(responseStatus.requesterror);
                 }
+
                 var accinfo = global.GetInfoByToken(Request.Headers);
                 if (accinfo.status != responseStatus.ok) return accinfo;
+
                 var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
                 if (unit == null)
                 {
@@ -192,16 +194,18 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }
+
                 if (string.IsNullOrEmpty(input.Name))
                 {
                     return global.commonreturn(responseStatus.requesterror);
                 }
+
                 var thevs = _db1.Dataitem.FirstOrDefault(c => c.Name == input.Name);
                 if (thevs != null)
                 {
                     return global.commonreturn(responseStatus.dataitemallreadyexist);
                 }
-                var second = input.secondlist == null || input.secondlist.Count == 0 ? string.Empty : JsonConvert.SerializeObject(input.secondlist);
+                var second =!input.hasSecondItems|| input.secondlist == null || input.secondlist.Count == 0 ? string.Empty : JsonConvert.SerializeObject(input.secondlist);
                 var comment = string.IsNullOrEmpty(input.Comment) ? string.Empty : input.Comment;
                 var old = _db1.Dataitem.FirstOrDefault(c => c.Id == input.id);
                 if (old == null)
@@ -212,8 +216,11 @@ namespace trafficpolice.Controllers
                 old.Time = DateTime.Now;
                 old.Tabletype = (short)input.tabletype;
                 old.Name = input.Name;
-                //  old.Deleted = false;
+                old.Hassecond = (short)(input.hasSecondItems ? 1 : 0);
+                old.Deleted = booltoshort(input.Deleted);
                 old.Inputtype = (short)input.inputtype;
+                old.Statisticstype = (short)input.StatisticsType;
+                old. Defaultvalue = input.defaultValue;
                 old.Seconditem = second;
                 old.Unitdisplay = JsonConvert.SerializeObject(input.units);
                 //    units = JsonConvert.DeserializeObject<List<unittype>>(di.Unitdisplay),

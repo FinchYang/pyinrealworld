@@ -7,6 +7,7 @@ namespace trafficpolice.Models
         public bool hasSecondItems { set; get; }//是否有二级数据项
         public string Name { set; get; }//数据项名称
         public bool Mandated { set; get; } //必输项
+        public bool Deleted { set; get; } //删除标志
         public string Comment { get; set; }//数据项备注
 
         public List<unittype> units { get; set; }//大队显示列表
