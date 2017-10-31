@@ -7,6 +7,7 @@ namespace trafficpolice.dbmodel
     public partial class tpContext : DbContext
     {
         public virtual DbSet<Dataitem> Dataitem { get; set; }
+        public virtual DbSet<Moban> Moban { get; set; }
         public virtual DbSet<Reportlog> Reportlog { get; set; }
         public virtual DbSet<Summarized> Summarized { get; set; }
         public virtual DbSet<Template> Template { get; set; }
@@ -107,6 +108,36 @@ namespace trafficpolice.dbmodel
                     .HasDefaultValueSql("'1'");
             });
 
+            modelBuilder.Entity<Moban>(entity =>
+            {
+                entity.HasKey(e => e.Name);
+
+                entity.ToTable("moban");
+
+                entity.HasIndex(e => e.Name)
+                    .HasName("name_UNIQUE")
+                    .IsUnique();
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .HasMaxLength(300)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Comment)
+                    .HasColumnName("comment")
+                    .HasMaxLength(600);
+
+                entity.Property(e => e.Filename)
+                    .IsRequired()
+                    .HasColumnName("filename")
+                    .HasMaxLength(600);
+
+                entity.Property(e => e.Tabletype)
+                    .HasColumnName("tabletype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("'0'");
+            });
+
             modelBuilder.Entity<Reportlog>(entity =>
             {
                 entity.HasKey(e => new { e.Date, e.Unitid });
@@ -193,23 +224,32 @@ namespace trafficpolice.dbmodel
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .HasMaxLength(50)
+                    .HasColumnType("int(11)")
                     .ValueGeneratedNever();
+
+                entity.Property(e => e.Comment)
+                    .IsRequired()
+                    .HasColumnName("comment")
+                    .HasMaxLength(450);
 
                 entity.Property(e => e.File)
                     .IsRequired()
                     .HasColumnName("file")
-                    .HasMaxLength(45);
+                    .HasMaxLength(450);
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
-                    .HasMaxLength(145);
+                    .HasMaxLength(150);
 
-                entity.Property(e => e.Path)
-                    .IsRequired()
-                    .HasColumnName("path")
-                    .HasMaxLength(450);
+                entity.Property(e => e.Tabletype)
+                    .HasColumnName("tabletype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.Time)
+                    .HasColumnName("time")
+                    .HasColumnType("datetime");
             });
 
             modelBuilder.Entity<Unit>(entity =>

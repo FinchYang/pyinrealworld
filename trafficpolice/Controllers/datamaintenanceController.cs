@@ -8,6 +8,10 @@ using trafficpolice.Models;
 using Newtonsoft.Json;
 //using perfectmsg.dbmodel;
 using trafficpolice.dbmodel;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 //ing perfectmsg.dbmodel;
 
 namespace trafficpolice.Controllers
@@ -29,12 +33,80 @@ namespace trafficpolice.Controllers
         {
             _log = log;
         }
-        [Route("uploadtemplate")]
+
+        //[HttpPost]
+        //public commonresponse uploadtemplate()
+        //{
+        //    return global.commonreturn(responseStatus.ok);
+        //}
+        [Route("uploadtemplate")]//enctype="multipart/form-data" 
         [HttpPost]
-        public commonresponse uploadtemplate()
+        public Task<commonresponse> uploadtemplate([FromServices]IHostingEnvironment env,[FromServices] tpContext tp, uploadtemplate user)
         {
-            return global.commonreturn(responseStatus.ok);
+            if (user == null || string.IsNullOrEmpty(user.name) || user.name.Length > 144)
+            {
+                return Task.FromResult(global.commonreturn(responseStatus.requesterror));
+            }
+            var now = DateTime.Now;
+            var fpath = Path.Combine(env.ContentRootPath, "upload");
+            if (!Directory.Exists(fpath)) Directory.CreateDirectory(fpath);
+
+            var fn = user.name + now.ToString("yyyyMMddHHmmss") + ".doc";
+            var fileName = Path.Combine(fpath, fn);
+
+            using (var stream = new FileStream(fileName, FileMode.CreateNew))
+            {
+                user.templatefile.CopyTo(stream);
+            }
+
+            //tp.Userlog.Add(new Userlog
+            //{
+            //    Content = "content",
+            //    Userid = "center",
+            //    Ip = "ip",
+            //    Time = DateTime.Now
+            //});
+            try
+            {
+                var mb = tp.Moban.FirstOrDefault(c => c.Name == user.name && c.Tabletype == (short)user.templatetype);
+                if (mb == null)
+                {
+                    tp.Moban.Add(new Moban
+                    {
+                        Name = user.name,
+                        Comment = user.comment,
+                        Filename = fn,
+                        Tabletype = (short)user.templatetype
+                    });
+                }
+                else
+                {
+
+                    mb.Comment = user.comment;
+                    fileName = fn;
+
+                }
+
+                tp.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                _log.LogError(" uploadtemplate error:{0}", ex.Message);
+                return Task.FromResult(global.commonreturn(responseStatus.processerror));
+            }
+            //tp.Template.Add(new Template
+            //{
+            //    Name = user.name,
+            //    Comment = user.comment,
+            //    Time = now,
+            //    File = fn,
+            //    Tabletype = (short)user.templatetype
+            //});
+            //tp.SaveChanges();
+
+            return Task.FromResult(global.commonreturn(responseStatus.ok));
         }
+
         [Route("addDataItem")]
         [HttpPost]
         public commonresponse addDataItem([FromBody] FirstLevelDataItem input)
@@ -53,35 +125,35 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.nounit);
                 }
-                if (unit.Level==1)
+                if (unit.Level == 1)
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }
-               if(string.IsNullOrEmpty(input.Name))
+                if (string.IsNullOrEmpty(input.Name))
                 {
                     return global.commonreturn(responseStatus.requesterror);
                 }
-                var thevs = _db1.Dataitem.FirstOrDefault(c => c.Name == input.Name );
-                if (thevs!=null)
+                var thevs = _db1.Dataitem.FirstOrDefault(c => c.Name == input.Name);
+                if (thevs != null)
                 {
                     return global.commonreturn(responseStatus.dataitemallreadyexist);
                 }
-                var second = !input.hasSecondItems|| input.secondlist == null || input.secondlist.Count == 0 ? string.Empty : JsonConvert.SerializeObject(input.secondlist);
+                var second = !input.hasSecondItems || input.secondlist == null || input.secondlist.Count == 0 ? string.Empty : JsonConvert.SerializeObject(input.secondlist);
                 var comment = string.IsNullOrEmpty(input.Comment) ? string.Empty : input.Comment;
                 _db1.Dataitem.Add(new dbmodel.Dataitem
                 {
-                    Time= DateTime.Now,
-                    Tabletype=(short)input.tabletype,
-                    Name= input.Name,
-                    Hassecond=(short)(input.hasSecondItems?1:0),
-                    Deleted=0,
-                    Inputtype=(short)input.inputtype,
-                    Statisticstype=(short)input.StatisticsType,
-                    Defaultvalue=input.defaultValue,
-                    Seconditem= second,
-                    Unitdisplay= JsonConvert.SerializeObject( input.units),
-                    Comment= input.Comment,
-                    Mandated=booltoshort( input.Mandated),
+                    Time = DateTime.Now,
+                    Tabletype = (short)input.tabletype,
+                    Name = input.Name,
+                    Hassecond = (short)(input.hasSecondItems ? 1 : 0),
+                    Deleted = 0,
+                    Inputtype = (short)input.inputtype,
+                    Statisticstype = (short)input.StatisticsType,
+                    Defaultvalue = input.defaultValue,
+                    Seconditem = second,
+                    Unitdisplay = JsonConvert.SerializeObject(input.units),
+                    Comment = input.Comment,
+                    Mandated = booltoshort(input.Mandated),
                 });
                 _db1.SaveChanges();
                 return global.commonreturn(responseStatus.ok);
@@ -116,7 +188,7 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.nounit);
                 }
-                if (unit.Level==1)
+                if (unit.Level == 1)
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }
@@ -132,22 +204,22 @@ namespace trafficpolice.Controllers
                 var second = input.secondlist == null || input.secondlist.Count == 0 ? string.Empty : JsonConvert.SerializeObject(input.secondlist);
                 var comment = string.IsNullOrEmpty(input.Comment) ? string.Empty : input.Comment;
                 var old = _db1.Dataitem.FirstOrDefault(c => c.Id == input.id);
-                if(old==null)
+                if (old == null)
                 {
                     return global.commonreturn(responseStatus.nodataitem);
                 }
 
                 old.Time = DateTime.Now;
                 old.Tabletype = (short)input.tabletype;
-                  old.Name = input.Name;
+                old.Name = input.Name;
                 //  old.Deleted = false;
-                   old.Inputtype = (short)input.inputtype;
-                   old.Seconditem = second;
-                   old.Unitdisplay =JsonConvert.SerializeObject( input.units);
-            //    units = JsonConvert.DeserializeObject<List<unittype>>(di.Unitdisplay),
-                   old.Comment = input.Comment;
-                   old.Mandated = booltoshort(input.Mandated);
-               
+                old.Inputtype = (short)input.inputtype;
+                old.Seconditem = second;
+                old.Unitdisplay = JsonConvert.SerializeObject(input.units);
+                //    units = JsonConvert.DeserializeObject<List<unittype>>(di.Unitdisplay),
+                old.Comment = input.Comment;
+                old.Mandated = booltoshort(input.Mandated);
+
                 _db1.SaveChanges();
                 return global.commonreturn(responseStatus.ok);
             }
@@ -158,4 +230,6 @@ namespace trafficpolice.Controllers
             }
         }
     }
+
+
 }
