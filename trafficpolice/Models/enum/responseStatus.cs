@@ -8,6 +8,6 @@
       , nouser, residencepictureerror, acceptingplaceerror, businesstypeerror, pictypeerror
       , vcodeerror, losttimeerror, forbidden, startdateerror, enddateerror
       , abroadorserviceerror, passerror,overdueerror,nounit,newpasserror
-            ,allreadysubmitted,dataitemallreadyexist,nodataitem,dateerror
+            ,allreadysubmitted,dataitemallreadyexist,nodataitem,dateerror,notemplate
     };
 }

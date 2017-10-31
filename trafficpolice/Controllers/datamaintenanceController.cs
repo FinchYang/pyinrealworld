@@ -37,11 +37,24 @@ namespace trafficpolice.Controllers
       
         [Route("uploadtemplate")]//enctype="multipart/form-data" 
         [HttpPost]
-        public Task<commonresponse> uploadtemplate([FromServices]IHostingEnvironment env,[FromServices] tpContext tp, uploadtemplate user)
+        public commonresponse uploadtemplate([FromServices]IHostingEnvironment env,[FromServices] tpContext tp, uploadtemplate user)
         {
+            var accinfo = global.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+
+            var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+            if (unit == null)
+            {
+                return global.commonreturn(responseStatus.nounit);
+            }
+            if (unit.Level == 1)
+            {
+                return global.commonreturn(responseStatus.forbidden);
+            }
+
             if (user == null || string.IsNullOrEmpty(user.name) || user.name.Length > 144)
             {
-                return Task.FromResult(global.commonreturn(responseStatus.requesterror));
+                return global.commonreturn(responseStatus.requesterror);
             }
             var now = DateTime.Now;
             var fpath = Path.Combine(env.ContentRootPath, "upload");
@@ -55,13 +68,6 @@ namespace trafficpolice.Controllers
                 user.templatefile.CopyTo(stream);
             }
 
-            //tp.Userlog.Add(new Userlog
-            //{
-            //    Content = "content",
-            //    Userid = "center",
-            //    Ip = "ip",
-            //    Time = DateTime.Now
-            //});
             try
             {
                 var mb = tp.Moban.FirstOrDefault(c => c.Name == user.name && c.Tabletype == (short)user.templatetype);
@@ -88,19 +94,11 @@ namespace trafficpolice.Controllers
             catch(Exception ex)
             {
                 _log.LogError(" uploadtemplate error:{0}", ex.Message);
-                return Task.FromResult(global.commonreturn(responseStatus.processerror));
+                return global.commonreturn(responseStatus.processerror);
             }
-            //tp.Template.Add(new Template
-            //{
-            //    Name = user.name,
-            //    Comment = user.comment,
-            //    Time = now,
-            //    File = fn,
-            //    Tabletype = (short)user.templatetype
-            //});
-            //tp.SaveChanges();
+           
 
-            return Task.FromResult(global.commonreturn(responseStatus.ok));
+            return global.commonreturn(responseStatus.ok);
         }
 
         [Route("addDataItem")]
