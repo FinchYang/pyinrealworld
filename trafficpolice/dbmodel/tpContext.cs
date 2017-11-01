@@ -7,6 +7,7 @@ namespace trafficpolice.dbmodel
     public partial class tpContext : DbContext
     {
         public virtual DbSet<Dataitem> Dataitem { get; set; }
+        public virtual DbSet<Items> Items { get; set; }
         public virtual DbSet<Moban> Moban { get; set; }
         public virtual DbSet<Reportlog> Reportlog { get; set; }
         public virtual DbSet<Summarized> Summarized { get; set; }
@@ -42,17 +43,12 @@ namespace trafficpolice.dbmodel
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
-                    .HasColumnType("int(11)")
+                    .HasMaxLength(50)
                     .ValueGeneratedNever();
-
-                entity.Property(e => e.Centerdisplay)
-                    .HasColumnName("centerdisplay")
-                    .HasColumnType("smallint(1)")
-                    .HasDefaultValueSql("'1'");
 
                 entity.Property(e => e.Comment)
                     .HasColumnName("comment")
-                    .HasMaxLength(146);
+                    .HasMaxLength(300);
 
                 entity.Property(e => e.Defaultvalue)
                     .HasColumnName("defaultvalue")
@@ -60,12 +56,12 @@ namespace trafficpolice.dbmodel
 
                 entity.Property(e => e.Deleted)
                     .HasColumnName("deleted")
-                    .HasColumnType("smallint(1)")
+                    .HasColumnType("smallint(2)")
                     .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.Hassecond)
                     .HasColumnName("hassecond")
-                    .HasColumnType("smallint(1)")
+                    .HasColumnType("smallint(2)")
                     .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.Inputtype)
@@ -75,13 +71,13 @@ namespace trafficpolice.dbmodel
 
                 entity.Property(e => e.Mandated)
                     .HasColumnName("mandated")
-                    .HasColumnType("smallint(1)")
+                    .HasColumnType("smallint(2)")
                     .HasDefaultValueSql("'1'");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
-                    .HasMaxLength(45);
+                    .HasMaxLength(150);
 
                 entity.Property(e => e.Seconditem)
                     .HasColumnName("seconditem")
@@ -101,11 +97,84 @@ namespace trafficpolice.dbmodel
                     .HasColumnName("time")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.Unitdisplay)
+                entity.Property(e => e.Units)
                     .IsRequired()
-                    .HasColumnName("unitdisplay")
-                    .HasMaxLength(300)
+                    .HasColumnName("units")
+                    .HasMaxLength(300);
+            });
+
+            modelBuilder.Entity<Items>(entity =>
+            {
+                entity.ToTable("items");
+
+                entity.HasIndex(e => e.Id)
+                    .HasName("id_UNIQUE")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.Name)
+                    .HasName("name_UNIQUE")
+                    .IsUnique();
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("int(11)")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Comment)
+                    .HasColumnName("comment")
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.Defaultvalue)
+                    .HasColumnName("defaultvalue")
+                    .HasMaxLength(450);
+
+                entity.Property(e => e.Deleted)
+                    .HasColumnName("deleted")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.Hassecond)
+                    .HasColumnName("hassecond")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.Inputtype)
+                    .HasColumnName("inputtype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("'2'");
+
+                entity.Property(e => e.Mandated)
+                    .HasColumnName("mandated")
+                    .HasColumnType("smallint(2)")
                     .HasDefaultValueSql("'1'");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasMaxLength(150);
+
+                entity.Property(e => e.Seconditem)
+                    .HasColumnName("seconditem")
+                    .HasMaxLength(5000);
+
+                entity.Property(e => e.Statisticstype)
+                    .HasColumnName("statisticstype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.Tabletype)
+                    .HasColumnName("tabletype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.Time)
+                    .HasColumnName("time")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Units)
+                    .IsRequired()
+                    .HasColumnName("units")
+                    .HasMaxLength(300);
             });
 
             modelBuilder.Entity<Moban>(entity =>

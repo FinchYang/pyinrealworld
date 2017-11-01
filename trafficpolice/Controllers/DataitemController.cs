@@ -57,7 +57,7 @@ namespace trafficpolice.Controllers
                 );
                 foreach (var a in data)
                 {
-                    var units = JsonConvert.DeserializeObject<List<unittype>>(a.Unitdisplay);
+                    var units = JsonConvert.DeserializeObject<List<unittype>>(a.Units);
                     var ut = unittype.unknown;
                     if (!Enum.TryParse<unittype>(accinfo.unitid, true, out ut))
                         _log.LogError("unit enum tryparse errror:{0}", accinfo.unitid);
@@ -73,7 +73,7 @@ namespace trafficpolice.Controllers
                         id = a.Id,
                         Comment = a.Comment,
                         hasSecondItems = a.Hassecond == 1 ? true : false,
-                        units = JsonConvert.DeserializeObject<List<unittype>>(a.Unitdisplay),
+                        units = JsonConvert.DeserializeObject<List<unittype>>(a.Units),
                         Mandated = a.Mandated > 0 ? true : false,
                         tabletype = (dataItemType)a.Tabletype,
                         inputtype = (secondItemType)a.Inputtype,
@@ -122,7 +122,7 @@ namespace trafficpolice.Controllers
                 );
                 foreach(var a in data)
                 {
-                    var units = JsonConvert.DeserializeObject<List<unittype>>(a.Unitdisplay);
+                    var units = JsonConvert.DeserializeObject<List<unittype>>(a.Units);
                     var ut = unittype.unknown;
                   if(!  Enum.TryParse<unittype>( accinfo.unitid,true, out ut))
                         _log.LogError("unit enum tryparse errror:{0}",accinfo.unitid);
@@ -139,7 +139,7 @@ namespace trafficpolice.Controllers
                         id=a.Id,
                         Comment=a.Comment,
                        hasSecondItems=a.Hassecond==1?true:false,
-                        units = JsonConvert.DeserializeObject<List<unittype>>(a.Unitdisplay),
+                        units = JsonConvert.DeserializeObject<List<unittype>>(a.Units),
                         Mandated =a.Mandated > 0 ? true : false,
                         tabletype =(dataItemType)a.Tabletype,
                         inputtype= (secondItemType)a.Inputtype,

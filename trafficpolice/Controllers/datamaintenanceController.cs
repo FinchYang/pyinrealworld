@@ -135,23 +135,41 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.dataitemallreadyexist);
                 }
-
+                _log.LogWarning("input={0}--", JsonConvert.SerializeObject(input));
                 var second = !input.hasSecondItems || input.secondlist == null || input.secondlist.Count == 0 ? string.Empty : JsonConvert.SerializeObject(input.secondlist);
                 var comment = string.IsNullOrEmpty(input.Comment) ? string.Empty : input.Comment;
+                _log.LogWarning("second={0}--", second);
+                _log.LogWarning("comment={0}--", comment);
+                var now = DateTime.Now;
+                _log.LogWarning("now={0}--", now);
+                _log.LogWarning("input.tabletype={0}--", input.tabletype);
+                var hassecond = booltoshort(input.hasSecondItems);
+                _log.LogWarning("input.hasSecondItems={0}--", hassecond);
+                _log.LogWarning("input.inputtype={0}--", input.inputtype);
+                _log.LogWarning("input.StatisticsType={0}--", input.StatisticsType);
+                _log.LogWarning("input.defaultValue={0}--", input.defaultValue);
+                var units = JsonConvert.SerializeObject(input.units);
+                _log.LogWarning("input.units={0}--", units);
+                var man = booltoshort(input.Mandated);
+                _log.LogWarning("man={0}--", man);
+
+                var rs = GetToken();
+                _log.LogWarning("Random={0}--", rs);
                 _db1.Dataitem.Add(new dbmodel.Dataitem
                 {
-                    Time = DateTime.Now,
+                    Id=rs,
+                    Time = now,
                     Tabletype = (short)input.tabletype,
                     Name = input.Name,
-                    Hassecond = (short)(input.hasSecondItems ? 1 : 0),
+                    Hassecond = hassecond,
                     Deleted = 0,
                     Inputtype = (short)input.inputtype,
                     Statisticstype = (short)input.StatisticsType,
                     Defaultvalue = input.defaultValue,
                     Seconditem = second,
-                    Unitdisplay = JsonConvert.SerializeObject(input.units),
-                    Comment = input.Comment,
-                    Mandated = booltoshort(input.Mandated),
+                    Units = JsonConvert.SerializeObject(input.units),
+                    Comment = comment,
+                    Mandated = man,
                 });
                 _db1.SaveChanges();
                 return global.commonreturn(responseStatus.ok);
@@ -162,7 +180,11 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
-
+        private string GetToken()
+        {
+            var seed = Guid.NewGuid().ToString("N");
+            return seed;
+        }
         private short booltoshort(bool mandated)
         {
             return (short)(mandated ? 1 : 0);
@@ -220,7 +242,7 @@ namespace trafficpolice.Controllers
                 old.Statisticstype = (short)input.StatisticsType;
                 old. Defaultvalue = input.defaultValue;
                 old.Seconditem = second;
-                old.Unitdisplay = JsonConvert.SerializeObject(input.units);
+                old.Units = JsonConvert.SerializeObject(input.units);
                 //    units = JsonConvert.DeserializeObject<List<unittype>>(di.Unitdisplay),
                 old.Comment = input.Comment;
                 old.Mandated = booltoshort(input.Mandated);

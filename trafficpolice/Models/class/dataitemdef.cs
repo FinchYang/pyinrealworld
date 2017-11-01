@@ -2,6 +2,6 @@
 {
     public class dataitemdef:FirstLevelDataItem
     {
-        public int id { set; get; }//唯一标识
+        public string id { set; get; }//唯一标识
     }
 }

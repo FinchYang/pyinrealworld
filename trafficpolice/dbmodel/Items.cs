@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace trafficpolice.dbmodel
 {
-    public partial class Dataitem
+    public partial class Items
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public short Mandated { get; set; }
         public string Comment { get; set; }
         public string Units { get; set; }

@@ -132,7 +132,7 @@ namespace trafficpolice.Controllers
                     {
                         secondlist = new List<seconditemdata>(),
                         Name = di.Name,
-                        units = JsonConvert.DeserializeObject<List<unittype>>( di.Unitdisplay),
+                        units = JsonConvert.DeserializeObject<List<unittype>>( di.Units),
                         Mandated = di.Mandated > 0 ? true : false,
                         Comment = di.Comment,
                         inputtype = (secondItemType)di.Inputtype,
@@ -257,7 +257,7 @@ namespace trafficpolice.Controllers
                     {
                         secondlist = new List<seconditemdata>(),
                         Name=di.Name,
-                        units = JsonConvert.DeserializeObject<List<unittype>>(di.Unitdisplay),
+                        units = JsonConvert.DeserializeObject<List<unittype>>(di.Units),
                         Mandated =di.Mandated > 0 ? true : false,
                         Comment =di.Comment,
                         inputtype=(secondItemType)di.Inputtype,
