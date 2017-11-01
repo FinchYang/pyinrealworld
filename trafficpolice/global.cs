@@ -27,6 +27,15 @@ namespace trafficpolice
         {
             return (short)(mandated ? 1 : 0);
         }
+        public static commonresponse checkdate(string date)
+        {
+            var dt = DateTime.Now;
+            if (!DateTime.TryParse(date, out dt))
+            {
+                return global.commonreturn(responseStatus.dateerror);
+            }
+            else return new commonresponse { status = responseStatus.ok, content = date };
+        }
         public static commonresponse commonreturn(responseStatus rs)
         {
             return new commonresponse { status = rs, content = rs.ToString() };

@@ -93,7 +93,11 @@ namespace trafficpolice.Controllers
             {
                 return global.commonreturn(responseStatus.forbidden);
             }
-
+            var cd = global.checkdate(date);
+            if (cd.status != responseStatus.ok)
+            {
+                return cd;
+            }
             var ret = new downloadres
             {
                 status = 0,
@@ -122,10 +126,85 @@ namespace trafficpolice.Controllers
             var tpath = Path.Combine(env.WebRootPath, "download");
             if (!Directory.Exists(tpath)) Directory.CreateDirectory(tpath);
             var tfile = Path.Combine(tpath, "320171031101311.doc");
-            Contact(tfile);
+            var data = new submitSumreq();
+            data.datalist = new List<Models.Dataitem>();
+            var sum = _db1.Summarized.FirstOrDefault(c => c.Date == date);
+            if (sum != null)
+            {
+                 data = JsonConvert.DeserializeObject<submitSumreq>(sum.Content);
+            }
+            
+            Contact(tfile,data);
             return @"download/320171031101311.doc";
         }
-        public string Contact(string tfile)
+       
+        [Route("centerDownloadWeek")]//中心每周交管动态选模板生成文件后下载
+        [HttpGet]
+        public commonresponse centerDownloadWeek([FromServices]IHostingEnvironment env, string start, string end, string template)
+        {
+            var accinfo = global.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+
+            var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+            if (unit == null)
+            {
+                return global.commonreturn(responseStatus.nounit);
+            }
+            if (unit.Level == 1)
+            {
+                return global.commonreturn(responseStatus.forbidden);
+            }
+            var cd = global.checkdate(start);
+            if (cd.status != responseStatus.ok)
+            {
+                return cd;
+            }
+            cd = global.checkdate(end);
+            if (cd.status != responseStatus.ok)
+            {
+                return cd;
+            }
+            var ret = new downloadres
+            {
+                status = 0,
+            };
+
+            try
+            {
+                var temp = _db1.Moban.FirstOrDefault(c => c.Name == template);
+                if (temp == null)
+                {
+                    return global.commonreturn(responseStatus.notemplate);
+                }
+                ret.fileResoure = createreport(temp.Filename, start,end, env);
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "centerDownloadWeek", ex.Message);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+            }
+        }
+
+        private string createreport(string filename, string start, string end, IHostingEnvironment env)
+        {
+            var spath = Path.Combine(env.ContentRootPath, "upload", filename);
+            var tpath = Path.Combine(env.WebRootPath, "download");
+            if (!Directory.Exists(tpath)) Directory.CreateDirectory(tpath);
+            var tfile = Path.Combine(tpath, "320171031101311.doc");
+            var data = new submitSumreq();
+            data.datalist = new List<Models.Dataitem>();
+            var sum = _db1.Weeksummarized.FirstOrDefault(c => c.Startdate == start&&c.Enddate==end);
+            if (sum != null)
+            {
+                data = JsonConvert.DeserializeObject<submitSumreq>(sum.Content);
+            }
+
+            Contact(tfile,data);
+            return @"download/320171031101311.doc";
+        }
+
+        private string Contact(string tfile, submitSumreq data)
         {
             try
             {
@@ -159,7 +238,6 @@ namespace trafficpolice.Controllers
                 return ex.Message;
             }
         }
-
     }
     public class downloadres:commonresponse
     {
