@@ -4,6 +4,8 @@ namespace trafficpolice.Models
 {
     public class onedata:submitreq
     {       
-        public String date { set; get; }
+        public string date { set; get; }
+        public DateTime submittime { set; get; }
+        public DateTime createtime { set; get; }
     }
 }

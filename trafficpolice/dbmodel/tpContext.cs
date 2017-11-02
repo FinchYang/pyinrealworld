@@ -238,6 +238,10 @@ namespace trafficpolice.dbmodel
                     .HasColumnType("smallint(2)")
                     .HasDefaultValueSql("'1'");
 
+                entity.Property(e => e.Submittime)
+                    .HasColumnName("submittime")
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.Time)
                     .HasColumnName("time")
                     .HasColumnType("datetime");
@@ -476,6 +480,10 @@ namespace trafficpolice.dbmodel
                     .HasColumnName("signtype")
                     .HasColumnType("smallint(2)")
                     .HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.Submittime)
+                    .HasColumnName("submittime")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.Time)
                     .HasColumnName("time")

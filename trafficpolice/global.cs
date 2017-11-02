@@ -30,7 +30,7 @@ namespace trafficpolice
         public static commonresponse checkdate(string date)
         {
             var dt = DateTime.Now;
-            if (!DateTime.TryParse(date, out dt))
+            if (string.IsNullOrEmpty(date)||!DateTime.TryParse(date, out dt))
             {
                 return global.commonreturn(responseStatus.dateerror);
             }

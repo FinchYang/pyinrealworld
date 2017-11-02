@@ -31,7 +31,7 @@ namespace trafficpolice.Controllers
         }
       
       
-        [Route("SubmitDataItems")]
+        [Route("SubmitDataItems")] //每日上报数据，包括草稿和提交，4点的
         [HttpPost]
         public commonresponse SubmitDataItems([FromBody] submitreq input )
         {           
@@ -43,11 +43,14 @@ namespace trafficpolice.Controllers
                 }
                 var accinfo = global.GetInfoByToken(Request.Headers);
                 if (accinfo.status != responseStatus.ok) return accinfo;
-                var today = DateTime.Now.ToString("yyyy-MM-dd");
-                //if(DateTime.Now.Hour>22)
-                //{
-                //    return global.commonreturn(responseStatus.overdueerror);
-                //}
+              
+                var cd = global.checkdate(input.date);
+                if (cd.status != responseStatus.ok)
+                {
+                    return cd;
+                }
+                var today = DateTime.Parse(input.date).ToString("yyyy-MM-dd");
+                var now = DateTime.Now;
                 var daylog = _db1.Reportlog.FirstOrDefault(c => c.Unitid == accinfo.unitid && c.Date == today);
                 if (daylog == null)
                 {
@@ -57,7 +60,8 @@ namespace trafficpolice.Controllers
                         Unitid=accinfo.unitid,
                         Content=JsonConvert.SerializeObject(input),
                         Draft=input.draft,
-                        Time=DateTime.Now,
+                        Time= now,
+                        Submittime= now
                     });
                 }
                 else
@@ -66,7 +70,12 @@ namespace trafficpolice.Controllers
                     {
                         daylog.Draft = input.draft;
                         daylog.Content = JsonConvert.SerializeObject(input);
-                        daylog. Time = DateTime.Now;
+                        if (input.draft == 1)
+                        {
+                            daylog.Time = now;
+                            daylog.Submittime = now;
+                        }
+                        else daylog.Submittime = now;
                     }
                     else
                     {
@@ -108,7 +117,7 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
-        [Route("SubmitDataItemsNine")]
+        [Route("SubmitDataItemsNine")]//视频点名前上报数据，包括草稿和提交，9点的
         [HttpPost]
         public commonresponse SubmitDataItemsNine([FromBody] submitreq input)
         {
@@ -120,7 +129,13 @@ namespace trafficpolice.Controllers
                 }
                 var accinfo = global.GetInfoByToken(Request.Headers);
                 if (accinfo.status != responseStatus.ok) return accinfo;
-                var today = DateTime.Now.ToString("yyyy-MM-dd");
+                var cd = global.checkdate(input.date);
+                if (cd.status != responseStatus.ok)
+                {
+                    return cd;
+                }
+                var today = DateTime.Parse(input.date).ToString("yyyy-MM-dd");
+                var now = DateTime.Now;
                 var daylog = _db1.Videoreport.FirstOrDefault(c => c.Unitid == accinfo.unitid && c.Date == today);
                 if (daylog == null)
                 {
@@ -131,6 +146,7 @@ namespace trafficpolice.Controllers
                         Content = JsonConvert.SerializeObject(input),
                         Draft = input.draft,
                         Time = DateTime.Now,
+                        Submittime = now
                     });
                 }
                 else
@@ -139,7 +155,12 @@ namespace trafficpolice.Controllers
                     {
                         daylog.Draft = input.draft;
                         daylog.Content = JsonConvert.SerializeObject(input);
-                        daylog.Time = DateTime.Now;
+                        if (input.draft == 1)
+                        {
+                            daylog.Time = now;
+                            daylog.Submittime = now;
+                        }
+                        else daylog.Submittime = now;
                     }
                     else
                     {

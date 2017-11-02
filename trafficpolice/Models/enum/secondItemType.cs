@@ -10,7 +10,9 @@ namespace trafficpolice.Models
         unknown,
         number,//
         text,
+        multilinetext,
         date,
         radio//单选框
+          
     }
 }

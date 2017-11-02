@@ -11,6 +11,7 @@ namespace trafficpolice.dbmodel
         public short Draft { get; set; }
         public DateTime Time { get; set; }
         public string Declinereason { get; set; }
+        public DateTime? Submittime { get; set; }
 
         public Unit Unit { get; set; }
     }

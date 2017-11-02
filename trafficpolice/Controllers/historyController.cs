@@ -115,8 +115,10 @@ namespace trafficpolice.Controllers
             foreach (var d in data)
             {
                 var one = new onedata();
-                one = (onedata)JsonConvert.DeserializeObject<submitreq>(d.Content);
+                one = JsonConvert.DeserializeObject<onedata>(d.Content);
                 one.date = d.Date;
+                one.submittime = d.Submittime.GetValueOrDefault();
+                one.createtime = d.Time;
                 ret.Add(one);
             }
             return ret;
@@ -132,8 +134,10 @@ namespace trafficpolice.Controllers
             foreach (var d in data)
             {
                 var one = new onedata();
-                one = (onedata)JsonConvert.DeserializeObject<submitreq>(d.Content);
+                one = JsonConvert.DeserializeObject<onedata>(d.Content);
                 one.date = d.Date;
+                one.submittime = d.Submittime.GetValueOrDefault();
+                one.createtime = d.Time;
                 ret.Add(one);
             }
             return ret;
