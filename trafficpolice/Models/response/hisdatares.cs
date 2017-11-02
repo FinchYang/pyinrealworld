@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace trafficpolice.Models
 {
@@ -13,6 +14,7 @@ namespace trafficpolice.Models
         public List<Dataitem> data { set; get; }
         public List<Dataitem> yearoveryear { set; get; }
         public List<Dataitem> linkrelative { set; get; }
+        public DateTime createtime { set; get; }
         public string date { set; get; }
 
     }

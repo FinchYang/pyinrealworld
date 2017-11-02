@@ -29,9 +29,9 @@ namespace trafficpolice.Controllers
         {
             _log = log;
         }
-        [Route("centerGetHistoryData")]
+        [Route("centerGetHistoryData")]//指挥中心查询交管动态历史数据接口
         [HttpGet]
-        public commonresponse centerGetHistoryData(string  startdate,string enddate,string unitid="")
+        public commonresponse centerGetHistoryData(string  startdate,string enddate, unittype ut = unittype.unknown)
         {
             var start = DateTime.Now; 
             var end = start;
@@ -57,11 +57,13 @@ namespace trafficpolice.Controllers
                 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
                // && c.Unitid == accinfo.unitid
                );
-                if (unitid != "") data = data.Where(c => c.Unitid == unitid);
-               foreach(var d in data)
+                if (ut != unittype.unknown&&ut!=unittype.all) data = data.Where(c => c.Unitid == ut.ToString());
+                foreach (var d in data)
                 {
                     var one = new centerdata();
                     one =(centerdata) JsonConvert.DeserializeObject<submitreq>(d.Content);
+                    one.createtime = d.Time;
+                    one.submittime = d.Submittime.GetValueOrDefault();
                     one.date = d.Date;
                     one.unitid = d.Unitid;
                     ret.hisdata.Add(one);
@@ -74,7 +76,7 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
-        [Route("centerVideoSignQuery")]
+        [Route("centerVideoSignQuery")]//指挥中心视频签到情况查询
         [HttpGet]
         public commonresponse centerVideoSignQuery(string startdate, string enddate,
             unittype ut=unittype.unknown,signtype st=signtype.unknown)
@@ -103,11 +105,13 @@ namespace trafficpolice.Controllers
                 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
                );
                 if (st != signtype.unknown) data = data.Where(c => c.Signtype == (short)st);
-                if (ut != unittype.unknown) data = data.Where(c => c.Unitid == ut.ToString());
+                if (ut != unittype.unknown && ut != unittype.all) data = data.Where(c => c.Unitid == ut.ToString());
                 foreach (var d in data)
                 {
                    // var one = new centerdata();
                   var  one = JsonConvert.DeserializeObject<videosigndata>(d.Content);
+                    one.createtime = d.Time;
+                    one.submittime = d.Submittime.GetValueOrDefault();
                     one.date = d.Date;
                     one.unitid = d.Unitid;
                     ret.videodata.Add(one);

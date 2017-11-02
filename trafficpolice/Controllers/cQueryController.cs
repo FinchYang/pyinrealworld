@@ -89,9 +89,32 @@ namespace trafficpolice.Controllers
                 yearoveryear = new List<Models.Dataitem>(),
                 linkrelative = new List<Models.Dataitem>()
             };
-            ret.data = gethisdata(d);
+            var ct = DateTime.Now;
+            ret.data = gethisdata(d,out ct);
+            ret.createtime = ct;
             ret.yearoveryear = gethisdata(d.AddYears(-1));
             ret.linkrelative = gethisdata(d.AddDays(-7));
+            return ret;
+        }
+        private List<Models.Dataitem> gethisdata(DateTime day,out DateTime ct)
+        {
+            var ret = new List<Models.Dataitem>();
+            var dis = _db1.Dataitem.Where(c => (c.Tabletype == (short)dataItemType.all || c.Tabletype == (short)dataItemType.four)
+             && c.Deleted == 0);
+            ret = GetBasicItems(dis);
+
+            var sday = day.ToString("yyyy-MM-dd");
+            var eday = day.AddDays(6).ToString("yyyy-MM-dd");
+            var data = _db1.Weeksummarized.FirstOrDefault(c => c.Startdate == sday && c.Enddate == eday && c.Draft == 3);
+            ct = DateTime.Now;
+            if (data == null) return ret;
+            ct = data.Time;
+            var one = JsonConvert.DeserializeObject<submitreq>(data.Content);
+            foreach (var b in one.datalist)
+            {
+                SumData(ret, b);
+            }
+
             return ret;
         }
         private List<Models.Dataitem> gethisdata(DateTime day)
@@ -103,17 +126,15 @@ namespace trafficpolice.Controllers
 
             var sday=day.ToString("yyyy-MM-dd");
             var eday= day.AddDays(6).ToString("yyyy-MM-dd");
-            var data = _db1.Reportlog.Where(c => c.Date.CompareTo(sday)>=0&&c.Date.CompareTo(eday)<=0
-    && c.Draft == 3);
-
-            foreach (var d in data)
-            {
-                var one = JsonConvert.DeserializeObject<submitreq>(d.Content);
+            var data = _db1.Weeksummarized.FirstOrDefault(c => c.Startdate==sday&&c.Enddate==eday    && c.Draft == 3);
+            if (data == null) return ret;
+          
+                var one = JsonConvert.DeserializeObject<submitreq>(data.Content);
                 foreach (var b in one.datalist)
                 {
                     SumData(ret, b);
                 }
-            }
+           
             return ret;
         }
         [Route("cGetFourData")]//指挥中心交管动态数据查询接口
@@ -168,34 +189,53 @@ namespace trafficpolice.Controllers
             var day=d.ToString("yyyy-MM-dd");
             var ret = new queryoneday
             {
-                date = day,
+                date = day,createtime=DateTime.Now,
                 data = new List<Models.Dataitem>(),
                 yearoveryear = new List<Models.Dataitem>(),
                 linkrelative=new List<Models.Dataitem>()
             };
-            ret.data = gethisdata(day);
+            var ct = DateTime.Now;
+            ret.data = gethisdata(day,out ct);
+            ret.createtime = ct;
             ret.yearoveryear = gethisdata(d.AddYears(-1).ToString("yyyy-MM-dd"));
             ret.linkrelative = gethisdata(d.AddDays(-1).ToString("yyyy-MM-dd"));
             return ret;
         }
-
+        private List<Models.Dataitem> gethisdata(string day,out DateTime ct)
+        {
+            var ret = new List<Models.Dataitem>();
+            var dis = _db1.Dataitem.Where(c => (c.Tabletype == (short)dataItemType.all || c.Tabletype == (short)dataItemType.four)
+             && c.Deleted == 0);
+            ret = GetBasicItems(dis);
+            var data = _db1.Summarized.FirstOrDefault(c => c.Date == day
+    && c.Draft == 3);
+            ct = DateTime.Now;
+            if (data == null) return ret;
+            
+                var one = JsonConvert.DeserializeObject<submitreq>(data.Content);
+                foreach (var b in one.datalist)
+                {
+                    SumData(ret, b);
+                }
+                ct = data.Time;
+            return ret;
+        }
         private List<Models.Dataitem> gethisdata(string day)
         {
             var ret = new List<Models.Dataitem>();
             var dis = _db1.Dataitem.Where(c => (c.Tabletype == (short)dataItemType.all || c.Tabletype == (short)dataItemType.four)
              && c.Deleted == 0);
             ret= GetBasicItems(dis);
-            var data = _db1.Reportlog.Where(c => c.Date==day
+            var data = _db1.Summarized.FirstOrDefault(c => c.Date==day
     && c.Draft == 3);
 
-            foreach (var d in data)
-            {
-                var one = JsonConvert.DeserializeObject<submitreq>(d.Content);
+            if (data == null) return ret;
+            var one = JsonConvert.DeserializeObject<submitreq>(data.Content);
                 foreach (var b in one.datalist)
                 {
                     SumData(ret, b);
                 }
-            }
+            
             return ret;
         }
 

@@ -31,7 +31,7 @@ namespace trafficpolice.Controllers
         }
         [Route("GetHistoryDataNine")]//获取历史每日点名数据查询接口
         [HttpGet]//9点数据
-        public commonresponse GetHistoryDataNine(string startdate, string enddate)
+        public commonresponse GetHistoryDataNine(string startdate, string enddate,signtype st=signtype.unknown)
         {
             var start = DateTime.Now;
             var end = start;
@@ -54,10 +54,10 @@ namespace trafficpolice.Controllers
             };
             try
             {
-                ret.hisdata = gethisdatanine(start, end, accinfo.unitid);
-                ret.yearOverYeardata = gethisdatanine(start.AddYears(-1), end.AddYears(-1), accinfo.unitid);
+                ret.hisdata = gethisdatanine(start, end, accinfo.unitid,st);
+                ret.yearOverYeardata = gethisdatanine(start.AddYears(-1), end.AddYears(-1), accinfo.unitid, st);
                 var days = end.Subtract(start).Days;
-                ret.linkRelativedata = gethisdatanine(start.AddDays(-1).AddDays(-days), start.AddDays(-1), accinfo.unitid);
+                ret.linkRelativedata = gethisdatanine(start.AddDays(-1).AddDays(-days), start.AddDays(-1), accinfo.unitid, st);
                 return ret;
             }
             catch (Exception ex)
@@ -123,7 +123,7 @@ namespace trafficpolice.Controllers
             }
             return ret;
         }
-        private List<onedata> gethisdatanine(DateTime sd, DateTime ed, string unitid)
+        private List<onedata> gethisdatanine(DateTime sd, DateTime ed, string unitid, signtype st)
         {
             var start = sd.ToString("yyyy-MM-dd");
             var end = ed.ToString("yyyy-MM-dd");
@@ -131,6 +131,7 @@ namespace trafficpolice.Controllers
             var data = _db1.Videoreport.Where(c => c.Date.CompareTo(start) >= 0
          && c.Date.CompareTo(end) <= 0
          && c.Unitid == unitid);
+            if (st != signtype.unknown) data.Where(c => c.Signtype ==(short) st);
             foreach (var d in data)
             {
                 var one = new onedata();
