@@ -38,7 +38,7 @@ namespace trafficpolice.Controllers
         }
         [Route("centerGetTemplates")]//中心交管动态模板查询
         [HttpGet]
-        public commonresponse centerGetTemplates(TableType tableType)
+        public commonresponse centerGetTemplates(string tableType)
         {
             var accinfo = global.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
@@ -60,8 +60,8 @@ namespace trafficpolice.Controllers
 
             try
             {
-                var tl = _db1.Moban.Where(c => c.Tabletype == (short)tableType);
-                foreach(var t in tl)
+                var tl = _db1.Moban.Where(c => c.Tabletype == tableType);
+                foreach (var t in tl)
                 {
                     ret.tlist.Add(new onetemplate
                     {
@@ -110,7 +110,7 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.notemplate);
                 }
-               ret.fileResoure= createreport(temp.Filename,date,env);
+                ret.fileResoure = createreport(temp.Filename, date, env);
                 return ret;
             }
             catch (Exception ex)
@@ -176,7 +176,7 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.notemplate);
                 }
-                ret.fileResoure = createreport(temp.Filename, start,end, env);
+                ret.fileResoure = createreport(temp.Filename, start, end, env);
                 return ret;
             }
             catch (Exception ex)

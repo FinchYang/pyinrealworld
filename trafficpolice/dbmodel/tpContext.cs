@@ -10,8 +10,9 @@ namespace trafficpolice.dbmodel
         public virtual DbSet<Items> Items { get; set; }
         public virtual DbSet<Moban> Moban { get; set; }
         public virtual DbSet<Reportlog> Reportlog { get; set; }
+        public virtual DbSet<Reports> Reports { get; set; }
+        public virtual DbSet<Reportsdata> Reportsdata { get; set; }
         public virtual DbSet<Summarized> Summarized { get; set; }
-        public virtual DbSet<Template> Template { get; set; }
         public virtual DbSet<Unit> Unit { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<Userlog> Userlog { get; set; }
@@ -89,9 +90,9 @@ namespace trafficpolice.dbmodel
                     .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.Tabletype)
+                    .IsRequired()
                     .HasColumnName("tabletype")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("'0'");
+                    .HasMaxLength(300);
 
                 entity.Property(e => e.Time)
                     .HasColumnName("time")
@@ -189,21 +190,23 @@ namespace trafficpolice.dbmodel
 
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
-                    .HasMaxLength(300)
+                    .HasMaxLength(150)
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.Comment)
+                    .IsRequired()
                     .HasColumnName("comment")
-                    .HasMaxLength(600);
+                    .HasMaxLength(450);
 
                 entity.Property(e => e.Filename)
                     .IsRequired()
                     .HasColumnName("filename")
-                    .HasMaxLength(600);
+                    .HasMaxLength(450);
 
                 entity.Property(e => e.Tabletype)
+                    .IsRequired()
                     .HasColumnName("tabletype")
-                    .HasColumnType("smallint(2)")
+                    .HasMaxLength(600)
                     .HasDefaultValueSql("'0'");
             });
 
@@ -253,6 +256,101 @@ namespace trafficpolice.dbmodel
                     .HasConstraintName("reportlogunitid");
             });
 
+            modelBuilder.Entity<Reports>(entity =>
+            {
+                entity.HasKey(e => e.Name);
+
+                entity.ToTable("reports");
+
+                entity.HasIndex(e => e.Name)
+                    .HasName("name_UNIQUE")
+                    .IsUnique();
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .HasMaxLength(300)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Comment)
+                    .HasColumnName("comment")
+                    .HasMaxLength(600);
+
+                entity.Property(e => e.Type)
+                    .IsRequired()
+                    .HasColumnName("type")
+                    .HasMaxLength(600);
+
+                entity.Property(e => e.Units)
+                    .IsRequired()
+                    .HasColumnName("units")
+                    .HasMaxLength(600);
+            });
+
+            modelBuilder.Entity<Reportsdata>(entity =>
+            {
+                entity.HasKey(e => new { e.Date, e.Unitid });
+
+                entity.ToTable("reportsdata");
+
+                entity.HasIndex(e => e.Date)
+                    .HasName("date_UNIQUE")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.Unitid)
+                    .HasName("reportsdataunitid_idx");
+
+                entity.Property(e => e.Date)
+                    .HasColumnName("date")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.Unitid)
+                    .HasColumnName("unitid")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Comment)
+                    .HasColumnName("comment")
+                    .HasMaxLength(450);
+
+                entity.Property(e => e.Content)
+                    .IsRequired()
+                    .HasColumnName("content")
+                    .HasMaxLength(4500);
+
+                entity.Property(e => e.Declinereason)
+                    .HasColumnName("declinereason")
+                    .HasMaxLength(450);
+
+                entity.Property(e => e.Draft)
+                    .HasColumnName("draft")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("'1'");
+
+                entity.Property(e => e.Rname)
+                    .IsRequired()
+                    .HasColumnName("rname")
+                    .HasMaxLength(600)
+                    .HasDefaultValueSql("'-'");
+
+                entity.Property(e => e.Signtype)
+                    .HasColumnName("signtype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.Submittime)
+                    .HasColumnName("submittime")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Time)
+                    .HasColumnName("time")
+                    .HasColumnType("datetime");
+
+                entity.HasOne(d => d.Unit)
+                    .WithMany(p => p.Reportsdata)
+                    .HasForeignKey(d => d.Unitid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("reportsdataunitid");
+            });
+
             modelBuilder.Entity<Summarized>(entity =>
             {
                 entity.HasKey(e => e.Date);
@@ -281,44 +379,6 @@ namespace trafficpolice.dbmodel
                     .HasColumnName("draft")
                     .HasColumnType("smallint(2)")
                     .HasDefaultValueSql("'1'");
-
-                entity.Property(e => e.Time)
-                    .HasColumnName("time")
-                    .HasColumnType("datetime");
-            });
-
-            modelBuilder.Entity<Template>(entity =>
-            {
-                entity.ToTable("template");
-
-                entity.HasIndex(e => e.Id)
-                    .HasName("id_UNIQUE")
-                    .IsUnique();
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.Comment)
-                    .IsRequired()
-                    .HasColumnName("comment")
-                    .HasMaxLength(450);
-
-                entity.Property(e => e.File)
-                    .IsRequired()
-                    .HasColumnName("file")
-                    .HasMaxLength(450);
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasColumnName("name")
-                    .HasMaxLength(150);
-
-                entity.Property(e => e.Tabletype)
-                    .HasColumnName("tabletype")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.Time)
                     .HasColumnName("time")

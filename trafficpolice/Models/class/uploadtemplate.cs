@@ -5,7 +5,7 @@ namespace trafficpolice.Models
 {
     public class uploadtemplate
     {
-        public TableType templatetype { set; get; }
+        public string templatetype { set; get; }
         [Required]
         [MaxLength(100)]
         public string name { set; get; }

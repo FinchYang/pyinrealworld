@@ -12,7 +12,7 @@ namespace trafficpolice.dbmodel
         public string Seconditem { get; set; }
         public string Name { get; set; }
         public short Deleted { get; set; }
-        public short Tabletype { get; set; }
+        public string Tabletype { get; set; }
         public DateTime Time { get; set; }
         public short Inputtype { get; set; }
         public short Hassecond { get; set; }

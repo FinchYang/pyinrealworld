@@ -88,7 +88,7 @@ namespace trafficpolice.Controllers
         }
         [Route("centerGetTimeSpanSumData")]//中心获取 某个时间段的生成汇总 数据
         [HttpGet]
-        public commonresponse centerGetTimeSpanSumData(string startdate,string enddate)
+        public commonresponse centerGetTimeSpanSumData(string startdate,string enddate, string rname="four")
         {
             var accinfo = global.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
@@ -124,7 +124,7 @@ namespace trafficpolice.Controllers
                 }
                 ret.sumdata.datalist = new List<Models.Dataitem>();
 
-                var dis = _db1.Dataitem.Where(c => (c.Tabletype == (short)dataItemType.all || c.Tabletype == (short)dataItemType.four)
+                var dis = _db1.Dataitem.Where(c => (c.Tabletype ==rname)
                   && c.Deleted == 0);
                 foreach (var di in dis)
                 {
@@ -222,7 +222,7 @@ namespace trafficpolice.Controllers
         }
         [Route("centerGetSumData")]//中心获取 生成汇总 数据
         [HttpGet]
-        public commonresponse centerGetSumData(string seldate)
+        public commonresponse centerGetSumData(string seldate,string rname="four")
         {           
             var accinfo = global.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
@@ -249,7 +249,7 @@ namespace trafficpolice.Controllers
                 }
                 ret.sumdata.datalist = new List<Models.Dataitem>();
 
-                var dis = _db1.Dataitem.Where(c => (c.Tabletype == (short)dataItemType.all || c.Tabletype == (short)dataItemType.four)
+                var dis = _db1.Dataitem.Where(c => (c.Tabletype == rname)
                   && c.Deleted == 0);
                 foreach(var di in dis)
                 {

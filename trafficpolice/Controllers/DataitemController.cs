@@ -32,7 +32,7 @@ namespace trafficpolice.Controllers
       
         [Route("GetDataItemsNine")]
         [HttpGet]
-        public commonresponse GetDataItemsNine()
+        public commonresponse GetDataItemsNine(string  rname="nine")
         {
             var ret = new getdatadefreq
             {
@@ -53,7 +53,7 @@ namespace trafficpolice.Controllers
                 var data = _db1.Dataitem.Where(c =>
              //   c.Unitdisplay==1                && 
                 c.Deleted == 0
-                && (c.Tabletype == (short)dataItemType.all || c.Tabletype == (short)dataItemType.nine)
+                && (c.Tabletype == rname)
                 );
                 foreach (var a in data)
                 {
@@ -75,7 +75,7 @@ namespace trafficpolice.Controllers
                         hasSecondItems = a.Hassecond == 1 ? true : false,
                         units = JsonConvert.DeserializeObject<List<unittype>>(a.Units),
                         Mandated = a.Mandated > 0 ? true : false,
-                        tabletype = (dataItemType)a.Tabletype,
+                        tabletype =a.Tabletype,
                         inputtype = (secondItemType)a.Inputtype,
                         StatisticsType = (StatisticsType)a.Statisticstype,
                         defaultValue = a.Defaultvalue
@@ -96,8 +96,12 @@ namespace trafficpolice.Controllers
         }
         [Route("GetDataItems")]
         [HttpGet]
-        public commonresponse GetDataItems()
+        public commonresponse GetDataItems(string reportname="four")
         {
+            if (string.IsNullOrEmpty(reportname))
+            {
+                return global.commonreturn(responseStatus.requesterror);
+            }
             var ret = new getdatadefreq
             {
                 status = 0,
@@ -118,7 +122,7 @@ namespace trafficpolice.Controllers
                 var data = _db1.Dataitem.Where(c =>
                 //c.Unitdisplay==1                && 
                 c.Deleted==0
-                &&( c.Tabletype==(short)dataItemType.all || c.Tabletype == (short)dataItemType.four)
+                &&( c.Tabletype== reportname)
                 );
                 foreach(var a in data)
                 {
@@ -141,7 +145,7 @@ namespace trafficpolice.Controllers
                        hasSecondItems=a.Hassecond==1?true:false,
                         units = JsonConvert.DeserializeObject<List<unittype>>(a.Units),
                         Mandated =a.Mandated > 0 ? true : false,
-                        tabletype =(dataItemType)a.Tabletype,
+                        tabletype =a.Tabletype,
                         inputtype= (secondItemType)a.Inputtype,
                         StatisticsType=(StatisticsType)a.Statisticstype,
                         defaultValue=a.Defaultvalue
