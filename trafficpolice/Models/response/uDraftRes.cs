@@ -4,6 +4,7 @@ namespace trafficpolice.Models
 {
     public class uDraftRes : commonresponse
     {
-        public List<onedata> Fourdata { set; get; }
+        public List<onedata> daydraft { set; get; }
+        public List<onedata> weekdraft { set; get; }
     }
 }

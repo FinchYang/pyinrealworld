@@ -38,7 +38,8 @@ namespace trafficpolice.Controllers
             var ret = new uDraftRes
             {
                 status = 0,
-                Fourdata = new List<onedata>()
+                daydraft = new List<onedata>(),
+                weekdraft = new List<onedata>()
             };
            
             try
@@ -51,7 +52,18 @@ namespace trafficpolice.Controllers
                     var one = new onedata();
                     one = (onedata)JsonConvert.DeserializeObject<submitreq>(d.Content);
                     one.date = d.Date;
-                    ret.Fourdata.Add(one);
+                    ret.daydraft.Add(one);
+                }
+
+                var weekdata = _db1.Weeksummarized.Where(c => c.Draft == 1
+             );
+
+                foreach (var d in data)
+                {
+                    var one = new onedata();
+                    one = (onedata)JsonConvert.DeserializeObject<submitreq>(d.Content);
+                    one.date = d.Date;
+                    ret.weekdraft.Add(one);
                 }
                 return ret;
             }

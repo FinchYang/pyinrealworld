@@ -1,8 +1,9 @@
-﻿namespace trafficpolice.Models
+﻿using System.Collections.Generic;
+
+namespace trafficpolice.Models
 {
     public class getrejectres : commonresponse
     {
-        public rejectdata todaydata { set; get; }
-     //   public rejectdata todayninedata { set; get; }
+        public List< rejectdata> todaydata { set; get; }
     }
 }

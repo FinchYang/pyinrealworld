@@ -29,7 +29,56 @@ namespace trafficpolice.Controllers
         {
             _log = log;
         }
-       
+        [Route("addReportType")]//新增表单类型
+        [HttpPost]
+        public commonresponse addReportType([FromBody] artReq input)
+        {
+            try
+            {
+                if (input == null)
+                {
+                    _log.LogInformation("login,{0}", responseStatus.requesterror);
+                    return global.commonreturn(responseStatus.requesterror);
+                }
+                var accinfo = global.GetInfoByToken(Request.Headers);
+                if (accinfo.status != responseStatus.ok) return accinfo;
+
+                var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+                if (unit == null)
+                {
+                    return global.commonreturn(responseStatus.nounit);
+                }
+                if (unit.Level == 1)
+                {
+                    return global.commonreturn(responseStatus.forbidden);
+                }
+
+                if (string.IsNullOrEmpty(input.Name))
+                {
+                    return global.commonreturn(responseStatus.requesterror);
+                }
+
+                var thevs = _db1.Reports.FirstOrDefault(c => c.Name == input.Name);
+                if (thevs != null)
+                {
+                    return global.commonreturn(responseStatus.reportType_allreadyexist);
+                }
+                _db1.Reports.Add(new Reports
+                {
+                    Name = input.Name,
+                    Comment = string.IsNullOrEmpty(input.comment) ? string.Empty : input.comment,
+                    Type = string.IsNullOrEmpty(input.comment) ? string.Empty : input.comment,
+                    Units = JsonConvert.SerializeObject(input.units),
+                });
+                _db1.SaveChanges();
+                return global.commonreturn(responseStatus.ok);
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "addReportType", ex.Message);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+            }
+        }
         [Route("GetReportList")]//获取报表列表接口
         [HttpGet]
         public commonresponse GetReportList()
@@ -67,7 +116,7 @@ namespace trafficpolice.Controllers
                 _log.LogError("{0}-{1}-{2}", DateTime.Now, "GetReportList", ex.Message);
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
-        }       
+        }  
       
     }
 }

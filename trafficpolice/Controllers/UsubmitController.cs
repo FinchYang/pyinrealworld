@@ -12,9 +12,9 @@ using trafficpolice.dbmodel;
 
 namespace trafficpolice.Controllers
 {
-    public class submitController : Controller
+    public class UsubmitController : Controller
     {
-        public readonly ILogger<submitController> _log;
+        public readonly ILogger<UsubmitController> _log;
         private readonly tpContext _db1 = new tpContext();
 
         protected override void Dispose(bool disposing)
@@ -25,15 +25,15 @@ namespace trafficpolice.Controllers
             }
             base.Dispose(disposing);
         }
-        public submitController(ILogger<submitController> log)
+        public UsubmitController(ILogger<UsubmitController> log)
         {
             _log = log;
         }
       
       
-        [Route("SubmitDataItems")] //每日上报数据，包括草稿和提交，4点的
+        [Route("unitSubmitDataItems")] //每日上报数据，包括草稿和提交
         [HttpPost]
-        public commonresponse SubmitDataItems([FromBody] submitreq input )
+        public commonresponse unitSubmitDataItems([FromBody] submitreq input )
         {           
             try
             {
@@ -114,7 +114,7 @@ namespace trafficpolice.Controllers
             //}
             catch (Exception ex)
             {
-                _log.LogError("{0}-{1}-{2},inner={3}", DateTime.Now, "SubmitDataItems", ex.Message, ex.InnerException.Message);
+                _log.LogError("{0}-{1}-{2},inner={3}", DateTime.Now, "unitSubmitDataItems", ex.Message, ex.InnerException.Message);
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }

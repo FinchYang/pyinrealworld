@@ -1,8 +1,9 @@
-﻿namespace trafficpolice.Models
+﻿using System.Collections.Generic;
+
+namespace trafficpolice.Models
 {
     public class todaydatares : commonresponse
     {
-        public submitreq todaydata { set; get; }
-        public submitreq todayninedata { set; get; }
+        public List< submitreq> todaydata { set; get; }
     }
 }

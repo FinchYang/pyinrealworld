@@ -32,7 +32,7 @@ namespace trafficpolice.Controllers
        
         [Route("GetRejectData")]//获取退回数据接口包含9点，4点
         [HttpGet]
-        public commonresponse GetRejectData(dataItemType dit = dataItemType.all,
+        public commonresponse GetRejectData(string reporttype = "all",
             string startdate = "1980-1-1", string enddate = "2222-2-2")
         {
             var start = DateTime.Now;
@@ -50,22 +50,25 @@ namespace trafficpolice.Controllers
             var ret = new getrejectres
             {
                 status = 0,
-                todaydata = new rejectdata(),
+                todaydata = new List<rejectdata>()
               //  todayninedata = new rejectdata(),
             };
            // var today = DateTime.Now.ToString("yyyy-MM-dd");
             try
             {
-                var data = _db1.Reportsdata.FirstOrDefault(c =>
+                var data = _db1.Reportsdata.Where(c =>
                c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0 && 
                 c.Unitid == accinfo.unitid
             //    && c.Rname==reportname
                 && c.Draft == 2);
-                if (data != null)
-                {
-                    ret.todaydata.data = JsonConvert.DeserializeObject<submitreq>(data.Content);
-                    ret.todaydata.reason = data.Declinereason;
-                    ret.todaydata.data.date = data.Date;
+                if (reporttype != "all"
+                   && reporttype != "所有")
+                    data.Where(c => c.Rname == reporttype);
+                foreach (var d in data)
+                { 
+                    var two= JsonConvert.DeserializeObject<rejectdata>(d.Content);
+                    two.reason = d.Declinereason;
+                    two.data.date = d.Date;
                 }
 
                // var datanine = _db1.Reportsdata.FirstOrDefault(c =>
@@ -89,7 +92,7 @@ namespace trafficpolice.Controllers
         }
         [Route("GetTodayData")]//获取当日4点以及9点的草稿数据接口
         [HttpGet]
-        public commonresponse GetTodayData(dataItemType dit=dataItemType.all,
+        public commonresponse GetTodayData(string reporttype="all",
             string startdate="1980-1-1", string enddate="2222-2-2")
         {
             var start = DateTime.Now;
@@ -108,31 +111,36 @@ namespace trafficpolice.Controllers
             var ret = new todaydatares
             {
                 status = 0,
-                todaydata = new submitreq(),
-                todayninedata = new submitreq(),
+                todaydata = new List<submitreq>()
+             //   todayninedata = new submitreq(),
             };
            // var today = DateTime.Now.ToString("yyyy-MM-dd");
             try
             {
-                var data = _db1.Reportsdata.FirstOrDefault(c =>
+                var data = _db1.Reportsdata.Where(c =>
                 c.Date.CompareTo(start.ToString("yyyy-MM-dd"))>=0 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
                && c.Unitid == accinfo.unitid
                 &&c.Draft==1);
-                if (data != null)
+                if (reporttype != "all"
+                    && reporttype != "所有")
+                    data.Where(c => c.Rname == reporttype);
+               foreach(var d in data)
                 {
-                    ret.todaydata = JsonConvert.DeserializeObject<submitreq>(data.Content);
-                    ret.todaydata.date = data.Date;
+                    var one = JsonConvert.DeserializeObject<submitreq>(d.Content);
+                    one.date = d.Date;
+                    ret.todaydata.Add(one);
                 }
-
-                var datanine = _db1.Reportsdata.FirstOrDefault(c =>
-                c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0 &&
-                c.Unitid == accinfo.unitid
-               && c.Draft == 1);
-                if (datanine != null)
-                {
-                    ret.todayninedata = JsonConvert.DeserializeObject<submitreq>(datanine.Content);
-                    ret.todayninedata.date = datanine.Date;
-                }
+                 
+                
+               // var datanine = _db1.Reportsdata.FirstOrDefault(c =>
+               // c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0 &&
+               // c.Unitid == accinfo.unitid
+               //&& c.Draft == 1);
+               // if (datanine != null)
+               // {
+               //     ret.todayninedata = JsonConvert.DeserializeObject<submitreq>(datanine.Content);
+               //     ret.todayninedata.date = datanine.Date;
+               // }
                 return ret;
             }
             catch (Exception ex)
