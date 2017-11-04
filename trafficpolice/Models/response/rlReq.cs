@@ -11,5 +11,6 @@ namespace trafficpolice.Models
         public string name { set; get; }
         public string comment { set; get; }
         public string reporttype { set; get; }
+        public List<unittype> units { set; get; }
     }
 }

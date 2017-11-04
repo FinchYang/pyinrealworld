@@ -91,21 +91,33 @@ namespace trafficpolice.Controllers
             };
             try
             {
-                var ut = unittype.unknown;
-                if(!Enum.TryParse<unittype>(accinfo.unitid,out ut))
+                var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+                if (unit == null)
                 {
                     return global.commonreturn(responseStatus.nounit);
                 }
+                var ut = unittype.unknown;
+                if (unit.Level == 1)
+                {                  
+                    if (!Enum.TryParse<unittype>(accinfo.unitid, out ut))
+                    {
+                        _log.LogWarning("unitid={0}", accinfo.unitid);
+                        return global.commonreturn(responseStatus.nounit);
+                    }
+                }
+              
                 var rl = _db1.Reports.Where(c => c.Units.Length > 0);
                 foreach(var r in rl)
                 {
                     var units = JsonConvert.DeserializeObject<List<unittype>>(r.Units);
 
-                    if (units.Contains(unittype.all) || units.Contains(ut))
+                    if(unit.Level!=1||
+                   (units.Contains(unittype.all) || units.Contains(ut)))
                     {
                         ret.reports.Add(new onereport
                         {
                             name=r.Name,comment=r.Comment,reporttype=r.Type,
+                            units =JsonConvert.DeserializeObject<List<unittype>>(r.Units)
                         });
                     }
                 }
