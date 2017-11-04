@@ -147,6 +147,7 @@ namespace trafficpolice.Controllers
                         tabletype =a.Tabletype,
                         inputtype= (secondItemType)a.Inputtype,
                         StatisticsType=(StatisticsType)a.Statisticstype,
+                        index=a.Index,
                         defaultValue=a.Defaultvalue
                     };
                     if (!string.IsNullOrEmpty( a.Seconditem))

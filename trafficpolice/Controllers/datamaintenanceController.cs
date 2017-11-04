@@ -169,6 +169,7 @@ namespace trafficpolice.Controllers
                     Seconditem = second,
                     Units = JsonConvert.SerializeObject(input.units),
                     Comment = comment,
+                    Index=input.index,
                     Mandated = man,
                 });
                 _db1.SaveChanges();
@@ -243,7 +244,7 @@ namespace trafficpolice.Controllers
                 old. Defaultvalue = input.defaultValue;
                 old.Seconditem = second;
                 old.Units = JsonConvert.SerializeObject(input.units);
-                //    units = JsonConvert.DeserializeObject<List<unittype>>(di.Unitdisplay),
+                old.Index = input.index;
                 old.Comment = input.Comment;
                 old.Mandated = booltoshort(input.Mandated);
 

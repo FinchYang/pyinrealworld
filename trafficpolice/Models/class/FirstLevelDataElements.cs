@@ -15,5 +15,6 @@ namespace trafficpolice.Models
         public StatisticsType StatisticsType { get; set; }//统计方式
         public string defaultValue { get; set; }//默认值
         public string tabletype { set; get; } //数据项类别，哪个表格适用
+        public int index { set; get; }//字段顺序
     }
 }

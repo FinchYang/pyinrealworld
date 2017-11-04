@@ -65,6 +65,11 @@ namespace trafficpolice.dbmodel
                     .HasColumnType("smallint(2)")
                     .HasDefaultValueSql("'0'");
 
+                entity.Property(e => e.Index)
+                    .HasColumnName("index")
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("'0'");
+
                 entity.Property(e => e.Inputtype)
                     .HasColumnName("inputtype")
                     .HasColumnType("smallint(2)")

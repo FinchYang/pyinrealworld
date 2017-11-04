@@ -18,5 +18,6 @@ namespace trafficpolice.dbmodel
         public short Hassecond { get; set; }
         public short Statisticstype { get; set; }
         public string Defaultvalue { get; set; }
+        public int Index { get; set; }
     }
 }

@@ -10,5 +10,6 @@ namespace trafficpolice.Models
         public List<unittype> units { get; set; }//大队显示列表
         public bool Mandated { set; get; } //必输项
         public string defaultValue { get; set; }//默认值
+        public int index { set; get; }//字段顺序
     }
 }
