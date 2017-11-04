@@ -4,6 +4,6 @@ CREATE TABLE `summarized` (
   `draft` smallint(2) NOT NULL DEFAULT '1' COMMENT '1-草稿，0-提交，2-拒绝，3-同意',
   `time` datetime NOT NULL,
   `comment` varchar(450) DEFAULT NULL,
-  PRIMARY KEY (`date`),
-  UNIQUE KEY `date_UNIQUE` (`date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `reportname` varchar(600) NOT NULL DEFAULT '-' COMMENT '报表种类',
+  PRIMARY KEY (`date`,`reportname`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='//日汇总数据';

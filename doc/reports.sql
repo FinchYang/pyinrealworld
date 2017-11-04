@@ -5,4 +5,4 @@ CREATE TABLE `reports` (
   `units` varchar(600) NOT NULL,
   PRIMARY KEY (`name`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='//报表种类存贮';

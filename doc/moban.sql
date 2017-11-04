@@ -5,4 +5,4 @@ CREATE TABLE `moban` (
   `tabletype` varchar(600) NOT NULL DEFAULT '0',
   PRIMARY KEY (`name`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='//word模板存贮';

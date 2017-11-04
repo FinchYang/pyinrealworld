@@ -1,16 +1,18 @@
 CREATE TABLE `dataitem` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `mandated` tinyint(1) NOT NULL DEFAULT '1',
-  `comment` varchar(146) DEFAULT NULL,
-  `unitdisplay` tinyint(1) NOT NULL DEFAULT '1',
-  `centerdisplay` tinyint(1) NOT NULL DEFAULT '1',
-  `seconditem` varchar(500) DEFAULT NULL,
-  `name` varchar(45) NOT NULL,
-  `deleted` tinyint(1) NOT NULL DEFAULT '0',
-  `datatype` smallint(2) NOT NULL DEFAULT '0' COMMENT '//\n  public enum dataItemType\n    {\n        unknown,\n        all=1,//所有表格适用\n        nine=9,//9点点名\n        four=4,//4点汇报\n    }',
+  `id` varchar(50) NOT NULL,
+  `mandated` smallint(2) NOT NULL DEFAULT '1',
+  `comment` varchar(300) DEFAULT NULL,
+  `units` varchar(300) NOT NULL,
+  `seconditem` varchar(5000) DEFAULT NULL,
+  `name` varchar(150) NOT NULL,
+  `deleted` smallint(2) NOT NULL DEFAULT '0',
+  `tabletype` varchar(300) NOT NULL COMMENT '对应 reports表name字段',
   `time` datetime NOT NULL,
   `inputtype` smallint(2) NOT NULL DEFAULT '2' COMMENT ' public enum secondItemType\n    {\n        unknown,\n        number,//\n        text,\n        date,\n        radio//单选框\n    }',
+  `hassecond` smallint(2) NOT NULL DEFAULT '0',
+  `statisticstype` smallint(2) NOT NULL DEFAULT '0' COMMENT '  public enum StatisticsType\n    {\n        unknown,//未知\n        sum,//求和\n        average,//平均\n        collect,//汇总\n        yearoveryear,//同比\n        linkrelative,//环比\n    }',
+  `defaultvalue` varchar(450) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='//数据项存贮';

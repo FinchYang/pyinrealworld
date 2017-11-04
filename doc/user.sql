@@ -8,4 +8,4 @@ CREATE TABLE `user` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `unitid_idx` (`unitid`),
   CONSTRAINT `unitid` FOREIGN KEY (`unitid`) REFERENCES `unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
