@@ -30,12 +30,14 @@ namespace trafficpolice.Models
         public unitdata linkrelative { set; get; }//环比数据
     }
     public class submitSumreq:submitreq
-    {       
-        public string date { set; get; }//yyyy-MM-dd
+    {     
+      
+        public datastatus datastatus { set; get; }
     }
     public class submitTimeSpanSumreq : submitreq
     {
         public string startdate { set; get; }//yyyy-MM-dd
         public string enddate { set; get; }//yyyy-MM-dd
+        public datastatus datastatus { set; get; }
     }
 }

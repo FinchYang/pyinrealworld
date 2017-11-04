@@ -30,7 +30,7 @@ namespace trafficpolice.Controllers
         }
         [Route("checkFourAgree")]
         [HttpGet]//4点数据审核同意
-        public commonresponse checkFourAgree(string unitid)
+        public commonresponse checkFourAgree(string unitid,string reportname="four")
         {
             if (string.IsNullOrEmpty(unitid))
             {
@@ -51,7 +51,7 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }
-                var data = _db1.Reportlog.FirstOrDefault(c => c.Date == today
+                var data = _db1.Reportsdata.FirstOrDefault(c => c.Date == today&& c.Rname==reportname
                 && c.Unitid == unitid
                );
                 if (data == null)
@@ -91,7 +91,7 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }
-                var data = _db1.Videoreport.FirstOrDefault(c => c.Date==today
+                var data = _db1.Reportsdata.FirstOrDefault(c => c.Date==today
                 && c.Unitid == unitid
                );
                 if (data == null)
@@ -132,7 +132,7 @@ namespace trafficpolice.Controllers
                     return global.commonreturn(responseStatus.forbidden);
                 }
                 var today = DateTime.Now.ToString("yyyy-MM-dd");
-                var thevs = _db1.Reportlog.FirstOrDefault(c => c.Date == today && c.Unitid == input.unitid);
+                var thevs = _db1.Reportsdata.FirstOrDefault(c => c.Date == today && c.Unitid == input.unitid);
                 if (thevs == null)
                 {
                     return global.commonreturn(responseStatus.nounit);
@@ -169,7 +169,7 @@ namespace trafficpolice.Controllers
                     return global.commonreturn(responseStatus.forbidden);
                 }
                 var today = DateTime.Now.ToString("yyyy-MM-dd");
-                var thevs = _db1.Videoreport.FirstOrDefault(c => c.Date == today && c.Unitid == input.unitid);
+                var thevs = _db1.Reportsdata.FirstOrDefault(c => c.Date == today && c.Unitid == input.unitid);
                 if (thevs == null)
                 {
                     return global.commonreturn(responseStatus.nounit);

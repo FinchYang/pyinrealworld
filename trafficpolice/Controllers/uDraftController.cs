@@ -51,14 +51,15 @@ namespace trafficpolice.Controllers
             {
                 status = 0,
                 todaydata = new rejectdata(),
-                todayninedata = new rejectdata(),
+              //  todayninedata = new rejectdata(),
             };
            // var today = DateTime.Now.ToString("yyyy-MM-dd");
             try
             {
-                var data = _db1.Reportlog.FirstOrDefault(c =>
+                var data = _db1.Reportsdata.FirstOrDefault(c =>
                c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0 && 
                 c.Unitid == accinfo.unitid
+            //    && c.Rname==reportname
                 && c.Draft == 2);
                 if (data != null)
                 {
@@ -67,16 +68,17 @@ namespace trafficpolice.Controllers
                     ret.todaydata.data.date = data.Date;
                 }
 
-                var datanine = _db1.Videoreport.FirstOrDefault(c =>
-                  c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0 && 
-                c.Unitid == accinfo.unitid
-               && c.Draft == 1);
-                if (datanine != null)
-                {
-                    ret.todayninedata.data = JsonConvert.DeserializeObject<submitreq>(datanine.Content);
-                    ret.todayninedata.reason = datanine.Declinereason;
-                    ret.todayninedata.data.date = datanine.Date;
-                }
+               // var datanine = _db1.Reportsdata.FirstOrDefault(c =>
+               //   c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0 && 
+               // c.Unitid == accinfo.unitid
+               //   && c.Rname == reportname
+               //&& c.Draft == 1);
+               // if (datanine != null)
+               // {
+               //     ret.todayninedata.data = JsonConvert.DeserializeObject<submitreq>(datanine.Content);
+               //     ret.todayninedata.reason = datanine.Declinereason;
+               //     ret.todayninedata.data.date = datanine.Date;
+               // }
                 return ret;
             }
             catch (Exception ex)
@@ -112,7 +114,7 @@ namespace trafficpolice.Controllers
            // var today = DateTime.Now.ToString("yyyy-MM-dd");
             try
             {
-                var data = _db1.Reportlog.FirstOrDefault(c =>
+                var data = _db1.Reportsdata.FirstOrDefault(c =>
                 c.Date.CompareTo(start.ToString("yyyy-MM-dd"))>=0 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
                && c.Unitid == accinfo.unitid
                 &&c.Draft==1);
@@ -122,7 +124,7 @@ namespace trafficpolice.Controllers
                     ret.todaydata.date = data.Date;
                 }
 
-                var datanine = _db1.Videoreport.FirstOrDefault(c =>
+                var datanine = _db1.Reportsdata.FirstOrDefault(c =>
                 c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0 &&
                 c.Unitid == accinfo.unitid
                && c.Draft == 1);

@@ -7,16 +7,16 @@ namespace trafficpolice.dbmodel
     public partial class tpContext : DbContext
     {
         public virtual DbSet<Dataitem> Dataitem { get; set; }
-        public virtual DbSet<Items> Items { get; set; }
+        public virtual DbSet<ItemsDeprecated> ItemsDeprecated { get; set; }
         public virtual DbSet<Moban> Moban { get; set; }
-        public virtual DbSet<Reportlog> Reportlog { get; set; }
+        public virtual DbSet<ReportlogDeprecated> ReportlogDeprecated { get; set; }
         public virtual DbSet<Reports> Reports { get; set; }
         public virtual DbSet<Reportsdata> Reportsdata { get; set; }
         public virtual DbSet<Summarized> Summarized { get; set; }
         public virtual DbSet<Unit> Unit { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<Userlog> Userlog { get; set; }
-        public virtual DbSet<Videoreport> Videoreport { get; set; }
+        public virtual DbSet<VideoreportDeprecated> VideoreportDeprecated { get; set; }
         public virtual DbSet<Weeksummarized> Weeksummarized { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -104,9 +104,9 @@ namespace trafficpolice.dbmodel
                     .HasMaxLength(300);
             });
 
-            modelBuilder.Entity<Items>(entity =>
+            modelBuilder.Entity<ItemsDeprecated>(entity =>
             {
-                entity.ToTable("items");
+                entity.ToTable("items-deprecated");
 
                 entity.HasIndex(e => e.Id)
                     .HasName("id_UNIQUE")
@@ -210,11 +210,11 @@ namespace trafficpolice.dbmodel
                     .HasDefaultValueSql("'0'");
             });
 
-            modelBuilder.Entity<Reportlog>(entity =>
+            modelBuilder.Entity<ReportlogDeprecated>(entity =>
             {
                 entity.HasKey(e => new { e.Date, e.Unitid });
 
-                entity.ToTable("reportlog");
+                entity.ToTable("reportlog--deprecated");
 
                 entity.HasIndex(e => e.Unitid)
                     .HasName("reportlogunitid_idx");
@@ -250,7 +250,7 @@ namespace trafficpolice.dbmodel
                     .HasColumnType("datetime");
 
                 entity.HasOne(d => d.Unit)
-                    .WithMany(p => p.Reportlog)
+                    .WithMany(p => p.ReportlogDeprecated)
                     .HasForeignKey(d => d.Unitid)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("reportlogunitid");
@@ -353,18 +353,18 @@ namespace trafficpolice.dbmodel
 
             modelBuilder.Entity<Summarized>(entity =>
             {
-                entity.HasKey(e => e.Date);
+                entity.HasKey(e => new { e.Date, e.Reportname });
 
                 entity.ToTable("summarized");
 
-                entity.HasIndex(e => e.Date)
-                    .HasName("date_UNIQUE")
-                    .IsUnique();
-
                 entity.Property(e => e.Date)
                     .HasColumnName("date")
-                    .HasMaxLength(10)
-                    .ValueGeneratedNever();
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.Reportname)
+                    .HasColumnName("reportname")
+                    .HasMaxLength(600)
+                    .HasDefaultValueSql("'-'");
 
                 entity.Property(e => e.Comment)
                     .HasColumnName("comment")
@@ -497,11 +497,11 @@ namespace trafficpolice.dbmodel
                     .HasConstraintName("userid");
             });
 
-            modelBuilder.Entity<Videoreport>(entity =>
+            modelBuilder.Entity<VideoreportDeprecated>(entity =>
             {
                 entity.HasKey(e => new { e.Date, e.Unitid });
 
-                entity.ToTable("videoreport");
+                entity.ToTable("videoreport--deprecated");
 
                 entity.HasIndex(e => e.Date)
                     .HasName("date_UNIQUE")
@@ -550,7 +550,7 @@ namespace trafficpolice.dbmodel
                     .HasColumnType("datetime");
 
                 entity.HasOne(d => d.Unit)
-                    .WithMany(p => p.Videoreport)
+                    .WithMany(p => p.VideoreportDeprecated)
                     .HasForeignKey(d => d.Unitid)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("videoreportunitid");
@@ -558,7 +558,7 @@ namespace trafficpolice.dbmodel
 
             modelBuilder.Entity<Weeksummarized>(entity =>
             {
-                entity.HasKey(e => new { e.Startdate, e.Enddate });
+                entity.HasKey(e => new { e.Startdate, e.Enddate, e.Reportname });
 
                 entity.ToTable("weeksummarized");
 
@@ -569,6 +569,11 @@ namespace trafficpolice.dbmodel
                 entity.Property(e => e.Enddate)
                     .HasColumnName("enddate")
                     .HasMaxLength(10);
+
+                entity.Property(e => e.Reportname)
+                    .HasColumnName("reportname")
+                    .HasMaxLength(600)
+                    .HasDefaultValueSql("'-'");
 
                 entity.Property(e => e.Comment)
                     .HasColumnName("comment")

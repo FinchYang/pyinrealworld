@@ -338,7 +338,7 @@ namespace trafficpolice.Controllers
               && c.Deleted == 0);
             ret.datalist = GetBasicItems(dis);           
 
-            var data = _db1.Videoreport.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
+            var data = _db1.Reportsdata.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
       && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
       && c.Draft == 3
       && c.Unitid == ut);
@@ -425,7 +425,7 @@ namespace trafficpolice.Controllers
                 ret.datalist.Add(onedi);
             }
 
-            var data = _db1.Videoreport.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
+            var data = _db1.Reportsdata.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
       && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
       && c.Draft == 3
       && c.Unitid == ut);

@@ -3,6 +3,7 @@
     public enum signtype
     {
         unknown,//未知
+        all,//全部
         sign,//已签到
         substitute,//代签到
         videoerror,//视频异常

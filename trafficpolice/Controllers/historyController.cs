@@ -31,7 +31,7 @@ namespace trafficpolice.Controllers
         }
         [Route("GetHistoryDataNine")]//获取历史每日点名数据查询接口
         [HttpGet]//9点数据
-        public commonresponse GetHistoryDataNine(string startdate, string enddate,signtype st=signtype.unknown)
+        public commonresponse GetHistoryDataNine(string startdate, string enddate,signtype st=signtype.unknown,string reportname="nine")
         {
             var start = DateTime.Now;
             var end = start;
@@ -54,10 +54,10 @@ namespace trafficpolice.Controllers
             };
             try
             {
-                ret.hisdata = gethisdatanine(start, end, accinfo.unitid,st);
-                ret.yearOverYeardata = gethisdatanine(start.AddYears(-1), end.AddYears(-1), accinfo.unitid, st);
+                ret.hisdata = gethisdatanine(start, end, accinfo.unitid,st,reportname);
+                ret.yearOverYeardata = gethisdatanine(start.AddYears(-1), end.AddYears(-1), accinfo.unitid, st, reportname);
                 var days = end.Subtract(start).Days;
-                ret.linkRelativedata = gethisdatanine(start.AddDays(-1).AddDays(-days), start.AddDays(-1), accinfo.unitid, st);
+                ret.linkRelativedata = gethisdatanine(start.AddDays(-1).AddDays(-days), start.AddDays(-1), accinfo.unitid, st, reportname);
                 return ret;
             }
             catch (Exception ex)
@@ -68,7 +68,7 @@ namespace trafficpolice.Controllers
         }
         [Route("GetHistoryData")]//获取历史交管动态历史数据查询接口
         [HttpGet]//4点数据
-        public commonresponse GetHistoryData(string  startdate,string enddate)
+        public commonresponse GetHistoryData(string  startdate,string enddate,string  reportname="four")
         {
             var start = DateTime.Now; 
             var end = start;
@@ -92,10 +92,10 @@ namespace trafficpolice.Controllers
          //   var today = DateTime.Now.ToString("yyyy-MM-dd");
             try
             {
-                ret.hisdata = gethisdata(start, end, accinfo.unitid);
-                ret.yearOverYeardata = gethisdata(start.AddYears(-1), end.AddYears(-1), accinfo.unitid);
+                ret.hisdata = gethisdata(start, end, accinfo.unitid,reportname);
+                ret.yearOverYeardata = gethisdata(start.AddYears(-1), end.AddYears(-1), accinfo.unitid, reportname);
                 var days = end.Subtract(start).Days;
-                ret.linkRelativedata = gethisdata(start.AddDays(-1).AddDays(-days), start.AddDays(-1), accinfo.unitid);
+                ret.linkRelativedata = gethisdata(start.AddDays(-1).AddDays(-days), start.AddDays(-1), accinfo.unitid, reportname);
                 return ret;
             }
             catch (Exception ex)
@@ -104,13 +104,13 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }     
-        private List<onedata> gethisdata(DateTime sd,DateTime  ed,string unitid)
+        private List<onedata> gethisdata(DateTime sd,DateTime  ed,string unitid,string reportname)
         {
             var start = sd.ToString("yyyy-MM-dd");
             var end = ed.ToString("yyyy-MM-dd");
             var ret = new List<onedata>();
-            var data = _db1.Reportlog.Where(c => c.Date.CompareTo(start) >= 0
-         && c.Date.CompareTo(end) <= 0
+            var data = _db1.Reportsdata.Where(c => c.Date.CompareTo(start) >= 0
+         && c.Date.CompareTo(end) <= 0&& c.Rname==reportname
          && c.Unitid == unitid);
             foreach (var d in data)
             {
@@ -123,13 +123,13 @@ namespace trafficpolice.Controllers
             }
             return ret;
         }
-        private List<onedata> gethisdatanine(DateTime sd, DateTime ed, string unitid, signtype st)
+        private List<onedata> gethisdatanine(DateTime sd, DateTime ed, string unitid, signtype st,string reportname)
         {
             var start = sd.ToString("yyyy-MM-dd");
             var end = ed.ToString("yyyy-MM-dd");
             var ret = new List<onedata>();
-            var data = _db1.Videoreport.Where(c => c.Date.CompareTo(start) >= 0
-         && c.Date.CompareTo(end) <= 0
+            var data = _db1.Reportsdata.Where(c => c.Date.CompareTo(start) >= 0
+         && c.Date.CompareTo(end) <= 0 &&c.Rname==reportname
          && c.Unitid == unitid);
             if (st != signtype.unknown) data.Where(c => c.Signtype ==(short) st);
             foreach (var d in data)

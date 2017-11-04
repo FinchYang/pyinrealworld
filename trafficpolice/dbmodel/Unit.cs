@@ -7,10 +7,10 @@ namespace trafficpolice.dbmodel
     {
         public Unit()
         {
-            Reportlog = new HashSet<Reportlog>();
+            ReportlogDeprecated = new HashSet<ReportlogDeprecated>();
             Reportsdata = new HashSet<Reportsdata>();
             User = new HashSet<User>();
-            Videoreport = new HashSet<Videoreport>();
+            VideoreportDeprecated = new HashSet<VideoreportDeprecated>();
         }
 
         public string Id { get; set; }
@@ -18,9 +18,9 @@ namespace trafficpolice.dbmodel
         public string Name { get; set; }
         public short Level { get; set; }
 
-        public ICollection<Reportlog> Reportlog { get; set; }
+        public ICollection<ReportlogDeprecated> ReportlogDeprecated { get; set; }
         public ICollection<Reportsdata> Reportsdata { get; set; }
         public ICollection<User> User { get; set; }
-        public ICollection<Videoreport> Videoreport { get; set; }
+        public ICollection<VideoreportDeprecated> VideoreportDeprecated { get; set; }
     }
 }

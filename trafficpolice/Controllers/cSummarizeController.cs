@@ -34,7 +34,7 @@ namespace trafficpolice.Controllers
         {
             try
             {
-                if (input == null || input.datalist == null)
+                if (input == null || input.datalist == null||string.IsNullOrEmpty(input.reportname))
                 {
                     return global.commonreturn(responseStatus.requesterror);
                 }
@@ -65,13 +65,14 @@ namespace trafficpolice.Controllers
                         Startdate = sday,
                         Enddate=send,
                         Content = JsonConvert.SerializeObject(input),
-                        Draft = input.draft,
+                        Draft =(short) input.datastatus,
+                        Reportname=input.reportname,
                         Time = DateTime.Now,
                     });
                 }
                 else
                 {
-                    daylog.Draft = input.draft;
+                    daylog.Draft = (short)input.datastatus;
                     daylog.Content = JsonConvert.SerializeObject(input);
                     daylog.Time = DateTime.Now;
 
@@ -88,7 +89,7 @@ namespace trafficpolice.Controllers
         }
         [Route("centerGetTimeSpanSumData")]//中心获取 某个时间段的生成汇总 数据
         [HttpGet]
-        public commonresponse centerGetTimeSpanSumData(string startdate,string enddate, string rname="four")
+        public commonresponse centerGetTimeSpanSumData(string startdate,string enddate, string rname="four", bool renew = false)
         {
             var accinfo = global.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
@@ -105,7 +106,6 @@ namespace trafficpolice.Controllers
                 return global.commonreturn(responseStatus.startdateerror);
             }
 
-          //  var theday = end.ToString("yyyy-MM-dd");
             var ret = new uSumRes
             {
                 status = 0,
@@ -114,8 +114,21 @@ namespace trafficpolice.Controllers
             var thelist = new List<submitreq>();
             try
             {
-                var data = _db1.Reportlog.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd"))>=0
+                if (!renew)
+                {
+                    var olddata = _db1.Weeksummarized.FirstOrDefault(c => c.Startdate == start.ToString("yyyy-MM-dd")
+                    &&c.Enddate== end.ToString("yyyy-MM-dd")
+                    && c.Reportname == rname);
+                    if (olddata != null)
+                    {
+                        ret.datastatus = (datastatus)olddata.Draft;
+                        ret.sumdata = JsonConvert.DeserializeObject<submitreq>(olddata.Content);
+                        return ret;
+                    }
+                }
+                var data = _db1.Reportsdata.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd"))>=0
                 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
+                && c.Rname==rname
                 && c.Draft == 3);
                 foreach (var d in data)
                 {
@@ -124,44 +137,13 @@ namespace trafficpolice.Controllers
                 }
                 ret.sumdata.datalist = new List<Models.Dataitem>();
 
-                var dis = _db1.Dataitem.Where(c => (c.Tabletype ==rname)
-                  && c.Deleted == 0);
-                foreach (var di in dis)
-                {
-                    var onedi = new Models.Dataitem
-                    {
-                        secondlist = new List<seconditemdata>(),
-                        Name = di.Name,
-                        units = JsonConvert.DeserializeObject<List<unittype>>( di.Units),
-                        Mandated = di.Mandated > 0 ? true : false,
-                        Comment = di.Comment,
-                        inputtype = (secondItemType)di.Inputtype,
-                    };
-
-                    if (!string.IsNullOrEmpty(di.Seconditem))
-                    {
-                        var sis = JsonConvert.DeserializeObject<List<Seconditem>>(di.Seconditem);
-
-                        foreach (var si in sis)
-                        {
-                            var sid = new seconditemdata { data = string.Empty };
-                            sid.name = si.name;
-                            sid.secondtype = si.secondtype;
-                            onedi.secondlist.Add(sid);
-                        }
-                    }
-                    onedi.Content = string.Empty;
-                    ret.sumdata.datalist.Add(onedi);
-                }
+                ret.sumdata.datalist=getdataitems(rname);
 
                 foreach (var a in thelist)
                 {
-
                     foreach (var b in a.datalist)
                     {
-
                         SumData(ret.sumdata.datalist, b);
-
                     }
                 }
                 return ret;
@@ -172,13 +154,49 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
+
+        private List< Models.Dataitem> getdataitems(string rname)
+        {
+            var ret = new List<Models.Dataitem>();
+            var dis = _db1.Dataitem.Where(c => (c.Tabletype == rname)
+               && c.Deleted == 0);
+            foreach (var di in dis)
+            {
+                var onedi = new Models.Dataitem
+                {
+                    secondlist = new List<seconditemdata>(),
+                    Name = di.Name,
+                    units = JsonConvert.DeserializeObject<List<unittype>>(di.Units),
+                    Mandated = di.Mandated > 0 ? true : false,
+                    Comment = di.Comment,
+                    inputtype = (secondItemType)di.Inputtype,
+                };
+
+                if (di.Hassecond == 1 && !string.IsNullOrEmpty(di.Seconditem))
+                {
+                    var sis = JsonConvert.DeserializeObject<List<Seconditem>>(di.Seconditem);
+
+                    foreach (var si in sis)
+                    {
+                        var sid = new seconditemdata { data = string.Empty };
+                        sid.name = si.name;
+                        sid.secondtype = si.secondtype;
+                        onedi.secondlist.Add(sid);
+                    }
+                }
+                onedi.Content = string.Empty;
+                ret.Add(onedi);
+            }
+            return ret;
+        }
+
         [Route("SubmitSumData")]//中心汇总数据提交
         [HttpPost]
         public commonresponse SubmitSumData([FromBody] submitSumreq input)
         {
             try
             {
-                if (input == null || input.datalist == null)
+                if (input == null || input.datalist == null||string.IsNullOrEmpty( input.reportname))
                 {
                     return global.commonreturn(responseStatus.requesterror);
                 }
@@ -192,20 +210,21 @@ namespace trafficpolice.Controllers
                     return global.commonreturn(responseStatus.dateerror);
                 }
                 var sday = day.ToString("yyyy-MM-dd");
-                var daylog = _db1.Summarized.FirstOrDefault(c =>  c.Date == sday);
+                var daylog = _db1.Summarized.FirstOrDefault(c =>  c.Date == sday&& c.Reportname==input.reportname);
                 if (daylog == null)
                 {
                     _db1.Summarized.Add(new Summarized
                     {
                         Date = sday,
                         Content = JsonConvert.SerializeObject(input),
-                        Draft = input.draft,
+                        Draft = (short)input.datastatus,
+                        Reportname=input.reportname,
                         Time = DateTime.Now,
                     });
                 }
                 else
-                {                   
-                        daylog.Draft = input.draft;
+                {
+                    daylog.Draft = (short)input.datastatus;
                         daylog.Content = JsonConvert.SerializeObject(input);
                         daylog.Time = DateTime.Now;
                     
@@ -222,7 +241,7 @@ namespace trafficpolice.Controllers
         }
         [Route("centerGetSumData")]//中心获取 生成汇总 数据
         [HttpGet]
-        public commonresponse centerGetSumData(string seldate,string rname="four")
+        public commonresponse centerGetSumData(string seldate,string rname="four",bool renew=false)
         {           
             var accinfo = global.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
@@ -241,52 +260,32 @@ namespace trafficpolice.Controllers
             var thelist = new List<submitreq>();
             try
             {
-                var data = _db1.Reportlog.Where(c => c.Date== theday&&c.Draft==3               );               
+                if (!renew)
+                {
+                    var olddata = _db1.Summarized.FirstOrDefault(c => c.Date == theday&&c.Reportname==rname);
+                    if(olddata!=null)
+                    {
+                        ret.datastatus = (datastatus)olddata.Draft;
+                        ret.sumdata = JsonConvert.DeserializeObject<submitreq>(olddata.Content);
+                        return ret;
+                    }
+                }
+
+                var data = _db1.Reportsdata.Where(c => c.Date== theday&&c.Draft==3 && c.Rname == rname);               
                 foreach (var d in data)
                 {                    
                  var   one = JsonConvert.DeserializeObject<submitreq>(d.Content);
                     thelist.Add(one);
                 }
                 ret.sumdata.datalist = new List<Models.Dataitem>();
-
-                var dis = _db1.Dataitem.Where(c => (c.Tabletype == rname)
-                  && c.Deleted == 0);
-                foreach(var di in dis)
-                {
-                    var onedi = new Models.Dataitem
-                    {
-                        secondlist = new List<seconditemdata>(),
-                        Name=di.Name,
-                        units = JsonConvert.DeserializeObject<List<unittype>>(di.Units),
-                        Mandated =di.Mandated > 0 ? true : false,
-                        Comment =di.Comment,
-                        inputtype=(secondItemType)di.Inputtype,
-                    };
-                    
-                    if(!string.IsNullOrEmpty(di.Seconditem))
-                    {
-                        var sis = JsonConvert.DeserializeObject<List< Seconditem>>(di.Seconditem);
-                        
-                        foreach(var si in sis)
-                        {
-                            var sid = new seconditemdata { data = string.Empty };
-                            sid.name = si.name;
-                            sid.secondtype = si.secondtype;
-                            onedi.secondlist.Add(sid);
-                        }
-                    }
-                    onedi.Content = string.Empty;
-                    ret.sumdata.datalist.Add(onedi);
-                }
+                ret.sumdata.datalist = getdataitems(rname);
+             
 
                 foreach(var a in thelist)
-                {
-                    
+                {                    
                     foreach(var b in a.datalist)
                     {
-
-                        SumData(ret.sumdata.datalist, b);
-                       
+                        SumData(ret.sumdata.datalist, b);                       
                     }
                 }
                 return ret;

@@ -31,7 +31,7 @@ namespace trafficpolice.Controllers
         }
         [Route("centerGetHistoryData")]//指挥中心查询交管动态历史数据接口
         [HttpGet]
-        public commonresponse centerGetHistoryData(string  startdate,string enddate, unittype ut = unittype.unknown)
+        public commonresponse centerGetHistoryData(string  startdate,string enddate, unittype ut = unittype.unknown,string rname="four")
         {
             var start = DateTime.Now; 
             var end = start;
@@ -53,9 +53,9 @@ namespace trafficpolice.Controllers
             var today = DateTime.Now.ToString("yyyy-MM-dd");
             try
             {
-                var data = _db1.Reportlog.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
+                var data = _db1.Reportsdata.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
                 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
-               // && c.Unitid == accinfo.unitid
+                && c.Rname == rname
                );
                 if (ut != unittype.unknown&&ut!=unittype.all) data = data.Where(c => c.Unitid == ut.ToString());
                 foreach (var d in data)
@@ -79,7 +79,7 @@ namespace trafficpolice.Controllers
         [Route("centerVideoSignQuery")]//指挥中心视频签到情况查询
         [HttpGet]
         public commonresponse centerVideoSignQuery(string startdate, string enddate,
-            unittype ut=unittype.unknown,signtype st=signtype.unknown)
+            unittype ut=unittype.unknown,signtype st=signtype.unknown, string rname = "four")
         {
             var start = DateTime.Now.AddYears(-100);
             var end = DateTime.Now;
@@ -101,10 +101,11 @@ namespace trafficpolice.Controllers
             var today = DateTime.Now.ToString("yyyy-MM-dd");
             try
             {
-                var data = _db1.Videoreport.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
+                var data = _db1.Reportsdata.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
                 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
+                && c.Rname==rname
                );
-                if (st != signtype.unknown) data = data.Where(c => c.Signtype == (short)st);
+                if (st != signtype.unknown && st!=signtype.all) data = data.Where(c => c.Signtype == (short)st);
                 if (ut != unittype.unknown && ut != unittype.all) data = data.Where(c => c.Unitid == ut.ToString());
                 foreach (var d in data)
                 {
@@ -126,7 +127,7 @@ namespace trafficpolice.Controllers
         }
         [Route("GetVideoSignData")]
         [HttpGet]//指挥中心视频签到数据获取接口
-        public commonresponse GetVideoSignData()
+        public commonresponse GetVideoSignData(string reportname="nine")
         {
             var accinfo = global.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
@@ -147,7 +148,7 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }
-                var data = _db1.Videoreport.Where(c => c.Date== today );
+                var data = _db1.Reportsdata.Where(c => c.Date== today && c.Rname==reportname);
                 foreach(var d in data)
                 {
                     var a= JsonConvert.DeserializeObject<submitreq>(d.Content);
@@ -189,7 +190,7 @@ namespace trafficpolice.Controllers
                 var today = DateTime.Now.ToString("yyyy-MM-dd");
                 foreach (var d in input.videodata)
                 {
-                    var thed = _db1.Videoreport.FirstOrDefault(c => c.Date == today && c.Unitid == d.unitid);
+                    var thed = _db1.Reportsdata.FirstOrDefault(c => c.Date == today && c.Unitid == d.unitid);
                     if (thed == null)
                     {
                         continue;
