@@ -173,5 +173,178 @@ namespace trafficpolice.Controllers
             public string oldpass { get; set; }
             public string newpass { get; set; }
         }
+        public class reset
+        {
+            public string id { get; set; }
+            public string name { get; set; }
+        }
+        [Route("resetinfo")]
+        [HttpPost]
+        public commonresponse resetinfo([FromBody] reset input)
+        {
+            var accinfo = global.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+            if (input == null)
+            {
+                return global.commonreturn(responseStatus.requesterror);
+            }
+            try
+            {
+                var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+                if (unit == null)
+                {
+                    return global.commonreturn(responseStatus.nounit);
+                }
+                if (unit.Level == 1)
+                {
+                    return global.commonreturn(responseStatus.forbidden);
+                }
+                if (string.IsNullOrEmpty(input.id))
+                {
+                    return global.commonreturn(responseStatus.iderror);
+                }
+                //if (string.IsNullOrEmpty(input.name))
+                //{
+                //    return global.commonreturn(responseStatus.nameerror);
+                //}
+                var theuser = _db1.User.FirstOrDefault(c => c.Id == input.id 
+              //  && c.Name == input.name
+                );
+                if (theuser == null)
+                {
+                    return global.commonreturn(responseStatus.iderror);
+                }
+
+                theuser.Pass = "123456";
+                _db1.SaveChanges();
+                return global.commonreturn(responseStatus.ok);
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "resetinfo", ex.Message);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+            }
+        }
+        public class adduserReq
+        {
+            public string id { get; set; }
+            public string name { get; set; }
+            public short level { get; set; }//1,2
+            public string pass { get; set; }
+            public unittype ut { get; set; }
+        }
+        [Route("adduser")]//增加用户接口
+        [HttpPost]
+        public commonresponse adduser([FromBody] adduserReq input)
+        {
+            var accinfo = global.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+            if (input == null)
+            {
+                return global.commonreturn(responseStatus.requesterror);
+            }
+            try
+            {
+                var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+                if (unit == null)
+                {
+                    return global.commonreturn(responseStatus.nounit);
+                }
+                if (unit.Level == 1)
+                {
+                    return global.commonreturn(responseStatus.forbidden);
+                }
+                if (string.IsNullOrEmpty(input.id))
+                {
+                    return global.commonreturn(responseStatus.iderror);
+                }
+                //if (string.IsNullOrEmpty(input.name))
+                //{
+                //    return global.commonreturn(responseStatus.nameerror);
+                //}
+                var theuser = _db1.User.FirstOrDefault(c => c.Id == input.id );
+                if (theuser != null)
+                {
+                    return global.commonreturn(responseStatus.idexist);
+                }
+                var name= string.IsNullOrEmpty(input.name) ? "" : input.name;
+                var pass=string.IsNullOrEmpty(input.pass)? "123456":input.pass;
+                short level = 2;
+                if (input.level == 1) level = 1;
+                _db1.User.Add(new User
+                {
+                    Id=input.id,
+                    Name =name,
+                    Level =level,
+                    Unitid =input.ut.ToString(),
+                    Pass=pass,
+                    Disabled=0,
+                });
+                _db1.SaveChanges();
+                return global.commonreturn(responseStatus.ok);
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "adduser", ex.Message);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+            }
+        }
+        public class updateuserReq
+        {
+            public string id { get; set; }//唯一标识，登陆名称
+            public string name { get; set; }
+            public short level { get; set; }//1,2
+            public string pass { get; set; }
+            public bool disable { get; set; }//true  -禁用，false-激活
+        }
+        [Route("updateuser")]//变更用户信息接口
+        [HttpPost]
+        public commonresponse updateuser([FromBody] updateuserReq input)
+        {
+            var accinfo = global.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+            if (input == null)
+            {
+                return global.commonreturn(responseStatus.requesterror);
+            }
+            try
+            {
+                var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+                if (unit == null)
+                {
+                    return global.commonreturn(responseStatus.nounit);
+                }
+                if (unit.Level == 1)
+                {
+                    return global.commonreturn(responseStatus.forbidden);
+                }
+                if (string.IsNullOrEmpty(input.id))
+                {
+                    return global.commonreturn(responseStatus.iderror);
+                }
+                //if (string.IsNullOrEmpty(input.name))
+                //{
+                //    return global.commonreturn(responseStatus.nameerror);
+                //}
+                var theuser = _db1.User.FirstOrDefault(c => c.Id == input.id);
+                if (theuser == null)
+                {
+                    return global.commonreturn(responseStatus.iderror);
+                }
+                if(! string.IsNullOrEmpty(input.name) )theuser.Name= input.name;
+                if(! string.IsNullOrEmpty(input.pass))theuser.Pass= input.pass;
+                
+                if (input.level == 1||input.level==2) theuser.Level=input.level;
+                if (input.disable) theuser.Disabled = 1;
+                else theuser.Disabled = 0;
+                _db1.SaveChanges();
+                return global.commonreturn(responseStatus.ok);
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "updateuser", ex.Message);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+            }
+        }
     }
 }

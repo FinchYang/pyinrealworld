@@ -213,55 +213,6 @@ namespace trafficpolice.Controllers
             }
         }
 
-        public class reset
-        {
-            public string id { get; set; }
-            public string name { get; set; }
-        }
-        [Route("resetinfo")]
-        [HttpPost]
-        public commonresponse resetinfo([FromBody] reset input)
-        {
-            var accinfo = global.GetInfoByToken(Request.Headers);
-            if (accinfo.status != responseStatus.ok) return accinfo;
-            if (input == null)
-            {
-                return global.commonreturn(responseStatus.requesterror);
-            }
-            try
-            {
-                var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
-                if (unit == null)
-                {
-                    return global.commonreturn(responseStatus.nounit);
-                }
-                if (unit.Level==1)
-                {
-                    return global.commonreturn(responseStatus.forbidden);
-                }
-                if (string.IsNullOrEmpty(input.id))
-                {
-                    return global.commonreturn(responseStatus.iderror);
-                }
-                if (string.IsNullOrEmpty(input.name))
-                {
-                    return global.commonreturn(responseStatus.nameerror);
-                }
-                var theuser = _db1.User.FirstOrDefault(c => c.Id == input.id && c.Name == input.name);
-                if (theuser == null)
-                {
-                    return global.commonreturn(responseStatus.iderror);
-                }
-
-                theuser.Pass = "123456";
-                _db1.SaveChanges();
-                return global.commonreturn(responseStatus.ok);
-            }
-            catch (Exception ex)
-            {
-                _log.LogError("{0}-{1}-{2}", DateTime.Now, "resetinfo", ex.Message);
-                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
-            }
-        }
+      
     }
 }

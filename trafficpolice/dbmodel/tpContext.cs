@@ -435,6 +435,16 @@ namespace trafficpolice.dbmodel
                     .HasMaxLength(50)
                     .ValueGeneratedNever();
 
+                entity.Property(e => e.Disabled)
+                    .HasColumnName("disabled")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.Level)
+                    .HasColumnName("level")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("'1'");
+
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
                     .HasMaxLength(45);

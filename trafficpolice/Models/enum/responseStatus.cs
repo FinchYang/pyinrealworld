@@ -9,6 +9,6 @@
       , vcodeerror, losttimeerror, forbidden, startdateerror, enddateerror
       , abroadorserviceerror, passerror,overdueerror,nounit,newpasserror
             ,allreadysubmitted,dataitemallreadyexist,nodataitem,dateerror,notemplate
-            , reportType_allreadyexist
+            , reportType_allreadyexist,idexist
     };
 }
