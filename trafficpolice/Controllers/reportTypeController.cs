@@ -67,7 +67,7 @@ namespace trafficpolice.Controllers
                 {
                     Name = input.Name,
                     Comment = string.IsNullOrEmpty(input.comment) ? string.Empty : input.comment,
-                    Type = string.IsNullOrEmpty(input.comment) ? string.Empty : input.comment,
+                    Type = string.IsNullOrEmpty(input.reporttype) ? string.Empty : input.reporttype,
                     Units = JsonConvert.SerializeObject(input.units),
                 });
                 _db1.SaveChanges();

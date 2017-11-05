@@ -224,6 +224,7 @@ namespace trafficpolice.Controllers
                 var thevs = _db1.Dataitem.FirstOrDefault(c => c.Name == input.Name);
                 if (thevs != null)
                 {
+                    if(thevs.Id!=input.id)
                     return global.commonreturn(responseStatus.dataitemallreadyexist);
                 }
                 var second =!input.hasSecondItems|| input.secondlist == null || input.secondlist.Count == 0 ? string.Empty : JsonConvert.SerializeObject(input.secondlist);
