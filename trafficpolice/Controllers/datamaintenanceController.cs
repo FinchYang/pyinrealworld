@@ -57,7 +57,7 @@ namespace trafficpolice.Controllers
                 return global.commonreturn(responseStatus.requesterror);
             }
             var now = DateTime.Now;
-            var fpath = Path.Combine(env.ContentRootPath, "upload");
+            var fpath = Path.Combine(env.WebRootPath, "upload");
             if (!Directory.Exists(fpath)) Directory.CreateDirectory(fpath);
 
             var fn = user.name + now.ToString("yyyyMMddHHmmss") + ".doc";
@@ -83,9 +83,9 @@ namespace trafficpolice.Controllers
                 }
                 else
                 {
-
+                    mb.Time = DateTime.Now;
                     mb.Comment = user.comment;
-                    fileName = fn;
+                   mb.Filename  = fn;
 
                 }
 

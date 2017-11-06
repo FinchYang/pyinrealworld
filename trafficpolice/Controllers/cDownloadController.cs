@@ -32,6 +32,45 @@ namespace trafficpolice.Controllers
         {
             _log = log;
         }
+        [Route("centerDownloadtemplate")]//中心模板文件下载
+        [HttpGet]
+        public commonresponse centerDownloadtemplate([FromServices]IHostingEnvironment env, string name)
+        {
+            var accinfo = global.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+
+            var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+            if (unit == null)
+            {
+                return global.commonreturn(responseStatus.nounit);
+            }
+            if (unit.Level == 1)
+            {
+                return global.commonreturn(responseStatus.forbidden);
+            }
+         
+            var ret = new downloadres
+            {
+                status = 0,
+            };
+
+            try
+            {
+                var temp = _db1.Moban.FirstOrDefault(c => c.Name == name);
+                if (temp == null)
+                {
+                    return global.commonreturn(responseStatus.notemplate);
+                }
+                ret.fileResoure = "upload/"+temp.Filename;
+                //File.cop
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "centerDownloadtemplate", ex.Message);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+            }
+        }
         public class gtres:commonresponse
         {
             public List<onetemplate> tlist { get; set; }
@@ -124,7 +163,7 @@ namespace trafficpolice.Controllers
 
         private string createreport(string filename, string date, IHostingEnvironment env)
         {
-            var spath = Path.Combine(env.ContentRootPath, "upload",filename);
+            var spath = Path.Combine(env.WebRootPath, "upload",filename);
             var tpath = Path.Combine(env.WebRootPath, "download");
             if (!Directory.Exists(tpath)) Directory.CreateDirectory(tpath);
             var tfile = Path.Combine(tpath, "320171031101311.doc");
@@ -190,7 +229,7 @@ namespace trafficpolice.Controllers
 
         private string createreport(string filename, string start, string end, IHostingEnvironment env)
         {
-            var spath = Path.Combine(env.ContentRootPath, "upload", filename);
+            var spath = Path.Combine(env.WebRootPath, "upload", filename);
             var tpath = Path.Combine(env.WebRootPath, "download");
             if (!Directory.Exists(tpath)) Directory.CreateDirectory(tpath);
             var tfile = Path.Combine(tpath, "320171031101311.doc");
