@@ -173,12 +173,14 @@ namespace trafficpolice.Controllers
                     return global.commonreturn(responseStatus.forbidden);
                 }
 
-                if (string.IsNullOrEmpty(input.Name))
+                if (string.IsNullOrEmpty(input.Name)||string.IsNullOrEmpty(input.tabletype))
                 {
                     return global.commonreturn(responseStatus.requesterror);
                 }
 
-                var thevs = _db1.Dataitem.FirstOrDefault(c => c.Name == input.Name);
+                var thevs = _db1.Dataitem.FirstOrDefault(c => c.Name == input.Name
+                &&c.Tabletype==input.tabletype
+                );
                 if (thevs != null)
                 {
                     return global.commonreturn(responseStatus.dataitemallreadyexist);
@@ -264,16 +266,16 @@ namespace trafficpolice.Controllers
                     return global.commonreturn(responseStatus.forbidden);
                 }
 
-                if (string.IsNullOrEmpty(input.Name))
+                if (string.IsNullOrEmpty(input.Name)||string.IsNullOrEmpty(input.tabletype))
                 {
                     return global.commonreturn(responseStatus.requesterror);
                 }
 
-                var thevs = _db1.Dataitem.FirstOrDefault(c => c.Name == input.Name);
+                var thevs = _db1.Dataitem.FirstOrDefault(c => c.Name == input.Name&&c.Tabletype==input.tabletype);
                 if (thevs != null)
                 {
-                    if(thevs.Id!=input.id)
-                    return global.commonreturn(responseStatus.dataitemallreadyexist);
+                  //  if (thevs.Id != input.id)
+                        return global.commonreturn(responseStatus.dataitemallreadyexist);
                 }
                 var second =!input.hasSecondItems|| input.secondlist == null || input.secondlist.Count == 0 ? string.Empty : JsonConvert.SerializeObject(input.secondlist);
                 var comment = string.IsNullOrEmpty(input.Comment) ? string.Empty : input.Comment;

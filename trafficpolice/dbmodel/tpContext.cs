@@ -38,10 +38,6 @@ namespace trafficpolice.dbmodel
                     .HasName("id_UNIQUE")
                     .IsUnique();
 
-                entity.HasIndex(e => e.Name)
-                    .HasName("name_UNIQUE")
-                    .IsUnique();
-
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasMaxLength(50)
@@ -202,6 +198,11 @@ namespace trafficpolice.dbmodel
                     .IsRequired()
                     .HasColumnName("comment")
                     .HasMaxLength(450);
+
+                entity.Property(e => e.Deleted)
+                    .HasColumnName("deleted")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.Filename)
                     .IsRequired()

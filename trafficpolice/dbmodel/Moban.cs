@@ -10,5 +10,6 @@ namespace trafficpolice.dbmodel
         public string Filename { get; set; }
         public string Tabletype { get; set; }
         public DateTime Time { get; set; }
+        public short Deleted { get; set; }
     }
 }
