@@ -213,6 +213,10 @@ namespace trafficpolice.dbmodel
                     .HasColumnName("tabletype")
                     .HasMaxLength(600)
                     .HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.Time)
+                    .HasColumnName("time")
+                    .HasColumnType("datetime");
             });
 
             modelBuilder.Entity<ReportlogDeprecated>(entity =>

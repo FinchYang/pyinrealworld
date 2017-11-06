@@ -1,0 +1,630 @@
+2017-11-06T09:39:03.4509055+08:00  [INF] Entity Framework Core "2.0.0-rtm-26452" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=Quick_Application1 " (9958f5bb)
+2017-11-06T09:39:19.0189916+08:00  [INF] webpack built 7efc4a3433080c33f237 in 18023ms (97176b89)
+2017-11-06T09:39:27.6017852+08:00  [INF] Executed DbCommand ("557"ms) [Parameters=[""], CommandType='Text', CommandTimeout='60']"
+""CREATE DATABASE [Quick_Application1];" (0723d8ff)
+2017-11-06T09:39:28.6934843+08:00  [INF] Executed DbCommand ("77"ms) [Parameters=[""], CommandType='Text', CommandTimeout='60']"
+""IF SERVERPROPERTY('EngineEdition') <> 5 EXEC(N'ALTER DATABASE [Quick_Application1] SET READ_COMMITTED_SNAPSHOT ON;');" (0723d8ff)
+2017-11-06T09:39:28.9852583+08:00  [INF] Executed DbCommand ("98"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [__EFMigrationsHistory] (
+    [MigrationId] nvarchar(150) NOT NULL,
+    [ProductVersion] nvarchar(32) NOT NULL,
+    CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+);" (0723d8ff)
+2017-11-06T09:39:29.0339241+08:00  [INF] Executed DbCommand ("43"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'__EFMigrationsHistory');" (0723d8ff)
+2017-11-06T09:39:29.1104464+08:00  [INF] Executed DbCommand ("72"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];" (0723d8ff)
+2017-11-06T09:39:29.1364258+08:00  [INF] Applying migration '"20170913022214_Initial"'. (0e2ac64d)
+2017-11-06T09:39:29.3267197+08:00  [INF] Executed DbCommand ("54"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [AppCustomers] (
+    [Id] int NOT NULL IDENTITY,
+    [Address] nvarchar(max) NULL,
+    [City] nvarchar(50) NULL,
+    [CreatedBy] nvarchar(256) NULL,
+    [CreatedDate] datetime2 NOT NULL,
+    [DateCreated] datetime2 NOT NULL,
+    [DateModified] datetime2 NOT NULL,
+    [Email] nvarchar(100) NULL,
+    [Gender] int NOT NULL,
+    [Name] nvarchar(100) NOT NULL,
+    [PhoneNumber] varchar(30) NULL,
+    [UpdatedBy] nvarchar(256) NULL,
+    [UpdatedDate] datetime2 NOT NULL,
+    CONSTRAINT [PK_AppCustomers] PRIMARY KEY ([Id])
+);" (0723d8ff)
+2017-11-06T09:39:29.3518213+08:00  [INF] Executed DbCommand ("21"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [AppProductCategories] (
+    [Id] int NOT NULL IDENTITY,
+    [CreatedBy] nvarchar(256) NULL,
+    [CreatedDate] datetime2 NOT NULL,
+    [DateCreated] datetime2 NOT NULL,
+    [DateModified] datetime2 NOT NULL,
+    [Description] nvarchar(500) NULL,
+    [Icon] nvarchar(max) NULL,
+    [Name] nvarchar(100) NOT NULL,
+    [UpdatedBy] nvarchar(256) NULL,
+    [UpdatedDate] datetime2 NOT NULL,
+    CONSTRAINT [PK_AppProductCategories] PRIMARY KEY ([Id])
+);" (0723d8ff)
+2017-11-06T09:39:29.3785388+08:00  [INF] Executed DbCommand ("24"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [AspNetRoles] (
+    [Id] nvarchar(450) NOT NULL,
+    [ConcurrencyStamp] nvarchar(max) NULL,
+    [CreatedBy] nvarchar(max) NULL,
+    [CreatedDate] datetime2 NOT NULL,
+    [Description] nvarchar(max) NULL,
+    [Name] nvarchar(256) NULL,
+    [NormalizedName] nvarchar(256) NULL,
+    [UpdatedBy] nvarchar(max) NULL,
+    [UpdatedDate] datetime2 NOT NULL,
+    CONSTRAINT [PK_AspNetRoles] PRIMARY KEY ([Id])
+);" (0723d8ff)
+2017-11-06T09:39:29.4109043+08:00  [INF] Executed DbCommand ("28"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [AspNetUsers] (
+    [Id] nvarchar(450) NOT NULL,
+    [AccessFailedCount] int NOT NULL,
+    [ConcurrencyStamp] nvarchar(max) NULL,
+    [Configuration] nvarchar(max) NULL,
+    [CreatedBy] nvarchar(max) NULL,
+    [CreatedDate] datetime2 NOT NULL,
+    [Email] nvarchar(256) NULL,
+    [EmailConfirmed] bit NOT NULL,
+    [FullName] nvarchar(max) NULL,
+    [IsEnabled] bit NOT NULL,
+    [JobTitle] nvarchar(max) NULL,
+    [LockoutEnabled] bit NOT NULL,
+    [LockoutEnd] datetimeoffset NULL,
+    [NormalizedEmail] nvarchar(256) NULL,
+    [NormalizedUserName] nvarchar(256) NULL,
+    [PasswordHash] nvarchar(max) NULL,
+    [PhoneNumber] nvarchar(max) NULL,
+    [PhoneNumberConfirmed] bit NOT NULL,
+    [SecurityStamp] nvarchar(max) NULL,
+    [TwoFactorEnabled] bit NOT NULL,
+    [UpdatedBy] nvarchar(max) NULL,
+    [UpdatedDate] datetime2 NOT NULL,
+    [UserName] nvarchar(256) NULL,
+    CONSTRAINT [PK_AspNetUsers] PRIMARY KEY ([Id])
+);" (0723d8ff)
+2017-11-06T09:39:29.4444421+08:00  [INF] Executed DbCommand ("30"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [OpenIddictApplications] (
+    [Id] nvarchar(450) NOT NULL,
+    [ClientId] nvarchar(450) NULL,
+    [ClientSecret] nvarchar(max) NULL,
+    [DisplayName] nvarchar(max) NULL,
+    [LogoutRedirectUri] nvarchar(max) NULL,
+    [RedirectUri] nvarchar(max) NULL,
+    [Type] nvarchar(max) NULL,
+    CONSTRAINT [PK_OpenIddictApplications] PRIMARY KEY ([Id])
+);" (0723d8ff)
+2017-11-06T09:39:29.4733277+08:00  [INF] Executed DbCommand ("24"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [OpenIddictScopes] (
+    [Id] nvarchar(450) NOT NULL,
+    [Description] nvarchar(max) NULL,
+    CONSTRAINT [PK_OpenIddictScopes] PRIMARY KEY ([Id])
+);" (0723d8ff)
+2017-11-06T09:39:29.5008176+08:00  [INF] Executed DbCommand ("24"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [AppProducts] (
+    [Id] int NOT NULL IDENTITY,
+    [BuyingPrice] decimal(18, 2) NOT NULL,
+    [CreatedBy] nvarchar(256) NULL,
+    [CreatedDate] datetime2 NOT NULL,
+    [DateCreated] datetime2 NOT NULL,
+    [DateModified] datetime2 NOT NULL,
+    [Description] nvarchar(500) NULL,
+    [Icon] varchar(256) NULL,
+    [IsActive] bit NOT NULL,
+    [IsDiscontinued] bit NOT NULL,
+    [Name] nvarchar(100) NOT NULL,
+    [ParentId] int NULL,
+    [ProductCategoryId] int NOT NULL,
+    [SellingPrice] decimal(18, 2) NOT NULL,
+    [UnitsInStock] int NOT NULL,
+    [UpdatedBy] nvarchar(256) NULL,
+    [UpdatedDate] datetime2 NOT NULL,
+    CONSTRAINT [PK_AppProducts] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_AppProducts_AppProducts_ParentId] FOREIGN KEY ([ParentId]) REFERENCES [AppProducts] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_AppProducts_AppProductCategories_ProductCategoryId] FOREIGN KEY ([ProductCategoryId]) REFERENCES [AppProductCategories] ([Id]) ON DELETE CASCADE
+);" (0723d8ff)
+2017-11-06T09:39:29.5267500+08:00  [INF] Executed DbCommand ("23"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [AspNetRoleClaims] (
+    [Id] int NOT NULL IDENTITY,
+    [ClaimType] nvarchar(max) NULL,
+    [ClaimValue] nvarchar(max) NULL,
+    [RoleId] nvarchar(450) NOT NULL,
+    CONSTRAINT [PK_AspNetRoleClaims] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_AspNetRoleClaims_AspNetRoles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [AspNetRoles] ([Id]) ON DELETE CASCADE
+);" (0723d8ff)
+2017-11-06T09:39:29.5541939+08:00  [INF] Executed DbCommand ("24"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [AppOrders] (
+    [Id] int NOT NULL IDENTITY,
+    [CashierId] nvarchar(450) NULL,
+    [Comments] nvarchar(500) NULL,
+    [CreatedBy] nvarchar(256) NULL,
+    [CreatedDate] datetime2 NOT NULL,
+    [CustomerId] int NOT NULL,
+    [DateCreated] datetime2 NOT NULL,
+    [DateModified] datetime2 NOT NULL,
+    [Discount] decimal(18, 2) NOT NULL,
+    [UpdatedBy] nvarchar(256) NULL,
+    [UpdatedDate] datetime2 NOT NULL,
+    CONSTRAINT [PK_AppOrders] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_AppOrders_AspNetUsers_CashierId] FOREIGN KEY ([CashierId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_AppOrders_AppCustomers_CustomerId] FOREIGN KEY ([CustomerId]) REFERENCES [AppCustomers] ([Id]) ON DELETE CASCADE
+);" (0723d8ff)
+2017-11-06T09:39:29.5792030+08:00  [INF] Executed DbCommand ("22"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [AspNetUserClaims] (
+    [Id] int NOT NULL IDENTITY,
+    [ClaimType] nvarchar(max) NULL,
+    [ClaimValue] nvarchar(max) NULL,
+    [UserId] nvarchar(450) NOT NULL,
+    CONSTRAINT [PK_AspNetUserClaims] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_AspNetUserClaims_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+);" (0723d8ff)
+2017-11-06T09:39:29.6262113+08:00  [INF] Executed DbCommand ("44"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [AspNetUserLogins] (
+    [LoginProvider] nvarchar(450) NOT NULL,
+    [ProviderKey] nvarchar(450) NOT NULL,
+    [ProviderDisplayName] nvarchar(max) NULL,
+    [UserId] nvarchar(450) NOT NULL,
+    CONSTRAINT [PK_AspNetUserLogins] PRIMARY KEY ([LoginProvider], [ProviderKey]),
+    CONSTRAINT [FK_AspNetUserLogins_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+);" (0723d8ff)
+2017-11-06T09:39:29.6553535+08:00  [INF] Executed DbCommand ("26"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [AspNetUserRoles] (
+    [UserId] nvarchar(450) NOT NULL,
+    [RoleId] nvarchar(450) NOT NULL,
+    CONSTRAINT [PK_AspNetUserRoles] PRIMARY KEY ([UserId], [RoleId]),
+    CONSTRAINT [FK_AspNetUserRoles_AspNetRoles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [AspNetRoles] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_AspNetUserRoles_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+);" (0723d8ff)
+2017-11-06T09:39:29.6832949+08:00  [INF] Executed DbCommand ("24"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [AspNetUserTokens] (
+    [UserId] nvarchar(450) NOT NULL,
+    [LoginProvider] nvarchar(450) NOT NULL,
+    [Name] nvarchar(450) NOT NULL,
+    [Value] nvarchar(max) NULL,
+    CONSTRAINT [PK_AspNetUserTokens] PRIMARY KEY ([UserId], [LoginProvider], [Name]),
+    CONSTRAINT [FK_AspNetUserTokens_AspNetUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE CASCADE
+);" (0723d8ff)
+2017-11-06T09:39:29.7091152+08:00  [INF] Executed DbCommand ("23"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [OpenIddictAuthorizations] (
+    [Id] nvarchar(450) NOT NULL,
+    [ApplicationId] nvarchar(450) NULL,
+    [Scope] nvarchar(max) NULL,
+    [Status] nvarchar(max) NULL,
+    [Subject] nvarchar(max) NULL,
+    CONSTRAINT [PK_OpenIddictAuthorizations] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_OpenIddictAuthorizations_OpenIddictApplications_ApplicationId] FOREIGN KEY ([ApplicationId]) REFERENCES [OpenIddictApplications] ([Id]) ON DELETE NO ACTION
+);" (0723d8ff)
+2017-11-06T09:39:29.7304234+08:00  [INF] Executed DbCommand ("18"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [AppOrderDetails] (
+    [Id] int NOT NULL IDENTITY,
+    [CreatedBy] nvarchar(256) NULL,
+    [CreatedDate] datetime2 NOT NULL,
+    [Discount] decimal(18, 2) NOT NULL,
+    [OrderId] int NOT NULL,
+    [ProductId] int NOT NULL,
+    [Quantity] int NOT NULL,
+    [UnitPrice] decimal(18, 2) NOT NULL,
+    [UpdatedBy] nvarchar(256) NULL,
+    [UpdatedDate] datetime2 NOT NULL,
+    CONSTRAINT [PK_AppOrderDetails] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_AppOrderDetails_AppOrders_OrderId] FOREIGN KEY ([OrderId]) REFERENCES [AppOrders] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_AppOrderDetails_AppProducts_ProductId] FOREIGN KEY ([ProductId]) REFERENCES [AppProducts] ([Id]) ON DELETE CASCADE
+);" (0723d8ff)
+2017-11-06T09:39:29.7768707+08:00  [INF] Executed DbCommand ("43"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [OpenIddictTokens] (
+    [Id] nvarchar(450) NOT NULL,
+    [ApplicationId] nvarchar(450) NULL,
+    [AuthorizationId] nvarchar(450) NULL,
+    [Ciphertext] nvarchar(max) NULL,
+    [End] datetimeoffset NULL,
+    [Hash] nvarchar(450) NULL,
+    [Start] datetimeoffset NULL,
+    [Status] nvarchar(max) NULL,
+    [Subject] nvarchar(max) NULL,
+    [Type] nvarchar(max) NULL,
+    CONSTRAINT [PK_OpenIddictTokens] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_OpenIddictTokens_OpenIddictApplications_ApplicationId] FOREIGN KEY ([ApplicationId]) REFERENCES [OpenIddictApplications] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_OpenIddictTokens_OpenIddictAuthorizations_AuthorizationId] FOREIGN KEY ([AuthorizationId]) REFERENCES [OpenIddictAuthorizations] ([Id]) ON DELETE NO ACTION
+);" (0723d8ff)
+2017-11-06T09:39:29.7983976+08:00  [INF] Executed DbCommand ("18"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_AppCustomers_Name] ON [AppCustomers] ([Name]);" (0723d8ff)
+2017-11-06T09:39:29.8197714+08:00  [INF] Executed DbCommand ("18"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_AppOrderDetails_OrderId] ON [AppOrderDetails] ([OrderId]);" (0723d8ff)
+2017-11-06T09:39:29.8405847+08:00  [INF] Executed DbCommand ("18"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_AppOrderDetails_ProductId] ON [AppOrderDetails] ([ProductId]);" (0723d8ff)
+2017-11-06T09:39:29.8621459+08:00  [INF] Executed DbCommand ("18"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_AppOrders_CashierId] ON [AppOrders] ([CashierId]);" (0723d8ff)
+2017-11-06T09:39:29.8853596+08:00  [INF] Executed DbCommand ("19"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_AppOrders_CustomerId] ON [AppOrders] ([CustomerId]);" (0723d8ff)
+2017-11-06T09:39:29.9110718+08:00  [INF] Executed DbCommand ("22"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_AppProducts_Name] ON [AppProducts] ([Name]);" (0723d8ff)
+2017-11-06T09:39:29.9427370+08:00  [INF] Executed DbCommand ("27"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_AppProducts_ParentId] ON [AppProducts] ([ParentId]);" (0723d8ff)
+2017-11-06T09:39:29.9685743+08:00  [INF] Executed DbCommand ("22"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_AppProducts_ProductCategoryId] ON [AppProducts] ([ProductCategoryId]);" (0723d8ff)
+2017-11-06T09:39:29.9949817+08:00  [INF] Executed DbCommand ("23"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_AspNetRoleClaims_RoleId] ON [AspNetRoleClaims] ([RoleId]);" (0723d8ff)
+2017-11-06T09:39:30.0305975+08:00  [INF] Executed DbCommand ("30"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE UNIQUE INDEX [RoleNameIndex] ON [AspNetRoles] ([NormalizedName]) WHERE [NormalizedName] IS NOT NULL;" (0723d8ff)
+2017-11-06T09:39:30.0736146+08:00  [INF] Executed DbCommand ("39"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_AspNetUserClaims_UserId] ON [AspNetUserClaims] ([UserId]);" (0723d8ff)
+2017-11-06T09:39:30.1065181+08:00  [INF] Executed DbCommand ("29"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_AspNetUserLogins_UserId] ON [AspNetUserLogins] ([UserId]);" (0723d8ff)
+2017-11-06T09:39:30.1364898+08:00  [INF] Executed DbCommand ("26"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_AspNetUserRoles_RoleId] ON [AspNetUserRoles] ([RoleId]);" (0723d8ff)
+2017-11-06T09:39:30.1593991+08:00  [INF] Executed DbCommand ("20"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [EmailIndex] ON [AspNetUsers] ([NormalizedEmail]);" (0723d8ff)
+2017-11-06T09:39:30.1867654+08:00  [INF] Executed DbCommand ("23"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE UNIQUE INDEX [UserNameIndex] ON [AspNetUsers] ([NormalizedUserName]) WHERE [NormalizedUserName] IS NOT NULL;" (0723d8ff)
+2017-11-06T09:39:30.2169522+08:00  [INF] Executed DbCommand ("25"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE UNIQUE INDEX [IX_OpenIddictApplications_ClientId] ON [OpenIddictApplications] ([ClientId]) WHERE [ClientId] IS NOT NULL;" (0723d8ff)
+2017-11-06T09:39:30.2571913+08:00  [INF] Executed DbCommand ("36"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_OpenIddictAuthorizations_ApplicationId] ON [OpenIddictAuthorizations] ([ApplicationId]);" (0723d8ff)
+2017-11-06T09:39:30.2863092+08:00  [INF] Executed DbCommand ("24"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_OpenIddictTokens_ApplicationId] ON [OpenIddictTokens] ([ApplicationId]);" (0723d8ff)
+2017-11-06T09:39:30.3143859+08:00  [INF] Executed DbCommand ("25"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_OpenIddictTokens_AuthorizationId] ON [OpenIddictTokens] ([AuthorizationId]);" (0723d8ff)
+2017-11-06T09:39:30.3413680+08:00  [INF] Executed DbCommand ("24"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE UNIQUE INDEX [IX_OpenIddictTokens_Hash] ON [OpenIddictTokens] ([Hash]) WHERE [Hash] IS NOT NULL;" (0723d8ff)
+2017-11-06T09:39:30.3786442+08:00  [INF] Executed DbCommand ("34"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20170913022214_Initial', N'2.0.0-rtm-26452');" (0723d8ff)
+2017-11-06T09:39:30.6908999+08:00  [INF] Executed DbCommand ("102"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [AspNetUsers] AS [a])
+    THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT)
+END" (0723d8ff)
+2017-11-06T09:39:30.7083998+08:00  [INF] Generating inbuilt accounts (d5983574)
+2017-11-06T09:39:31.0077892+08:00  [INF] Executed DbCommand ("185"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [r].[Id], [r].[ConcurrencyStamp], [r].[CreatedBy], [r].[CreatedDate], [r].[Description], [r].[Name], [r].[NormalizedName], [r].[UpdatedBy], [r].[UpdatedDate]
+FROM [AspNetRoles] AS [r]
+WHERE [r].[NormalizedName] = @__normalizedName_0" (0723d8ff)
+2017-11-06T09:39:31.1030991+08:00  [INF] Executed DbCommand ("75"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [r].[Id], [r].[ConcurrencyStamp], [r].[CreatedBy], [r].[CreatedDate], [r].[Description], [r].[Name], [r].[NormalizedName], [r].[UpdatedBy], [r].[UpdatedDate]
+FROM [AspNetRoles] AS [r]
+WHERE [r].[NormalizedName] = @__normalizedName_0" (0723d8ff)
+2017-11-06T09:39:31.2503005+08:00  [INF] Executed DbCommand ("68"ms) [Parameters=["@p0='?' (Size = 450), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?', @p4='?' (Size = 4000), @p5='?' (Size = 256), @p6='?' (Size = 256), @p7='?' (Size = 4000), @p8='?'"], CommandType='Text', CommandTimeout='30']"
+""SET NOCOUNT ON;
+INSERT INTO [AspNetRoles] ([Id], [ConcurrencyStamp], [CreatedBy], [CreatedDate], [Description], [Name], [NormalizedName], [UpdatedBy], [UpdatedDate])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8);" (0723d8ff)
+2017-11-06T09:39:31.3218113+08:00  [INF] Executed DbCommand ("65"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [r].[Id], [r].[ConcurrencyStamp], [r].[CreatedBy], [r].[CreatedDate], [r].[Description], [r].[Name], [r].[NormalizedName], [r].[UpdatedBy], [r].[UpdatedDate]
+FROM [AspNetRoles] AS [r]
+WHERE [r].[NormalizedName] = @__normalizedName_0" (0723d8ff)
+2017-11-06T09:39:31.4174304+08:00  [INF] Executed DbCommand ("51"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [r].[Id], [r].[ConcurrencyStamp], [r].[CreatedBy], [r].[CreatedDate], [r].[Description], [r].[Name], [r].[NormalizedName], [r].[UpdatedBy], [r].[UpdatedDate]
+FROM [AspNetRoles] AS [r]
+WHERE [r].[NormalizedName] = @__normalizedName_0" (0723d8ff)
+2017-11-06T09:39:31.4792014+08:00  [INF] Executed DbCommand ("47"ms) [Parameters=["@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 450), @p9='?' (Size = 450), @p3='?' (Size = 4000), @p10='?' (Size = 4000), @p4='?' (Size = 4000), @p5='?' (Size = 256), @p6='?' (Size = 256), @p7='?' (Size = 4000), @p8='?'"], CommandType='Text', CommandTimeout='30']"
+""SET NOCOUNT ON;
+INSERT INTO [AspNetRoleClaims] ([ClaimType], [ClaimValue], [RoleId])
+VALUES (@p0, @p1, @p2);
+SELECT [Id]
+FROM [AspNetRoleClaims]
+WHERE @@ROWCOUNT = 1 AND [Id] = scope_identity();
+
+UPDATE [AspNetRoles] SET [ConcurrencyStamp] = @p3, [Description] = @p4, [Name] = @p5, [NormalizedName] = @p6, [UpdatedBy] = @p7, [UpdatedDate] = @p8
+WHERE [Id] = @p9 AND [ConcurrencyStamp] = @p10;
+SELECT @@ROWCOUNT;" (0723d8ff)
+2017-11-06T09:39:31.5649420+08:00  [INF] Executed DbCommand ("70"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [r].[Id], [r].[ConcurrencyStamp], [r].[CreatedBy], [r].[CreatedDate], [r].[Description], [r].[Name], [r].[NormalizedName], [r].[UpdatedBy], [r].[UpdatedDate]
+FROM [AspNetRoles] AS [r]
+WHERE [r].[NormalizedName] = @__normalizedName_0" (0723d8ff)
+2017-11-06T09:39:31.6252244+08:00  [INF] Executed DbCommand ("54"ms) [Parameters=["@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 450), @p9='?' (Size = 450), @p3='?' (Size = 4000), @p10='?' (Size = 4000), @p4='?' (Size = 4000), @p5='?' (Size = 256), @p6='?' (Size = 256), @p7='?' (Size = 4000), @p8='?'"], CommandType='Text', CommandTimeout='30']"
+""SET NOCOUNT ON;
+INSERT INTO [AspNetRoleClaims] ([ClaimType], [ClaimValue], [RoleId])
+VALUES (@p0, @p1, @p2);
+SELECT [Id]
+FROM [AspNetRoleClaims]
+WHERE @@ROWCOUNT = 1 AND [Id] = scope_identity();
+
+UPDATE [AspNetRoles] SET [ConcurrencyStamp] = @p3, [Description] = @p4, [Name] = @p5, [NormalizedName] = @p6, [UpdatedBy] = @p7, [UpdatedDate] = @p8
+WHERE [Id] = @p9 AND [ConcurrencyStamp] = @p10;
+SELECT @@ROWCOUNT;" (0723d8ff)
+2017-11-06T09:39:31.6976025+08:00  [INF] Executed DbCommand ("58"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [r].[Id], [r].[ConcurrencyStamp], [r].[CreatedBy], [r].[CreatedDate], [r].[Description], [r].[Name], [r].[NormalizedName], [r].[UpdatedBy], [r].[UpdatedDate]
+FROM [AspNetRoles] AS [r]
+WHERE [r].[NormalizedName] = @__normalizedName_0" (0723d8ff)
+2017-11-06T09:39:31.7541626+08:00  [INF] Executed DbCommand ("43"ms) [Parameters=["@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 450), @p9='?' (Size = 450), @p3='?' (Size = 4000), @p10='?' (Size = 4000), @p4='?' (Size = 4000), @p5='?' (Size = 256), @p6='?' (Size = 256), @p7='?' (Size = 4000), @p8='?'"], CommandType='Text', CommandTimeout='30']"
+""SET NOCOUNT ON;
+INSERT INTO [AspNetRoleClaims] ([ClaimType], [ClaimValue], [RoleId])
+VALUES (@p0, @p1, @p2);
+SELECT [Id]
+FROM [AspNetRoleClaims]
+WHERE @@ROWCOUNT = 1 AND [Id] = scope_identity();
+
+UPDATE [AspNetRoles] SET [ConcurrencyStamp] = @p3, [Description] = @p4, [Name] = @p5, [NormalizedName] = @p6, [UpdatedBy] = @p7, [UpdatedDate] = @p8
+WHERE [Id] = @p9 AND [ConcurrencyStamp] = @p10;
+SELECT @@ROWCOUNT;" (0723d8ff)
+2017-11-06T09:39:31.8110477+08:00  [INF] Executed DbCommand ("52"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [r].[Id], [r].[ConcurrencyStamp], [r].[CreatedBy], [r].[CreatedDate], [r].[Description], [r].[Name], [r].[NormalizedName], [r].[UpdatedBy], [r].[UpdatedDate]
+FROM [AspNetRoles] AS [r]
+WHERE [r].[NormalizedName] = @__normalizedName_0" (0723d8ff)
+2017-11-06T09:39:31.8742713+08:00  [INF] Executed DbCommand ("58"ms) [Parameters=["@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 450), @p9='?' (Size = 450), @p3='?' (Size = 4000), @p10='?' (Size = 4000), @p4='?' (Size = 4000), @p5='?' (Size = 256), @p6='?' (Size = 256), @p7='?' (Size = 4000), @p8='?'"], CommandType='Text', CommandTimeout='30']"
+""SET NOCOUNT ON;
+INSERT INTO [AspNetRoleClaims] ([ClaimType], [ClaimValue], [RoleId])
+VALUES (@p0, @p1, @p2);
+SELECT [Id]
+FROM [AspNetRoleClaims]
+WHERE @@ROWCOUNT = 1 AND [Id] = scope_identity();
+
+UPDATE [AspNetRoles] SET [ConcurrencyStamp] = @p3, [Description] = @p4, [Name] = @p5, [NormalizedName] = @p6, [UpdatedBy] = @p7, [UpdatedDate] = @p8
+WHERE [Id] = @p9 AND [ConcurrencyStamp] = @p10;
+SELECT @@ROWCOUNT;" (0723d8ff)
+2017-11-06T09:39:31.9277026+08:00  [INF] Executed DbCommand ("48"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [r].[Id], [r].[ConcurrencyStamp], [r].[CreatedBy], [r].[CreatedDate], [r].[Description], [r].[Name], [r].[NormalizedName], [r].[UpdatedBy], [r].[UpdatedDate]
+FROM [AspNetRoles] AS [r]
+WHERE [r].[NormalizedName] = @__normalizedName_0" (0723d8ff)
+2017-11-06T09:39:32.0024595+08:00  [INF] Executed DbCommand ("70"ms) [Parameters=["@p0='?' (Size = 4000), @p1='?' (Size = 4000), @p2='?' (Size = 450), @p9='?' (Size = 450), @p3='?' (Size = 4000), @p10='?' (Size = 4000), @p4='?' (Size = 4000), @p5='?' (Size = 256), @p6='?' (Size = 256), @p7='?' (Size = 4000), @p8='?'"], CommandType='Text', CommandTimeout='30']"
+""SET NOCOUNT ON;
+INSERT INTO [AspNetRoleClaims] ([ClaimType], [ClaimValue], [RoleId])
+VALUES (@p0, @p1, @p2);
+SELECT [Id]
+FROM [AspNetRoleClaims]
+WHERE @@ROWCOUNT = 1 AND [Id] = scope_identity();
+
+UPDATE [AspNetRoles] SET [ConcurrencyStamp] = @p3, [Description] = @p4, [Name] = @p5, [NormalizedName] = @p6, [UpdatedBy] = @p7, [UpdatedDate] = @p8
+WHERE [Id] = @p9 AND [ConcurrencyStamp] = @p10;
+SELECT @@ROWCOUNT;" (0723d8ff)
+2017-11-06T09:39:32.0600895+08:00  [INF] Executed DbCommand ("53"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [r].[Id], [r].[ConcurrencyStamp], [r].[CreatedBy], [r].[CreatedDate], [r].[Description], [r].[Name], [r].[NormalizedName], [r].[UpdatedBy], [r].[UpdatedDate]
+FROM [AspNetRoles] AS [r]
+WHERE [r].[NormalizedName] = @__normalizedName_0" (0723d8ff)
+2017-11-06T09:39:32.1037430+08:00  [INF] Executed DbCommand ("39"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [r].[Id], [r].[ConcurrencyStamp], [r].[CreatedBy], [r].[CreatedDate], [r].[Description], [r].[Name], [r].[NormalizedName], [r].[UpdatedBy], [r].[UpdatedDate]
+FROM [AspNetRoles] AS [r]
+WHERE [r].[NormalizedName] = @__normalizedName_0" (0723d8ff)
+2017-11-06T09:39:32.1587340+08:00  [INF] Executed DbCommand ("47"ms) [Parameters=["@p0='?' (Size = 450), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?', @p4='?' (Size = 4000), @p5='?' (Size = 256), @p6='?' (Size = 256), @p7='?' (Size = 4000), @p8='?'"], CommandType='Text', CommandTimeout='30']"
+""SET NOCOUNT ON;
+INSERT INTO [AspNetRoles] ([Id], [ConcurrencyStamp], [CreatedBy], [CreatedDate], [Description], [Name], [NormalizedName], [UpdatedBy], [UpdatedDate])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8);" (0723d8ff)
+2017-11-06T09:39:32.2074325+08:00  [INF] Executed DbCommand ("44"ms) [Parameters=["@__normalizedName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [r].[Id], [r].[ConcurrencyStamp], [r].[CreatedBy], [r].[CreatedDate], [r].[Description], [r].[Name], [r].[NormalizedName], [r].[UpdatedBy], [r].[UpdatedDate]
+FROM [AspNetRoles] AS [r]
+WHERE [r].[NormalizedName] = @__normalizedName_0" (0723d8ff)
+2017-11-06T09:39:32.4218320+08:00  [INF] Executed DbCommand ("77"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Configuration], [u].[CreatedBy], [u].[CreatedDate], [u].[Email], [u].[EmailConfirmed], [u].[FullName], [u].[IsEnabled], [u].[JobTitle], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UpdatedBy], [u].[UpdatedDate], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE [u].[NormalizedUserName] = @__normalizedUserName_0" (0723d8ff)
+2017-11-06T09:39:32.4597714+08:00  [INF] Executed DbCommand ("21"ms) [Parameters=["@__normalizedEmail_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Configuration], [u].[CreatedBy], [u].[CreatedDate], [u].[Email], [u].[EmailConfirmed], [u].[FullName], [u].[IsEnabled], [u].[JobTitle], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UpdatedBy], [u].[UpdatedDate], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE [u].[NormalizedEmail] = @__normalizedEmail_0" (0723d8ff)
+2017-11-06T09:39:32.5465893+08:00  [INF] Executed DbCommand ("45"ms) [Parameters=["@p0='?' (Size = 450), @p1='?', @p2='?' (Size = 4000), @p3='?' (Size = 4000), @p4='?' (Size = 4000), @p5='?', @p6='?' (Size = 256), @p7='?', @p8='?' (Size = 4000), @p9='?', @p10='?' (Size = 4000), @p11='?', @p12='?', @p13='?' (Size = 256), @p14='?' (Size = 256), @p15='?' (Size = 4000), @p16='?' (Size = 4000), @p17='?', @p18='?' (Size = 4000), @p19='?', @p20='?' (Size = 4000), @p21='?', @p22='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SET NOCOUNT ON;
+INSERT INTO [AspNetUsers] ([Id], [AccessFailedCount], [ConcurrencyStamp], [Configuration], [CreatedBy], [CreatedDate], [Email], [EmailConfirmed], [FullName], [IsEnabled], [JobTitle], [LockoutEnabled], [LockoutEnd], [NormalizedEmail], [NormalizedUserName], [PasswordHash], [PhoneNumber], [PhoneNumberConfirmed], [SecurityStamp], [TwoFactorEnabled], [UpdatedBy], [UpdatedDate], [UserName])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21, @p22);" (0723d8ff)
+2017-11-06T09:39:32.6059744+08:00  [INF] Executed DbCommand ("53"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Configuration], [u].[CreatedBy], [u].[CreatedDate], [u].[Email], [u].[EmailConfirmed], [u].[FullName], [u].[IsEnabled], [u].[JobTitle], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UpdatedBy], [u].[UpdatedDate], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE [u].[NormalizedUserName] = @__normalizedUserName_0" (0723d8ff)
+2017-11-06T09:39:32.6801916+08:00  [INF] Executed DbCommand ("56"ms) [Parameters=["@__normalizedRoleName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(2) [r].[Id], [r].[ConcurrencyStamp], [r].[CreatedBy], [r].[CreatedDate], [r].[Description], [r].[Name], [r].[NormalizedName], [r].[UpdatedBy], [r].[UpdatedDate]
+FROM [AspNetRoles] AS [r]
+WHERE [r].[NormalizedName] = @__normalizedRoleName_0" (0723d8ff)
+2017-11-06T09:39:32.7172634+08:00  [INF] Executed DbCommand ("19"ms) [Parameters=["@__get_Item_0='?' (Size = 450), @__get_Item_1='?' (Size = 450)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [e].[UserId], [e].[RoleId]
+FROM [AspNetUserRoles] AS [e]
+WHERE ([e].[UserId] = @__get_Item_0) AND ([e].[RoleId] = @__get_Item_1)" (0723d8ff)
+2017-11-06T09:39:32.7480012+08:00  [INF] Executed DbCommand ("25"ms) [Parameters=["@__normalizedRoleName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(2) [r].[Id], [r].[ConcurrencyStamp], [r].[CreatedBy], [r].[CreatedDate], [r].[Description], [r].[Name], [r].[NormalizedName], [r].[UpdatedBy], [r].[UpdatedDate]
+FROM [AspNetRoles] AS [r]
+WHERE [r].[NormalizedName] = @__normalizedRoleName_0" (0723d8ff)
+2017-11-06T09:39:32.7832657+08:00  [INF] Executed DbCommand ("23"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Configuration], [u].[CreatedBy], [u].[CreatedDate], [u].[Email], [u].[EmailConfirmed], [u].[FullName], [u].[IsEnabled], [u].[JobTitle], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UpdatedBy], [u].[UpdatedDate], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE [u].[NormalizedUserName] = @__normalizedUserName_0" (0723d8ff)
+2017-11-06T09:39:32.8403624+08:00  [INF] Executed DbCommand ("51"ms) [Parameters=["@__normalizedEmail_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Configuration], [u].[CreatedBy], [u].[CreatedDate], [u].[Email], [u].[EmailConfirmed], [u].[FullName], [u].[IsEnabled], [u].[JobTitle], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UpdatedBy], [u].[UpdatedDate], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE [u].[NormalizedEmail] = @__normalizedEmail_0" (0723d8ff)
+2017-11-06T09:39:32.8966169+08:00  [INF] Executed DbCommand ("49"ms) [Parameters=["@p0='?' (Size = 450), @p1='?' (Size = 450), @p22='?' (Size = 450), @p2='?', @p3='?' (Size = 4000), @p23='?' (Size = 4000), @p4='?' (Size = 4000), @p5='?' (Size = 256), @p6='?', @p7='?' (Size = 4000), @p8='?', @p9='?' (Size = 4000), @p10='?', @p11='?', @p12='?' (Size = 256), @p13='?' (Size = 256), @p14='?' (Size = 4000), @p15='?' (Size = 4000), @p16='?', @p17='?' (Size = 4000), @p18='?', @p19='?' (Size = 4000), @p20='?', @p21='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SET NOCOUNT ON;
+INSERT INTO [AspNetUserRoles] ([UserId], [RoleId])
+VALUES (@p0, @p1);
+UPDATE [AspNetUsers] SET [AccessFailedCount] = @p2, [ConcurrencyStamp] = @p3, [Configuration] = @p4, [Email] = @p5, [EmailConfirmed] = @p6, [FullName] = @p7, [IsEnabled] = @p8, [JobTitle] = @p9, [LockoutEnabled] = @p10, [LockoutEnd] = @p11, [NormalizedEmail] = @p12, [NormalizedUserName] = @p13, [PasswordHash] = @p14, [PhoneNumber] = @p15, [PhoneNumberConfirmed] = @p16, [SecurityStamp] = @p17, [TwoFactorEnabled] = @p18, [UpdatedBy] = @p19, [UpdatedDate] = @p20, [UserName] = @p21
+WHERE [Id] = @p22 AND [ConcurrencyStamp] = @p23;
+SELECT @@ROWCOUNT;" (0723d8ff)
+2017-11-06T09:39:32.9595679+08:00  [INF] Executed DbCommand ("45"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Configuration], [u].[CreatedBy], [u].[CreatedDate], [u].[Email], [u].[EmailConfirmed], [u].[FullName], [u].[IsEnabled], [u].[JobTitle], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UpdatedBy], [u].[UpdatedDate], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE [u].[NormalizedUserName] = @__normalizedUserName_0" (0723d8ff)
+2017-11-06T09:39:33.0142809+08:00  [INF] Executed DbCommand ("50"ms) [Parameters=["@__normalizedEmail_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Configuration], [u].[CreatedBy], [u].[CreatedDate], [u].[Email], [u].[EmailConfirmed], [u].[FullName], [u].[IsEnabled], [u].[JobTitle], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UpdatedBy], [u].[UpdatedDate], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE [u].[NormalizedEmail] = @__normalizedEmail_0" (0723d8ff)
+2017-11-06T09:39:33.0738855+08:00  [INF] Executed DbCommand ("54"ms) [Parameters=["@p0='?' (Size = 450), @p1='?', @p2='?' (Size = 4000), @p3='?' (Size = 4000), @p4='?' (Size = 4000), @p5='?', @p6='?' (Size = 256), @p7='?', @p8='?' (Size = 4000), @p9='?', @p10='?' (Size = 4000), @p11='?', @p12='?', @p13='?' (Size = 256), @p14='?' (Size = 256), @p15='?' (Size = 4000), @p16='?' (Size = 4000), @p17='?', @p18='?' (Size = 4000), @p19='?', @p20='?' (Size = 4000), @p21='?', @p22='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SET NOCOUNT ON;
+INSERT INTO [AspNetUsers] ([Id], [AccessFailedCount], [ConcurrencyStamp], [Configuration], [CreatedBy], [CreatedDate], [Email], [EmailConfirmed], [FullName], [IsEnabled], [JobTitle], [LockoutEnabled], [LockoutEnd], [NormalizedEmail], [NormalizedUserName], [PasswordHash], [PhoneNumber], [PhoneNumberConfirmed], [SecurityStamp], [TwoFactorEnabled], [UpdatedBy], [UpdatedDate], [UserName])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21, @p22);" (0723d8ff)
+2017-11-06T09:39:33.1226183+08:00  [INF] Executed DbCommand ("44"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Configuration], [u].[CreatedBy], [u].[CreatedDate], [u].[Email], [u].[EmailConfirmed], [u].[FullName], [u].[IsEnabled], [u].[JobTitle], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UpdatedBy], [u].[UpdatedDate], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE [u].[NormalizedUserName] = @__normalizedUserName_0" (0723d8ff)
+2017-11-06T09:39:33.1702557+08:00  [INF] Executed DbCommand ("43"ms) [Parameters=["@__normalizedRoleName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(2) [r].[Id], [r].[ConcurrencyStamp], [r].[CreatedBy], [r].[CreatedDate], [r].[Description], [r].[Name], [r].[NormalizedName], [r].[UpdatedBy], [r].[UpdatedDate]
+FROM [AspNetRoles] AS [r]
+WHERE [r].[NormalizedName] = @__normalizedRoleName_0" (0723d8ff)
+2017-11-06T09:39:33.2208938+08:00  [INF] Executed DbCommand ("45"ms) [Parameters=["@__get_Item_0='?' (Size = 450), @__get_Item_1='?' (Size = 450)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [e].[UserId], [e].[RoleId]
+FROM [AspNetUserRoles] AS [e]
+WHERE ([e].[UserId] = @__get_Item_0) AND ([e].[RoleId] = @__get_Item_1)" (0723d8ff)
+2017-11-06T09:39:33.2727314+08:00  [INF] Executed DbCommand ("48"ms) [Parameters=["@__normalizedRoleName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(2) [r].[Id], [r].[ConcurrencyStamp], [r].[CreatedBy], [r].[CreatedDate], [r].[Description], [r].[Name], [r].[NormalizedName], [r].[UpdatedBy], [r].[UpdatedDate]
+FROM [AspNetRoles] AS [r]
+WHERE [r].[NormalizedName] = @__normalizedRoleName_0" (0723d8ff)
+2017-11-06T09:39:33.3266629+08:00  [INF] Executed DbCommand ("49"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Configuration], [u].[CreatedBy], [u].[CreatedDate], [u].[Email], [u].[EmailConfirmed], [u].[FullName], [u].[IsEnabled], [u].[JobTitle], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UpdatedBy], [u].[UpdatedDate], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE [u].[NormalizedUserName] = @__normalizedUserName_0" (0723d8ff)
+2017-11-06T09:39:33.3775733+08:00  [INF] Executed DbCommand ("47"ms) [Parameters=["@__normalizedEmail_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Configuration], [u].[CreatedBy], [u].[CreatedDate], [u].[Email], [u].[EmailConfirmed], [u].[FullName], [u].[IsEnabled], [u].[JobTitle], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UpdatedBy], [u].[UpdatedDate], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE [u].[NormalizedEmail] = @__normalizedEmail_0" (0723d8ff)
+2017-11-06T09:39:33.4326329+08:00  [INF] Executed DbCommand ("49"ms) [Parameters=["@p0='?' (Size = 450), @p1='?' (Size = 450), @p22='?' (Size = 450), @p2='?', @p3='?' (Size = 4000), @p23='?' (Size = 4000), @p4='?' (Size = 4000), @p5='?' (Size = 256), @p6='?', @p7='?' (Size = 4000), @p8='?', @p9='?' (Size = 4000), @p10='?', @p11='?', @p12='?' (Size = 256), @p13='?' (Size = 256), @p14='?' (Size = 4000), @p15='?' (Size = 4000), @p16='?', @p17='?' (Size = 4000), @p18='?', @p19='?' (Size = 4000), @p20='?', @p21='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SET NOCOUNT ON;
+INSERT INTO [AspNetUserRoles] ([UserId], [RoleId])
+VALUES (@p0, @p1);
+UPDATE [AspNetUsers] SET [AccessFailedCount] = @p2, [ConcurrencyStamp] = @p3, [Configuration] = @p4, [Email] = @p5, [EmailConfirmed] = @p6, [FullName] = @p7, [IsEnabled] = @p8, [JobTitle] = @p9, [LockoutEnabled] = @p10, [LockoutEnd] = @p11, [NormalizedEmail] = @p12, [NormalizedUserName] = @p13, [PasswordHash] = @p14, [PhoneNumber] = @p15, [PhoneNumberConfirmed] = @p16, [SecurityStamp] = @p17, [TwoFactorEnabled] = @p18, [UpdatedBy] = @p19, [UpdatedDate] = @p20, [UserName] = @p21
+WHERE [Id] = @p22 AND [ConcurrencyStamp] = @p23;
+SELECT @@ROWCOUNT;" (0723d8ff)
+2017-11-06T09:39:33.4391899+08:00  [INF] Inbuilt account generation completed (a663d88d)
+2017-11-06T09:39:33.4914325+08:00  [INF] Executed DbCommand ("46"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [AppCustomers] AS [a])
+    THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT)
+END" (0723d8ff)
+2017-11-06T09:39:33.5403155+08:00  [INF] Executed DbCommand ("42"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [AppProductCategories] AS [a])
+    THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT)
+END" (0723d8ff)
+2017-11-06T09:39:33.5457015+08:00  [INF] Seeding initial data (13b66d8a)
+2017-11-06T09:39:33.5523011+08:00  [WRN] Query: '"(from ApplicationUser <generated>_1 in DbSet<ApplicationUser> select [<generated>_1]).First()"' uses First/FirstOrDefault operation without OrderBy and filter which may lead to unpredictable results. (e99f2322)
+2017-11-06T09:39:33.6061189+08:00  [INF] Executed DbCommand ("34"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Configuration], [a].[CreatedBy], [a].[CreatedDate], [a].[Email], [a].[EmailConfirmed], [a].[FullName], [a].[IsEnabled], [a].[JobTitle], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UpdatedBy], [a].[UpdatedDate], [a].[UserName]
+FROM [AspNetUsers] AS [a]" (0723d8ff)
+2017-11-06T09:39:33.6444491+08:00  [INF] Executed DbCommand ("34"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Configuration], [a].[CreatedBy], [a].[CreatedDate], [a].[Email], [a].[EmailConfirmed], [a].[FullName], [a].[IsEnabled], [a].[JobTitle], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UpdatedBy], [a].[UpdatedDate], [a].[UserName]
+FROM [AspNetUsers] AS [a]" (0723d8ff)
+2017-11-06T09:39:33.8856759+08:00  [INF] Executed DbCommand ("123"ms) [Parameters=["@p0='?' (Size = 4000), @p1='?' (Size = 50), @p2='?' (Size = 256), @p3='?', @p4='?', @p5='?', @p6='?' (Size = 100), @p7='?', @p8='?' (Size = 100), @p9='?' (Size = 30), @p10='?' (Size = 256), @p11='?', @p12='?' (Size = 4000), @p13='?' (Size = 50), @p14='?' (Size = 256), @p15='?', @p16='?', @p17='?', @p18='?' (Size = 100), @p19='?', @p20='?' (Size = 100), @p21='?' (Size = 30), @p22='?' (Size = 256), @p23='?', @p24='?' (Size = 4000), @p25='?' (Size = 50), @p26='?' (Size = 256), @p27='?', @p28='?', @p29='?', @p30='?' (Size = 100), @p31='?', @p32='?' (Size = 100), @p33='?' (Size = 30), @p34='?' (Size = 256), @p35='?', @p36='?' (Size = 4000), @p37='?' (Size = 50), @p38='?' (Size = 256), @p39='?', @p40='?', @p41='?', @p42='?' (Size = 100), @p43='?', @p44='?' (Size = 100), @p45='?' (Size = 30), @p46='?' (Size = 256), @p47='?', @p48='?' (Size = 256), @p49='?', @p50='?', @p51='?', @p52='?' (Size = 500), @p53='?' (Size = 4000), @p54='?' (Size = 100), @p55='?' (Size = 256), @p56='?'"], CommandType='Text', CommandTimeout='30']"
+""SET NOCOUNT ON;
+DECLARE @inserted0 TABLE ([Id] int, [_Position] [int]);
+MERGE [AppCustomers] USING (
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, 0),
+(@p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21, @p22, @p23, 1),
+(@p24, @p25, @p26, @p27, @p28, @p29, @p30, @p31, @p32, @p33, @p34, @p35, 2),
+(@p36, @p37, @p38, @p39, @p40, @p41, @p42, @p43, @p44, @p45, @p46, @p47, 3)) AS i ([Address], [City], [CreatedBy], [CreatedDate], [DateCreated], [DateModified], [Email], [Gender], [Name], [PhoneNumber], [UpdatedBy], [UpdatedDate], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([Address], [City], [CreatedBy], [CreatedDate], [DateCreated], [DateModified], [Email], [Gender], [Name], [PhoneNumber], [UpdatedBy], [UpdatedDate])
+VALUES (i.[Address], i.[City], i.[CreatedBy], i.[CreatedDate], i.[DateCreated], i.[DateModified], i.[Email], i.[Gender], i.[Name], i.[PhoneNumber], i.[UpdatedBy], i.[UpdatedDate])
+OUTPUT INSERTED.[Id], i._Position
+INTO @inserted0;
+
+SELECT [t].[Id] FROM [AppCustomers] t
+INNER JOIN @inserted0 i ON ([t].[Id] = [i].[Id])
+ORDER BY [i].[_Position];
+
+INSERT INTO [AppProductCategories] ([CreatedBy], [CreatedDate], [DateCreated], [DateModified], [Description], [Icon], [Name], [UpdatedBy], [UpdatedDate])
+VALUES (@p48, @p49, @p50, @p51, @p52, @p53, @p54, @p55, @p56);
+SELECT [Id]
+FROM [AppProductCategories]
+WHERE @@ROWCOUNT = 1 AND [Id] = scope_identity();" (0723d8ff)
+2017-11-06T09:39:33.9981752+08:00  [INF] Executed DbCommand ("96"ms) [Parameters=["@p57='?' (Size = 450), @p58='?' (Size = 500), @p59='?' (Size = 256), @p60='?', @p61='?', @p62='?', @p63='?', @p64='?', @p65='?' (Size = 256), @p66='?', @p67='?' (Size = 450), @p68='?' (Size = 500), @p69='?' (Size = 256), @p70='?', @p71='?', @p72='?', @p73='?', @p74='?', @p75='?' (Size = 256), @p76='?', @p77='?', @p78='?' (Size = 256), @p79='?', @p80='?', @p81='?', @p82='?' (Size = 500), @p83='?' (Size = 256), @p84='?', @p85='?', @p86='?' (Size = 100), @p87='?', @p88='?', @p89='?', @p90='?', @p91='?' (Size = 256), @p92='?', @p93='?', @p94='?' (Size = 256), @p95='?', @p96='?', @p97='?', @p98='?' (Size = 500), @p99='?' (Size = 256), @p100='?', @p101='?', @p102='?' (Size = 100), @p103='?', @p104='?', @p105='?', @p106='?', @p107='?' (Size = 256), @p108='?'"], CommandType='Text', CommandTimeout='30']"
+""SET NOCOUNT ON;
+DECLARE @inserted0 TABLE ([Id] int, [_Position] [int]);
+MERGE [AppOrders] USING (
+VALUES (@p57, @p58, @p59, @p60, @p61, @p62, @p63, @p64, @p65, @p66, 0),
+(@p67, @p68, @p69, @p70, @p71, @p72, @p73, @p74, @p75, @p76, 1)) AS i ([CashierId], [Comments], [CreatedBy], [CreatedDate], [CustomerId], [DateCreated], [DateModified], [Discount], [UpdatedBy], [UpdatedDate], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([CashierId], [Comments], [CreatedBy], [CreatedDate], [CustomerId], [DateCreated], [DateModified], [Discount], [UpdatedBy], [UpdatedDate])
+VALUES (i.[CashierId], i.[Comments], i.[CreatedBy], i.[CreatedDate], i.[CustomerId], i.[DateCreated], i.[DateModified], i.[Discount], i.[UpdatedBy], i.[UpdatedDate])
+OUTPUT INSERTED.[Id], i._Position
+INTO @inserted0;
+
+SELECT [t].[Id] FROM [AppOrders] t
+INNER JOIN @inserted0 i ON ([t].[Id] = [i].[Id])
+ORDER BY [i].[_Position];
+
+DECLARE @inserted2 TABLE ([Id] int, [_Position] [int]);
+MERGE [AppProducts] USING (
+VALUES (@p77, @p78, @p79, @p80, @p81, @p82, @p83, @p84, @p85, @p86, @p87, @p88, @p89, @p90, @p91, @p92, 0),
+(@p93, @p94, @p95, @p96, @p97, @p98, @p99, @p100, @p101, @p102, @p103, @p104, @p105, @p106, @p107, @p108, 1)) AS i ([BuyingPrice], [CreatedBy], [CreatedDate], [DateCreated], [DateModified], [Description], [Icon], [IsActive], [IsDiscontinued], [Name], [ParentId], [ProductCategoryId], [SellingPrice], [UnitsInStock], [UpdatedBy], [UpdatedDate], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([BuyingPrice], [CreatedBy], [CreatedDate], [DateCreated], [DateModified], [Description], [Icon], [IsActive], [IsDiscontinued], [Name], [ParentId], [ProductCategoryId], [SellingPrice], [UnitsInStock], [UpdatedBy], [UpdatedDate])
+VALUES (i.[BuyingPrice], i.[CreatedBy], i.[CreatedDate], i.[DateCreated], i.[DateModified], i.[Description], i.[Icon], i.[IsActive], i.[IsDiscontinued], i.[Name], i.[ParentId], i.[ProductCategoryId], i.[SellingPrice], i.[UnitsInStock], i.[UpdatedBy], i.[UpdatedDate])
+OUTPUT INSERTED.[Id], i._Position
+INTO @inserted2;
+
+SELECT [t].[Id] FROM [AppProducts] t
+INNER JOIN @inserted2 i ON ([t].[Id] = [i].[Id])
+ORDER BY [i].[_Position];" (0723d8ff)
+2017-11-06T09:39:34.0741989+08:00  [INF] Executed DbCommand ("57"ms) [Parameters=["@p109='?' (Size = 256), @p110='?', @p111='?', @p112='?', @p113='?', @p114='?', @p115='?', @p116='?' (Size = 256), @p117='?', @p118='?' (Size = 256), @p119='?', @p120='?', @p121='?', @p122='?', @p123='?', @p124='?', @p125='?' (Size = 256), @p126='?', @p127='?' (Size = 256), @p128='?', @p129='?', @p130='?', @p131='?', @p132='?', @p133='?', @p134='?' (Size = 256), @p135='?'"], CommandType='Text', CommandTimeout='30']"
+""SET NOCOUNT ON;
+DECLARE @inserted0 TABLE ([Id] int, [_Position] [int]);
+MERGE [AppOrderDetails] USING (
+VALUES (@p109, @p110, @p111, @p112, @p113, @p114, @p115, @p116, @p117, 0),
+(@p118, @p119, @p120, @p121, @p122, @p123, @p124, @p125, @p126, 1),
+(@p127, @p128, @p129, @p130, @p131, @p132, @p133, @p134, @p135, 2)) AS i ([CreatedBy], [CreatedDate], [Discount], [OrderId], [ProductId], [Quantity], [UnitPrice], [UpdatedBy], [UpdatedDate], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([CreatedBy], [CreatedDate], [Discount], [OrderId], [ProductId], [Quantity], [UnitPrice], [UpdatedBy], [UpdatedDate])
+VALUES (i.[CreatedBy], i.[CreatedDate], i.[Discount], i.[OrderId], i.[ProductId], i.[Quantity], i.[UnitPrice], i.[UpdatedBy], i.[UpdatedDate])
+OUTPUT INSERTED.[Id], i._Position
+INTO @inserted0;
+
+SELECT [t].[Id] FROM [AppOrderDetails] t
+INNER JOIN @inserted0 i ON ([t].[Id] = [i].[Id])
+ORDER BY [i].[_Position];" (0723d8ff)
+2017-11-06T09:39:34.0827399+08:00  [INF] Seeding initial data completed (dcd778dd)
+2017-11-06T09:39:34.5402835+08:00 0HL94MSTS2KH1:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:1533/   (ca22a1cb)
+2017-11-06T09:39:35.5066015+08:00 0HL94MSTS2KH1:00000001 [INF] Executing action method "Quick_Application1.Controllers.HomeController.Index (Quick_Application1)" with arguments (null) - ModelState is Valid (ba7f4ac2)
+2017-11-06T09:39:42.4612588+08:00 0HL94MSTS2KH1:00000001 [INF] Executing ViewResult, running view at path "/Views/Home/Index.cshtml". (9707eebe)
+2017-11-06T09:39:43.2114990+08:00 0HL94MSTS2KH1:00000001 [INF] Executed action "Quick_Application1.Controllers.HomeController.Index (Quick_Application1)" in 7782.3911ms (afa2e885)
+2017-11-06T09:39:43.2160047+08:00 0HL94MSTS2KH4:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:1533/dist/vendor.css?v=LJsqxV_NbY9Jue4BV9O_SDiaBzkzvWqvBnuuj3UwSNA   (ca22a1cb)
+2017-11-06T09:39:43.2276588+08:00 0HL94MSTS2KH1:00000001 [INF] Request finished in 8730.0253ms 200 text/html; charset=utf-8 (791a596a)
+2017-11-06T09:39:43.2960707+08:00 0HL94MSTS2KH5:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:1533/dist/main-client.js?v=mYrKuepynUVvSGiguCN_f4yYLDk33e_L7eq7tp6lYV0   (ca22a1cb)
+2017-11-06T09:39:43.2999607+08:00 0HL94MSTS2KH3:00000001 [INF] Request starting HTTP/1.1 GET http://localhost:1533/dist/vendor.js?v=lfUosEDWx0SPIsR7pMLTtKyS2gn0noolsFOWk-a1sFo   (ca22a1cb)
+2017-11-06T09:39:43.4753228+08:00 0HL94MSTS2KH3:00000001 [INF] Sending file. Request path: '"/dist/vendor.js"'. Physical path: '"F:\tp\Quick Application1\Quick_Application1\wwwroot\dist\vendor.js"' (27b0a520)
+2017-11-06T09:39:43.4836357+08:00 0HL94MSTS2KH4:00000001 [INF] Sending file. Request path: '"/dist/vendor.css"'. Physical path: '"F:\tp\Quick Application1\Quick_Application1\wwwroot\dist\vendor.css"' (27b0a520)
+2017-11-06T09:39:43.6246685+08:00 0HL94MSTS2KH5:00000001 [INF] Request finished in 323.0388ms 200 application/javascript; charset=UTF-8 (791a596a)
+2017-11-06T09:39:43.6458793+08:00 0HL94MSTS2KH4:00000001 [INF] Request finished in 427.2431ms 200 text/css (791a596a)
+2017-11-06T09:39:44.3331381+08:00 0HL94MSTS2KH3:00000001 [INF] Request finished in 1036.5174ms 200 application/javascript (791a596a)
+2017-11-06T09:39:49.7862410+08:00 0HL94MSTS2KH1:00000002 [INF] Request starting HTTP/1.1 GET http://localhost:1533/dist/__webpack_hmr   (ca22a1cb)
+2017-11-06T09:39:50.0106666+08:00 0HL94MSTS2KH4:00000002 [INF] Request starting HTTP/1.1 GET http://localhost:1533/favicon.ico   (ca22a1cb)
+2017-11-06T09:39:50.0156665+08:00 0HL94MSTS2KH4:00000002 [INF] Sending file. Request path: '"/favicon.ico"'. Physical path: '"F:\tp\Quick Application1\Quick_Application1\wwwroot\favicon.ico"' (27b0a520)
+2017-11-06T09:39:50.0563413+08:00 0HL94MSTS2KH4:00000002 [INF] Request finished in 34.349ms 200 image/x-icon (791a596a)
+2017-11-06T09:45:39.7595590+08:00 0HL94MSTS2KH6:00000001 [INF] Request starting HTTP/1.1 POST http://localhost:1533/connect/token application/x-www-form-urlencoded 144 (ca22a1cb)
+2017-11-06T09:45:39.7644819+08:00 0HL94MSTS2KH6:00000001 [INF] Policy execution successful. (0204925d)
+2017-11-06T09:45:40.2227010+08:00 0HL94MSTS2KH6:00000001 [INF] The token request was successfully extracted from the HTTP request: "{
+  \"username\": \"admin\",
+  \"password\": \"[removed for security reasons]\",
+  \"grant_type\": \"password\",
+  \"scope\": \"openid email phone profile offline_access roles\",
+  \"resource\": \"http://localhost:1533\"
+}". (ebc01284)
+2017-11-06T09:45:40.2465005+08:00 0HL94MSTS2KH6:00000001 [INF] The token request was successfully validated. (d7e51e65)
+2017-11-06T09:45:40.3819061+08:00 0HL94MSTS2KH6:00000001 [INF] Executing action method "Quick_Application1.Controllers.AuthorizationController.Exchange (Quick_Application1)" with arguments (["{
+  \"username\": \"admin\",
+  \"password\": \"[removed for security reasons]\",
+  \"grant_type\": \"password\",
+  \"scope\": \"openid email phone profile offline_access roles\",
+  \"resource\": \"http://localhost:1533\"
+}"]) - ModelState is Valid (ba7f4ac2)
+2017-11-06T09:45:40.4068134+08:00 0HL94MSTS2KH6:00000001 [INF] Entity Framework Core "2.0.0-rtm-26452" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.SqlServer"' with options: "MigrationsAssembly=Quick_Application1 " (9958f5bb)
+2017-11-06T09:45:40.7872314+08:00 0HL94MSTS2KH6:00000001 [INF] Executed DbCommand ("178"ms) [Parameters=["@__normalizedEmail_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Configuration], [u].[CreatedBy], [u].[CreatedDate], [u].[Email], [u].[EmailConfirmed], [u].[FullName], [u].[IsEnabled], [u].[JobTitle], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UpdatedBy], [u].[UpdatedDate], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE [u].[NormalizedEmail] = @__normalizedEmail_0" (0723d8ff)
+2017-11-06T09:45:40.8441070+08:00 0HL94MSTS2KH6:00000001 [INF] Executed DbCommand ("51"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Configuration], [u].[CreatedBy], [u].[CreatedDate], [u].[Email], [u].[EmailConfirmed], [u].[FullName], [u].[IsEnabled], [u].[JobTitle], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UpdatedBy], [u].[UpdatedDate], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE [u].[NormalizedUserName] = @__normalizedUserName_0" (0723d8ff)
+2017-11-06T09:45:40.8742394+08:00 0HL94MSTS2KH6:00000001 [WRN] Invalid password for user "c30a4fe1-429a-4609-8319-ebf4e98ba263". (c2dce6c7)
+2017-11-06T09:45:40.8778822+08:00 0HL94MSTS2KH6:00000001 [WRN] User "c30a4fe1-429a-4609-8319-ebf4e98ba263" failed to provide the correct password. (ec8d2479)
+2017-11-06T09:45:40.9448959+08:00 0HL94MSTS2KH6:00000001 [INF] Executed DbCommand ("58"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Configuration], [u].[CreatedBy], [u].[CreatedDate], [u].[Email], [u].[EmailConfirmed], [u].[FullName], [u].[IsEnabled], [u].[JobTitle], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UpdatedBy], [u].[UpdatedDate], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE [u].[NormalizedUserName] = @__normalizedUserName_0" (0723d8ff)
+2017-11-06T09:45:41.0032988+08:00 0HL94MSTS2KH6:00000001 [INF] Executed DbCommand ("51"ms) [Parameters=["@__normalizedEmail_0='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SELECT TOP(1) [u].[Id], [u].[AccessFailedCount], [u].[ConcurrencyStamp], [u].[Configuration], [u].[CreatedBy], [u].[CreatedDate], [u].[Email], [u].[EmailConfirmed], [u].[FullName], [u].[IsEnabled], [u].[JobTitle], [u].[LockoutEnabled], [u].[LockoutEnd], [u].[NormalizedEmail], [u].[NormalizedUserName], [u].[PasswordHash], [u].[PhoneNumber], [u].[PhoneNumberConfirmed], [u].[SecurityStamp], [u].[TwoFactorEnabled], [u].[UpdatedBy], [u].[UpdatedDate], [u].[UserName]
+FROM [AspNetUsers] AS [u]
+WHERE [u].[NormalizedEmail] = @__normalizedEmail_0" (0723d8ff)
+2017-11-06T09:45:41.0941441+08:00 0HL94MSTS2KH6:00000001 [INF] Executed DbCommand ("84"ms) [Parameters=["@p20='?' (Size = 450), @p0='?', @p1='?' (Size = 4000), @p21='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (Size = 256), @p4='?', @p5='?' (Size = 4000), @p6='?', @p7='?' (Size = 4000), @p8='?', @p9='?', @p10='?' (Size = 256), @p11='?' (Size = 256), @p12='?' (Size = 4000), @p13='?' (Size = 4000), @p14='?', @p15='?' (Size = 4000), @p16='?', @p17='?' (Size = 4000), @p18='?', @p19='?' (Size = 256)"], CommandType='Text', CommandTimeout='30']"
+""SET NOCOUNT ON;
+UPDATE [AspNetUsers] SET [AccessFailedCount] = @p0, [ConcurrencyStamp] = @p1, [Configuration] = @p2, [Email] = @p3, [EmailConfirmed] = @p4, [FullName] = @p5, [IsEnabled] = @p6, [JobTitle] = @p7, [LockoutEnabled] = @p8, [LockoutEnd] = @p9, [NormalizedEmail] = @p10, [NormalizedUserName] = @p11, [PasswordHash] = @p12, [PhoneNumber] = @p13, [PhoneNumberConfirmed] = @p14, [SecurityStamp] = @p15, [TwoFactorEnabled] = @p16, [UpdatedBy] = @p17, [UpdatedDate] = @p18, [UserName] = @p19
+WHERE [Id] = @p20 AND [ConcurrencyStamp] = @p21;
+SELECT @@ROWCOUNT;" (0723d8ff)
+2017-11-06T09:45:41.1565857+08:00 0HL94MSTS2KH6:00000001 [INF] Executing ObjectResult, writing value "Microsoft.AspNetCore.Mvc.ControllerContext". (4e968210)
+2017-11-06T09:45:41.1872418+08:00 0HL94MSTS2KH6:00000001 [INF] Executed action "Quick_Application1.Controllers.AuthorizationController.Exchange (Quick_Application1)" in 857.7003ms (afa2e885)
+2017-11-06T09:45:41.1983638+08:00 0HL94MSTS2KH6:00000001 [INF] Request finished in 1433.0184ms 400 application/json; charset=utf-8 (791a596a)

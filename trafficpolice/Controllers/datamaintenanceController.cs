@@ -77,7 +77,7 @@ namespace trafficpolice.Controllers
                     {
                         Name = user.name,
                         Comment = user.comment,
-                        Filename = fn,
+                        Filename = fn,Time=DateTime.Now,
                         Tabletype = user.templatetype
                     });
                 }

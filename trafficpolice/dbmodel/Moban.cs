@@ -9,5 +9,6 @@ namespace trafficpolice.dbmodel
         public string Comment { get; set; }
         public string Filename { get; set; }
         public string Tabletype { get; set; }
+        public DateTime Time { get; set; }
     }
 }
