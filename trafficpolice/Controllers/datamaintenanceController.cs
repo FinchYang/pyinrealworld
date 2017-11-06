@@ -33,8 +33,53 @@ namespace trafficpolice.Controllers
         {
             _log = log;
         }
+        [Route("deletetemplate")]//删除模板 
+        [HttpGet]
+        public commonresponse deletetemplate([FromServices]IHostingEnvironment env, [FromServices] tpContext tp, string name)
+        {
+            var accinfo = global.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
 
-      
+            var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+            if (unit == null)
+            {
+                return global.commonreturn(responseStatus.nounit);
+            }
+            if (unit.Level == 1)
+            {
+                return global.commonreturn(responseStatus.forbidden);
+            }
+
+            if ( string.IsNullOrEmpty(name) || name.Length > 144)
+            {
+                return global.commonreturn(responseStatus.requesterror);
+            }
+          
+
+            try
+            {
+                var mb = tp.Moban.FirstOrDefault(c => c.Name == name
+                //&& c.Tabletype == user.templatetype
+                );
+                if (mb == null)
+                {
+                    return global.commonreturn(responseStatus.notemplate);
+                }
+                else
+                {
+                    tp.Moban.Remove(mb);
+                    tp.SaveChanges();
+                }              
+            }
+            catch (Exception ex)
+            {
+                _log.LogError(" deletetemplate error:{0}", ex.Message);
+                return global.commonreturn(responseStatus.processerror);
+            }
+
+            return global.commonreturn(responseStatus.ok);
+        }
+
         [Route("uploadtemplate")]//enctype="multipart/form-data" 
         [HttpPost]
         public commonresponse uploadtemplate([FromServices]IHostingEnvironment env,[FromServices] tpContext tp, uploadtemplate user)
@@ -86,6 +131,7 @@ namespace trafficpolice.Controllers
                 else
                 {
                     mb.Time = DateTime.Now;
+                   if(!string.IsNullOrEmpty(user.comment))
                     mb.Comment = user.comment;
                    mb.Filename  = fn;
 

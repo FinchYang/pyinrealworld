@@ -29,6 +29,97 @@ namespace trafficpolice.Controllers
         {
             _log = log;
         }
+        [Route("deleteReportType")]//删除表单类型
+        [HttpGet]
+        public commonresponse deleteReportType(string name)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(name))
+                {
+                    _log.LogInformation("login,{0}", responseStatus.requesterror);
+                    return global.commonreturn(responseStatus.requesterror);
+                }
+                var accinfo = global.GetInfoByToken(Request.Headers);
+                if (accinfo.status != responseStatus.ok) return accinfo;
+
+                var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+                if (unit == null)
+                {
+                    return global.commonreturn(responseStatus.nounit);
+                }
+                if (unit.Level == 1)
+                {
+                    return global.commonreturn(responseStatus.forbidden);
+                }
+
+             
+                var thevs = _db1.Reports.FirstOrDefault(c => c.Name == name);
+                if (thevs == null)
+                {
+                    return global.commonreturn(responseStatus.noreporttype);
+                }
+                _db1.Reports.Remove(thevs);
+                _db1.SaveChanges();
+                return global.commonreturn(responseStatus.ok);
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "deleteReportType", ex.Message);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+            }
+        }
+        [Route("updateReportType")]//修改表单类型
+        [HttpPost]
+        public commonresponse updateReportType([FromBody] artReq input)
+        {
+            try
+            {
+                if (input == null)
+                {
+                    _log.LogInformation("login,{0}", responseStatus.requesterror);
+                    return global.commonreturn(responseStatus.requesterror);
+                }
+                var accinfo = global.GetInfoByToken(Request.Headers);
+                if (accinfo.status != responseStatus.ok) return accinfo;
+
+                var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+                if (unit == null)
+                {
+                    return global.commonreturn(responseStatus.nounit);
+                }
+                if (unit.Level == 1)
+                {
+                    return global.commonreturn(responseStatus.forbidden);
+                }
+
+                if (string.IsNullOrEmpty(input.Name))
+                {
+                    return global.commonreturn(responseStatus.requesterror);
+                }
+
+                var thevs = _db1.Reports.FirstOrDefault(c => c.Name == input.Name);
+                if (thevs == null)
+                {
+                    return global.commonreturn(responseStatus.noreporttype);
+                }
+                if (!string.IsNullOrEmpty(input.reporttype))
+                    thevs.Type = input.reporttype;
+                if (!string.IsNullOrEmpty(input.comment))
+                    thevs.Comment = input.comment;
+                // Type = string.IsNullOrEmpty(input.reporttype) ? string.Empty : input.reporttype,
+                if(input.units!=null&& input.units.Count>0)
+                thevs.Units = JsonConvert.SerializeObject(input.units);
+                
+                _db1.SaveChanges();
+                return global.commonreturn(responseStatus.ok);
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "updateReportType", ex.Message);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+            }
+        }
         [Route("addReportType")]//新增表单类型
         [HttpPost]
         public commonresponse addReportType([FromBody] artReq input)
