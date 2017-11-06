@@ -39,18 +39,18 @@ namespace trafficpolice.Controllers
         [HttpPost]
         public commonresponse uploadtemplate([FromServices]IHostingEnvironment env,[FromServices] tpContext tp, uploadtemplate user)
         {
-            var accinfo = global.GetInfoByToken(Request.Headers);
-            if (accinfo.status != responseStatus.ok) return accinfo;
+            //var accinfo = global.GetInfoByToken(Request.Headers);
+            //if (accinfo.status != responseStatus.ok) return accinfo;
 
-            var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
-            if (unit == null)
-            {
-                return global.commonreturn(responseStatus.nounit);
-            }
-            if (unit.Level == 1)
-            {
-                return global.commonreturn(responseStatus.forbidden);
-            }
+            //var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+            //if (unit == null)
+            //{
+            //    return global.commonreturn(responseStatus.nounit);
+            //}
+            //if (unit.Level == 1)
+            //{
+            //    return global.commonreturn(responseStatus.forbidden);
+            //}
 
             if (user == null || string.IsNullOrEmpty(user.name) || user.name.Length > 144)
             {
@@ -70,7 +70,9 @@ namespace trafficpolice.Controllers
 
             try
             {
-                var mb = tp.Moban.FirstOrDefault(c => c.Name == user.name && c.Tabletype == user.templatetype);
+                var mb = tp.Moban.FirstOrDefault(c => c.Name == user.name
+                //&& c.Tabletype == user.templatetype
+                );
                 if (mb == null)
                 {
                     tp.Moban.Add(new Moban

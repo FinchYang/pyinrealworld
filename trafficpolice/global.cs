@@ -79,7 +79,7 @@ namespace trafficpolice
             }
             catch (Exception ex)
             {
-                return new access_idinfo { status = responseStatus.tokenerror, content = ex.Message };
+                return new access_idinfo { status = responseStatus.tokenerror, content ="token error--"+ ex.Message };
             }
         }
         public static  void LogRequest(string content, string userid , string ip = null, short businessType = 0)
