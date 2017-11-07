@@ -214,7 +214,7 @@ namespace trafficpolice.Controllers
                     Hassecond = hassecond,
                     Deleted = 0,
                     Inputtype = (short)input.inputtype,
-                    Statisticstype = (short)input.StatisticsType,
+                    Statisticstype = JsonConvert.SerializeObject( input.StatisticsType),
                     Defaultvalue = input.defaultValue,
                     Seconditem = second,
                     Units = JsonConvert.SerializeObject(input.units),
@@ -291,7 +291,7 @@ namespace trafficpolice.Controllers
                 old.Hassecond = (short)(input.hasSecondItems ? 1 : 0);
                 old.Deleted = booltoshort(input.Deleted);
                 old.Inputtype = (short)input.inputtype;
-                old.Statisticstype = (short)input.StatisticsType;
+                old.Statisticstype = JsonConvert.SerializeObject( input.StatisticsType);
                 old. Defaultvalue = input.defaultValue;
                 old.Seconditem = second;
                 old.Units = JsonConvert.SerializeObject(input.units);

@@ -132,7 +132,7 @@ namespace trafficpolice.Controllers
          && c.Date.CompareTo(end) <= 0 
          //&&c.Rname==reportname
          && c.Unitid == unitid);
-            if (st != signtype.unknown) data=data.Where(c => c.Signtype ==(short) st);
+            if (st != signtype.unknown&& st!=signtype.all) data=data.Where(c => c.Signtype ==(short) st);
             if (!string.IsNullOrEmpty(reportname)) data = data.Where(c => c.Rname == reportname);
             foreach (var d in data)
             {

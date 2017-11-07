@@ -11,7 +11,8 @@ namespace trafficpolice.Models
         public string Comment { get; set; }//数据项备注
         public List<unittype> units { get; set; }//大队显示列表
         public secondItemType inputtype { get; set; }//数据类型
-        public StatisticsType StatisticsType { get; set; }//统计方式
+      //  public StatisticsType StatisticsType { get; set; }//统计方式
+        public List<StatisticsType> StatisticsType { get; set; }//统计方式
         public string defaultValue { get; set; }//默认值
         public string tabletype { set; get; } //数据项类别，哪个表格适用
         public int index { set; get; }//字段顺序

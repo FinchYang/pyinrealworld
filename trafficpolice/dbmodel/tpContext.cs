@@ -86,8 +86,9 @@ namespace trafficpolice.dbmodel
                     .HasMaxLength(5000);
 
                 entity.Property(e => e.Statisticstype)
+                    .IsRequired()
                     .HasColumnName("statisticstype")
-                    .HasColumnType("smallint(2)")
+                    .HasMaxLength(600)
                     .HasDefaultValueSql("'0'");
 
                 entity.Property(e => e.Tabletype)

@@ -16,7 +16,7 @@ namespace trafficpolice.dbmodel
         public DateTime Time { get; set; }
         public short Inputtype { get; set; }
         public short Hassecond { get; set; }
-        public short Statisticstype { get; set; }
+        public string Statisticstype { get; set; }
         public string Defaultvalue { get; set; }
         public int Index { get; set; }
     }

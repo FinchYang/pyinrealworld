@@ -146,7 +146,7 @@ namespace trafficpolice.Controllers
                         Mandated =a.Mandated > 0 ? true : false,
                         tabletype =a.Tabletype,
                         inputtype= (secondItemType)a.Inputtype,
-                        StatisticsType=(StatisticsType)a.Statisticstype,
+                        StatisticsType=JsonConvert.DeserializeObject<List<StatisticsType>>( a.Statisticstype),
                         index=a.Index,
                         defaultValue=a.Defaultvalue
                     };
