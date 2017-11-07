@@ -151,7 +151,10 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.notemplate);
                 }
-                ret.fileResoure = createreport(temp.Filename, date, env);
+                //   ret.fileResoure = createreport(temp.Filename, template, date, env);
+                _log.LogWarning("para-{0},1", 111);
+                ret.fileResoure = createreport("daytemplate.doc", template, date, env);
+                _log.LogWarning("para-{0},1", 222);
                 return ret;
             }
             catch (Exception ex)
@@ -161,12 +164,13 @@ namespace trafficpolice.Controllers
             }
         }
 
-        private string createreport(string filename, string date, IHostingEnvironment env)
+        private string createreport(string filename, string template, string date, IHostingEnvironment env)
         {
             var spath = Path.Combine(env.WebRootPath, "upload",filename);
             var tpath = Path.Combine(env.WebRootPath, "download");
             if (!Directory.Exists(tpath)) Directory.CreateDirectory(tpath);
-            var tfile = Path.Combine(tpath, "320171031101311.doc");
+            var tfbase = template + date + ".doc";
+            var tfile = Path.Combine(tpath, tfbase);
             var data = new submitSumreq();
             data.datalist = new List<Models.Dataitem>();
             var sum = _db1.Summarized.FirstOrDefault(c => c.Date == date);
@@ -174,9 +178,10 @@ namespace trafficpolice.Controllers
             {
                  data = JsonConvert.DeserializeObject<submitSumreq>(sum.Content);
             }
-            
-            Contact(tfile,data);
-            return @"download/320171031101311.doc";
+            _log.LogWarning("para-{0},1", 333);
+          var aa=  Contact(tfile,data,spath);
+            _log.LogWarning("para-{0},1", 444+aa);
+            return @"download/"+ tfbase;
         }
        
         [Route("centerDownloadWeek")]//中心每周交管动态选模板生成文件后下载
@@ -227,7 +232,7 @@ namespace trafficpolice.Controllers
             }
         }
 
-        private string createreport(string filename, string start, string end, IHostingEnvironment env)
+        private string createreportweek(string filename, string start, string end, IHostingEnvironment env)
         {
             var spath = Path.Combine(env.WebRootPath, "upload", filename);
             var tpath = Path.Combine(env.WebRootPath, "download");
@@ -241,17 +246,49 @@ namespace trafficpolice.Controllers
                 data = JsonConvert.DeserializeObject<submitSumreq>(sum.Content);
             }
 
-            Contact(tfile,data);
+            Contact(tfile,data,spath);
             return @"download/320171031101311.doc";
         }
 
-        private string Contact(string tfile, submitSumreq data)
+        private string Contact(string tfile, submitSumreq data,string sfile)
         {
             try
             {
-                using (var fs = new FileStream(tfile, FileMode.Create, FileAccess.Write))
+                if (System.IO.File.Exists(tfile)) System.IO.File.Delete(tfile);
+                var a = new FileInfo(sfile);
+                a.CopyTo(tfile);
+                _log.LogWarning("para-{0},1", 000);
+                using (var fs = new FileStream(tfile, FileMode.Open, FileAccess.ReadWrite))
                 {
-                    XWPFDocument doc = new XWPFDocument();
+                    _log.LogWarning("para-{0},1", 555);
+                    XWPFDocument doc = new XWPFDocument(fs);
+                    _log.LogWarning("para-{0},1", 666);
+                    _log.LogWarning("para-{0},{1}", doc.Paragraphs.Count, doc.Tables.Count);
+                    _log.LogWarning("para-{0},1", 777);
+                    foreach (var para in doc.Paragraphs)
+                    {
+                        _log.LogWarning("para-{0},{1}", para.ParagraphText, para.Text);
+                        para.ReplaceText("**月", "-11月-");
+                      //  ReplaceKey(para);
+                    }
+                    _log.LogWarning("para-{0},1", 888);
+                    //遍历表格
+                    var tables = doc.Tables;
+                    foreach (var table in tables)
+                    {
+                        foreach (var row in table.Rows)
+                        {
+                            foreach (var cell in row.GetTableCells())
+                            {
+                                foreach (var para in cell.Paragraphs)
+                                {
+                                    _log.LogWarning("2222para-{0},{1}", para.ParagraphText, para.Text);
+                                    para.ReplaceText("**月", "----11月-");
+                                    //  ReplaceKey(para);
+                                }
+                            }
+                        }
+                    }
                     var p0 = doc.CreateParagraph();
                     p0.Alignment = ParagraphAlignment.CENTER;
                     XWPFRun r0 = p0.CreateRun();
@@ -260,18 +297,19 @@ namespace trafficpolice.Controllers
                     r0.IsBold = true;
                     r0.SetText("This is title");
 
-                    var p1 = doc.CreateParagraph();
-                    p1.Alignment = ParagraphAlignment.LEFT;
-                    p1.IndentationFirstLine = 500;
-                    XWPFRun r1 = p1.CreateRun();
-                    r1.FontFamily = "·ÂËÎ";
-                    r1.FontSize = 12;
-                    r1.IsBold = true;
-                    r1.SetText("This is content, content content content content content content content content content");
+                    //var p1 = doc.CreateParagraph();
+                    //p1.Alignment = ParagraphAlignment.LEFT;
+                    //p1.IndentationFirstLine = 500;
+                    //XWPFRun r1 = p1.CreateRun();
+                    //r1.FontFamily = "·ÂËÎ";
+                    //r1.FontSize = 12;
+                    //r1.IsBold = true;
+                    //r1.SetText("This is content, content content content content content content content content content");
 
                     doc.Write(fs);
-                }
 
+                }
+             
                 return "ok";
             }
             catch (Exception ex)
@@ -279,7 +317,70 @@ namespace trafficpolice.Controllers
                 return ex.Message;
             }
         }
+        //public void Export()
+        //{
+
+        //    string filepath = Server.MapPath("/word/xmxx.docx");
+        //    using (FileStream stream = File.OpenRead(filepath))
+        //    {
+        //        XWPFDocument doc = new XWPFDocument(stream);
+        //        //遍历段落
+        //        foreach (var para in doc.Paragraphs)
+        //        {
+        //            ReplaceKey(para);
+        //        }
+        //        //遍历表格
+        //        var tables = doc.Tables;
+        //        foreach (var table in tables)
+        //        {
+        //            foreach (var row in table.Rows)
+        //            {
+        //                foreach (var cell in row.GetTableCells())
+        //                {
+        //                    foreach (var para in cell.Paragraphs)
+        //                    {
+        //                        ReplaceKey(para);
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        using (MemoryStream ms = new MemoryStream())
+        //        {
+        //            doc.Write(ms);
+        //            return ms;
+        //        }
+        //    }
+
+        //}
+        private void ReplaceKey(XWPFParagraph para)
+        {
+            //BLL.XmxxBLL XmxxBLL = new BLL.XmxxBLL();
+            //Model.Xmxx model = new Model.Xmxx();
+            //model = XmxxBLL.GetModel(20);
+
+            //string text = para.ParagraphText;
+            //text = text.Replace("**月", "-11月-");
+            para.ParagraphText.Replace("**月", "-11月-");
+            //var runs = para.Runs;
+            //string styleid = para.Style;
+            //for (int i = 0; i < runs.Count; i++)
+            //{
+            //    var run = runs[i];
+            //    text = run.ToString();
+            //    //Type t = model.GetType();
+            //    //PropertyInfo[] pi = t.GetProperties();
+            //    //foreach (PropertyInfo p in pi)
+            //    //{
+            //        if (text.Contains("**月"))
+            //        {
+            //            text = text.Replace("**月", "-11月-");
+            //        }
+            //  //  }
+            //    runs[i].SetText(text, 0);
+            //}
+        }
     }
+  
     public class downloadres:commonresponse
     {
         public string fileResoure { get; set; }
