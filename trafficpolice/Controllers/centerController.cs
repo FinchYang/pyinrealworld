@@ -67,6 +67,7 @@ namespace trafficpolice.Controllers
                   var  one = JsonConvert.DeserializeObject<videosigndata>(d.Content);
                     one.createtime = d.Time;
                     one.submittime = d.Submittime.GetValueOrDefault();
+                    one.draft = d.Draft;
                     one.date = d.Date;
                     one.unitid = d.Unitid;
                     ret.videodata.Add(one);
