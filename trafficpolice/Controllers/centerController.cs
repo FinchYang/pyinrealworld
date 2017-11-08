@@ -29,8 +29,7 @@ namespace trafficpolice.Controllers
         {
             _log = log;
         }
-        [Route("centerGetHistoryData")]//指挥中心查询交管动态历史数据接口
-        [HttpGet]
+
         //public commonresponse centerGetHistoryData(string  startdate,string enddate, unittype ut = unittype.unknown,string rname="four")
         //{
         //    var start = DateTime.Now; 
@@ -78,8 +77,10 @@ namespace trafficpolice.Controllers
         //}
         //[Route("centerVideoSignQuery")]//指挥中心视频签到情况查询
         //[HttpGet]
-        public commonresponse centerVideoSignQuery(string startdate, string enddate,
-            unittype ut=unittype.unknown,signtype st=signtype.unknown, string rname = "four")
+        [Route("centerGetHistoryData")]//指挥中心查询交管动态历史数据接口
+        [HttpGet]
+        public commonresponse centerGetHistoryData(string startdate, string enddate,
+            unittype ut=unittype.unknown,signtype st=signtype.unknown, string rname = "")
         {
             var start = DateTime.Now.AddYears(-100);
             var end = DateTime.Now;
@@ -103,8 +104,9 @@ namespace trafficpolice.Controllers
             {
                 var data = _db1.Reportsdata.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
                 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
-                && c.Rname==rname
+               // && c.Rname==rname
                );
+                if (!string.IsNullOrEmpty(rname)) data = data.Where(c => c.Rname == rname);
                 if (st != signtype.unknown && st!=signtype.all) data = data.Where(c => c.Signtype == (short)st);
                 if (ut != unittype.unknown && ut != unittype.all) data = data.Where(c => c.Unitid == ut.ToString());
                 foreach (var d in data)
@@ -121,7 +123,7 @@ namespace trafficpolice.Controllers
             }
             catch (Exception ex)
             {
-                _log.LogError("{0}-{1}-{2}", DateTime.Now, "centerVideoSignQuery", ex.Message);
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "centerGetHistoryData", ex.Message);
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
