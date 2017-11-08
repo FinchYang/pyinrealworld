@@ -31,53 +31,53 @@ namespace trafficpolice.Controllers
         }
         [Route("centerGetHistoryData")]//指挥中心查询交管动态历史数据接口
         [HttpGet]
-        public commonresponse centerGetHistoryData(string  startdate,string enddate, unittype ut = unittype.unknown,string rname="four")
-        {
-            var start = DateTime.Now; 
-            var end = start;
-            if(!DateTime.TryParse(startdate,out start))
-            {
-                return global.commonreturn(responseStatus.startdateerror);
-            }
-            if (!DateTime.TryParse(enddate, out end))
-            {
-                return global.commonreturn(responseStatus.enddateerror);
-            }
-            var accinfo = global.GetInfoByToken(Request.Headers);
-            if (accinfo.status != responseStatus.ok) return accinfo;
-            var ret = new centerhisdatares
-            {
-                status = 0,
-                hisdata = new List<centerdata>()
-            };
-            var today = DateTime.Now.ToString("yyyy-MM-dd");
-            try
-            {
-                var data = _db1.Reportsdata.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
-                && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
-                && c.Rname == rname
-               );
-                if (ut != unittype.unknown&&ut!=unittype.all) data = data.Where(c => c.Unitid == ut.ToString());
-                foreach (var d in data)
-                {
-                    var one = new centerdata();
-                    one =(centerdata) JsonConvert.DeserializeObject<submitreq>(d.Content);
-                    one.createtime = d.Time;
-                    one.submittime = d.Submittime.GetValueOrDefault();
-                    one.date = d.Date;
-                    one.unitid = d.Unitid;
-                    ret.hisdata.Add(one);
-                }
-                return ret;
-            }
-            catch (Exception ex)
-            {
-                _log.LogError("{0}-{1}-{2}", DateTime.Now, "centerGetHistoryData", ex.Message);
-                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
-            }
-        }
-        [Route("centerVideoSignQuery")]//指挥中心视频签到情况查询
-        [HttpGet]
+        //public commonresponse centerGetHistoryData(string  startdate,string enddate, unittype ut = unittype.unknown,string rname="four")
+        //{
+        //    var start = DateTime.Now; 
+        //    var end = start;
+        //    if(!DateTime.TryParse(startdate,out start))
+        //    {
+        //        return global.commonreturn(responseStatus.startdateerror);
+        //    }
+        //    if (!DateTime.TryParse(enddate, out end))
+        //    {
+        //        return global.commonreturn(responseStatus.enddateerror);
+        //    }
+        //    var accinfo = global.GetInfoByToken(Request.Headers);
+        //    if (accinfo.status != responseStatus.ok) return accinfo;
+        //    var ret = new centerhisdatares
+        //    {
+        //        status = 0,
+        //        hisdata = new List<centerdata>()
+        //    };
+        //    var today = DateTime.Now.ToString("yyyy-MM-dd");
+        //    try
+        //    {
+        //        var data = _db1.Reportsdata.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
+        //        && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
+        //        && c.Rname == rname
+        //       );
+        //        if (ut != unittype.unknown&&ut!=unittype.all) data = data.Where(c => c.Unitid == ut.ToString());
+        //        foreach (var d in data)
+        //        {
+        //            var one = new centerdata();
+        //            one =(centerdata) JsonConvert.DeserializeObject<submitreq>(d.Content);
+        //            one.createtime = d.Time;
+        //            one.submittime = d.Submittime.GetValueOrDefault();
+        //            one.date = d.Date;
+        //            one.unitid = d.Unitid;
+        //            ret.hisdata.Add(one);
+        //        }
+        //        return ret;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _log.LogError("{0}-{1}-{2}", DateTime.Now, "centerGetHistoryData", ex.Message);
+        //        return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+        //    }
+        //}
+        //[Route("centerVideoSignQuery")]//指挥中心视频签到情况查询
+        //[HttpGet]
         public commonresponse centerVideoSignQuery(string startdate, string enddate,
             unittype ut=unittype.unknown,signtype st=signtype.unknown, string rname = "four")
         {
