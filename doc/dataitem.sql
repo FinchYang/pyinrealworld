@@ -1,3 +1,4 @@
+use tp;
 CREATE TABLE `dataitem` (
   `id` varchar(50) NOT NULL,
   `mandated` smallint(2) NOT NULL DEFAULT '1',

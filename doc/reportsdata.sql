@@ -1,4 +1,4 @@
-CREATE TABLE `reportsdata` (
+use tp;CREATE TABLE `reportsdata` (
   `date` varchar(10) NOT NULL,
   `unitid` varchar(50) NOT NULL,
   `content` varchar(4500) NOT NULL,

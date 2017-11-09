@@ -1,4 +1,4 @@
-CREATE TABLE `user` (
+use tp;CREATE TABLE `user` (
   `id` varchar(50) NOT NULL,
   `name` varchar(45) DEFAULT NULL,
   `pass` varchar(45) NOT NULL,

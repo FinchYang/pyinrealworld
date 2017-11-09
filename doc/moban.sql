@@ -1,4 +1,4 @@
-CREATE TABLE `moban` (
+use tp;CREATE TABLE `moban` (
   `name` varchar(150) NOT NULL,
   `comment` varchar(450) NOT NULL,
   `filename` varchar(450) NOT NULL,

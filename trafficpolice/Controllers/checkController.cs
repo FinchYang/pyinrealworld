@@ -101,7 +101,7 @@ namespace trafficpolice.Controllers
                 }
                 var todayd = DateTime.Now;
 
-                if (string.IsNullOrEmpty(input. date) && !DateTime.TryParse(input.date, out todayd)||string.IsNullOrEmpty(input.reportname))
+                if (!string.IsNullOrEmpty(input. date) && !DateTime.TryParse(input.date, out todayd)||string.IsNullOrEmpty(input.reportname))
                 {
                     return global.commonreturn(responseStatus.requesterror);
                 }

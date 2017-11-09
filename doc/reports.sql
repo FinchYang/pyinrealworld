@@ -1,5 +1,5 @@
-CREATE TABLE `reports` (
-  `name` varchar(300) NOT NULL,
+use tp;CREATE TABLE `reports` (
+  `name` varchar(100) NOT NULL,
   `comment` varchar(600) DEFAULT NULL,
   `type` varchar(600) NOT NULL,
   `units` varchar(600) NOT NULL,

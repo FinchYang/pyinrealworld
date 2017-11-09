@@ -24,7 +24,8 @@ namespace trafficpolice.dbmodel
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseMySql("Server=47.93.226.74;User Id=blah;Password=ycl1mail@A;Database=tp");
+             //   optionsBuilder.UseMySql("Server=47.93.226.74;User Id=blah;Password=ycl1mail@A;Database=tp");
+                optionsBuilder.UseMySql("Server=localhost;User Id=blah;Password=ycl1mail@A;Database=tp");
             }
         }
 

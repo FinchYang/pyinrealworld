@@ -1,4 +1,4 @@
-CREATE TABLE `userlog` (
+use tp;CREATE TABLE `userlog` (
   `ordinal` int(11) NOT NULL AUTO_INCREMENT,
   `time` datetime NOT NULL,
   `userid` varchar(50) NOT NULL,
