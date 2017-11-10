@@ -107,6 +107,10 @@ namespace trafficpolice.Controllers
                 foreach(var d in data)
                 {
                     var a= JsonConvert.DeserializeObject<submitreq>(d.Content);
+                    a.draft = d.Draft;
+                    //a.date = d.Date;
+                    //a.reportname = d.Rname;
+
                     ret.vsdata.Add(a);
                 }
               

@@ -62,6 +62,7 @@ namespace trafficpolice.Controllers
                         Content=JsonConvert.SerializeObject(input),
                         Draft=input.draft,
                         Time= now,
+                        
                         Submittime= now
                     });
                 }

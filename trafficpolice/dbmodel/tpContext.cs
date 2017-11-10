@@ -24,8 +24,7 @@ namespace trafficpolice.dbmodel
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-             //   optionsBuilder.UseMySql("Server=47.93.226.74;User Id=blah;Password=ycl1mail@A;Database=tp");
-                optionsBuilder.UseMySql("Server=localhost;User Id=blah;Password=ycl1mail@A;Database=tp");
+                optionsBuilder.UseMySql("Server=47.93.226.74;User Id=blah;Password=ycl1mail@A;Database=tp");
             }
         }
 
@@ -46,7 +45,7 @@ namespace trafficpolice.dbmodel
 
                 entity.Property(e => e.Comment)
                     .HasColumnName("comment")
-                    .HasMaxLength(300);
+                    .HasMaxLength(450);
 
                 entity.Property(e => e.Defaultvalue)
                     .HasColumnName("defaultvalue")
@@ -59,8 +58,7 @@ namespace trafficpolice.dbmodel
 
                 entity.Property(e => e.Hassecond)
                     .HasColumnName("hassecond")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("'0'");
+                    .HasColumnType("smallint(2)");
 
                 entity.Property(e => e.Index)
                     .HasColumnName("index")
@@ -69,13 +67,11 @@ namespace trafficpolice.dbmodel
 
                 entity.Property(e => e.Inputtype)
                     .HasColumnName("inputtype")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("'2'");
+                    .HasColumnType("smallint(2)");
 
                 entity.Property(e => e.Mandated)
                     .HasColumnName("mandated")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("'1'");
+                    .HasColumnType("smallint(2)");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -89,13 +85,12 @@ namespace trafficpolice.dbmodel
                 entity.Property(e => e.Statisticstype)
                     .IsRequired()
                     .HasColumnName("statisticstype")
-                    .HasMaxLength(600)
-                    .HasDefaultValueSql("'0'");
+                    .HasMaxLength(600);
 
                 entity.Property(e => e.Tabletype)
                     .IsRequired()
                     .HasColumnName("tabletype")
-                    .HasMaxLength(300);
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.Time)
                     .HasColumnName("time")
@@ -214,8 +209,7 @@ namespace trafficpolice.dbmodel
                 entity.Property(e => e.Tabletype)
                     .IsRequired()
                     .HasColumnName("tabletype")
-                    .HasMaxLength(600)
-                    .HasDefaultValueSql("'0'");
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.Time)
                     .HasColumnName("time")
@@ -280,7 +274,7 @@ namespace trafficpolice.dbmodel
 
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
-                    .HasMaxLength(300)
+                    .HasMaxLength(100)
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.Comment)
@@ -290,7 +284,7 @@ namespace trafficpolice.dbmodel
                 entity.Property(e => e.Type)
                     .IsRequired()
                     .HasColumnName("type")
-                    .HasMaxLength(600);
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.Units)
                     .IsRequired()
@@ -326,7 +320,7 @@ namespace trafficpolice.dbmodel
                 entity.Property(e => e.Content)
                     .IsRequired()
                     .HasColumnName("content")
-                    .HasMaxLength(4500);
+                    .HasColumnType("varchar(9000)");
 
                 entity.Property(e => e.Declinereason)
                     .HasColumnName("declinereason")
@@ -334,14 +328,12 @@ namespace trafficpolice.dbmodel
 
                 entity.Property(e => e.Draft)
                     .HasColumnName("draft")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("'1'");
+                    .HasColumnType("smallint(2)");
 
                 entity.Property(e => e.Rname)
                     .IsRequired()
                     .HasColumnName("rname")
-                    .HasMaxLength(600)
-                    .HasDefaultValueSql("'-'");
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.Signtype)
                     .HasColumnName("signtype")
@@ -375,8 +367,7 @@ namespace trafficpolice.dbmodel
 
                 entity.Property(e => e.Reportname)
                     .HasColumnName("reportname")
-                    .HasMaxLength(600)
-                    .HasDefaultValueSql("'-'");
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.Comment)
                     .HasColumnName("comment")
@@ -385,12 +376,11 @@ namespace trafficpolice.dbmodel
                 entity.Property(e => e.Content)
                     .IsRequired()
                     .HasColumnName("content")
-                    .HasMaxLength(4500);
+                    .HasColumnType("varchar(9000)");
 
                 entity.Property(e => e.Draft)
                     .HasColumnName("draft")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("'1'");
+                    .HasColumnType("smallint(2)");
 
                 entity.Property(e => e.Time)
                     .HasColumnName("time")
@@ -417,8 +407,7 @@ namespace trafficpolice.dbmodel
 
                 entity.Property(e => e.Level)
                     .HasColumnName("level")
-                    .HasColumnType("smallint(1)")
-                    .HasDefaultValueSql("'0'");
+                    .HasColumnType("smallint(1)");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -594,8 +583,7 @@ namespace trafficpolice.dbmodel
 
                 entity.Property(e => e.Reportname)
                     .HasColumnName("reportname")
-                    .HasMaxLength(600)
-                    .HasDefaultValueSql("'-'");
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.Comment)
                     .HasColumnName("comment")
@@ -604,12 +592,11 @@ namespace trafficpolice.dbmodel
                 entity.Property(e => e.Content)
                     .IsRequired()
                     .HasColumnName("content")
-                    .HasMaxLength(4500);
+                    .HasColumnType("varchar(9000)");
 
                 entity.Property(e => e.Draft)
                     .HasColumnName("draft")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("'1'");
+                    .HasColumnType("smallint(2)");
 
                 entity.Property(e => e.Time)
                     .HasColumnName("time")
