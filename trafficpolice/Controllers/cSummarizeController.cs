@@ -43,13 +43,13 @@ namespace trafficpolice.Controllers
                 if (accinfo.status != responseStatus.ok) return accinfo;
 
                 var day = DateTime.Now;
-                if (string.IsNullOrEmpty(input.startdate) || DateTime.TryParse(input.startdate, out day))
+                if (string.IsNullOrEmpty(input.startdate) ||! DateTime.TryParse(input.startdate, out day))
                 {
                     return global.commonreturn(responseStatus.startdateerror);
                 }
 
                 var end = DateTime.Now;
-                if (string.IsNullOrEmpty(input.enddate) || DateTime.TryParse(input.enddate, out end))
+                if (string.IsNullOrEmpty(input.enddate) ||! DateTime.TryParse(input.enddate, out end))
                 {
                     return global.commonreturn(responseStatus.startdateerror);
                 }
@@ -205,7 +205,7 @@ namespace trafficpolice.Controllers
                 if (accinfo.status != responseStatus.ok) return accinfo;
 
                 var day = DateTime.Now;
-                if(string.IsNullOrEmpty(input.date)||DateTime.TryParse(input.date,out day))
+                if(string.IsNullOrEmpty(input.date)||!DateTime.TryParse(input.date,out day))
                 {
                     return global.commonreturn(responseStatus.dateerror);
                 }
@@ -271,7 +271,7 @@ namespace trafficpolice.Controllers
                     }
                 }
 
-                var data = _db1.Reportsdata.Where(c => c.Date== theday&&c.Draft==3 && c.Rname == rname);               
+                var data = _db1.Reportsdata.Where(c => c.Date== theday&&c.Draft>=3 && c.Rname == rname);               
                 foreach (var d in data)
                 {                    
                  var   one = JsonConvert.DeserializeObject<submitreq>(d.Content);
