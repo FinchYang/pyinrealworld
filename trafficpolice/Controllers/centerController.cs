@@ -89,7 +89,7 @@ namespace trafficpolice.Controllers
             var ret = new getvideosigndatares
             {
                 status = 0,
-                vsdata = new List<submitreq> ()
+                vsdata = new List<centerdata> ()
             };
             var today = DateTime.Now.ToString("yyyy-MM-dd");
             try
@@ -106,8 +106,9 @@ namespace trafficpolice.Controllers
                 var data = _db1.Reportsdata.Where(c => c.Date== today && c.Rname==reportname);
                 foreach(var d in data)
                 {
-                    var a= JsonConvert.DeserializeObject<submitreq>(d.Content);
+                    var a= JsonConvert.DeserializeObject<centerdata>(d.Content);
                     a.draft = d.Draft;
+                    a.unitid = d.Unitid;
                     //a.date = d.Date;
                     //a.reportname = d.Rname;
 
@@ -156,9 +157,9 @@ namespace trafficpolice.Controllers
                     }
                     if (d.signtype == signtype.unknown) continue;
                     thed.Signtype =(short) d.signtype;
-                    thed.Draft = 2;
+                    thed.Draft = 4;//签到
                     if (!string.IsNullOrEmpty(d.comment)) thed.Comment = d.comment;
-                    thed.Content = JsonConvert.SerializeObject(d);
+                  //  thed.Content = JsonConvert.SerializeObject(d);
 
                     _db1.SaveChanges();
                 }              

@@ -4,6 +4,6 @@ namespace trafficpolice.Models
 {
     public class getvideosigndatares : commonresponse
     {
-        public List<submitreq> vsdata { set; get; }
+        public List<centerdata> vsdata { set; get; }
     }
 }
