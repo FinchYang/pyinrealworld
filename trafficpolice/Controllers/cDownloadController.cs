@@ -151,9 +151,9 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.notemplate);
                 }
-                //   ret.fileResoure = createreport(temp.Filename, template, date, env);
+                  ret.fileResoure = createreport(temp.Filename, template, date, env);
                 _log.LogWarning("para-{0},1", 111);
-                ret.fileResoure = createreport("daytemplate.doc", template, date, env);
+              //  ret.fileResoure = createreport("daytemplate.doc", template, date, env);
                 _log.LogWarning("para-{0},1", 222);
                 return ret;
             }
