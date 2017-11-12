@@ -59,29 +59,21 @@ namespace trafficpolice.Controllers
                 var data = _db1.Reportsdata.Where(c =>
                c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0 && 
                 c.Unitid == accinfo.unitid
-            //    && c.Rname==reportname
                 && c.Draft == 2);
                 if (reporttype != "all"
                    && reporttype != "所有")
                     data.Where(c => c.Rname == reporttype);
+                _log.LogWarning("start={0},end={1},unitid={2},reporttype={3},count={4}", start, end, accinfo.unitid, reporttype,data.Count());
                 foreach (var d in data)
                 { 
                     var two= JsonConvert.DeserializeObject<rejectdata>(d.Content);
-                    two.reason = d.Declinereason;
-                    two.data.date = d.Date;
+                    two.reason = string.IsNullOrEmpty( d.Declinereason)?string.Empty:d.Declinereason;
+                    two.date = d.Date;
+                    two.draft = d.Draft;
+                    ret.todaydata.Add(two);
                 }
 
-               // var datanine = _db1.Reportsdata.FirstOrDefault(c =>
-               //   c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0 && 
-               // c.Unitid == accinfo.unitid
-               //   && c.Rname == reportname
-               //&& c.Draft == 1);
-               // if (datanine != null)
-               // {
-               //     ret.todayninedata.data = JsonConvert.DeserializeObject<submitreq>(datanine.Content);
-               //     ret.todayninedata.reason = datanine.Declinereason;
-               //     ret.todayninedata.data.date = datanine.Date;
-               // }
+              
                 return ret;
             }
             catch (Exception ex)
@@ -128,19 +120,12 @@ namespace trafficpolice.Controllers
                 {
                     var one = JsonConvert.DeserializeObject<submitreq>(d.Content);
                     one.date = d.Date;
+                    one.draft = d.Draft;
                     ret.todaydata.Add(one);
                 }
                  
                 
-               // var datanine = _db1.Reportsdata.FirstOrDefault(c =>
-               // c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0 && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0 &&
-               // c.Unitid == accinfo.unitid
-               //&& c.Draft == 1);
-               // if (datanine != null)
-               // {
-               //     ret.todayninedata = JsonConvert.DeserializeObject<submitreq>(datanine.Content);
-               //     ret.todayninedata.date = datanine.Date;
-               // }
+             
                 return ret;
             }
             catch (Exception ex)

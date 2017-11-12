@@ -1,8 +1,7 @@
 ﻿namespace trafficpolice.Models
 {
-    public class rejectdata
+    public class rejectdata: submitreq
     {
-        public submitreq data { set; get; }
         public string reason { set; get; }
     }
 }
