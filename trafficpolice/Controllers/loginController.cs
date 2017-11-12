@@ -346,5 +346,58 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
+        public class gulRes : commonresponse
+        {
+            public List<quser> users { set; get; }
+        }
+        public class quser
+        {
+            public string id { get; set; }//唯一标识，登陆名称
+            public string name { get; set; }
+            public short level { get; set; }//1,2
+            public string unitid { get; set; }
+            public bool disable { get; set; }//true  -禁用，false-激活
+        }
+        [Route("getuserlist")]//查询用户列表接口
+        [HttpGet]
+        public commonresponse getuserlist()
+        {
+            var accinfo = global.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+            var ret = new gulRes
+            {
+                users = new List<quser>()
+            };
+            try
+            {
+                var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+                if (unit == null)
+                {
+                    return global.commonreturn(responseStatus.nounit);
+                }
+                if (unit.Level == 1)
+                {
+                    return global.commonreturn(responseStatus.forbidden);
+                }
+                
+                var theuser = _db1.Set<User>();
+              foreach(var u in theuser)
+                {
+                    ret.users.Add(new quser
+                    {
+                        id=u.Id,
+                        level=u.Level,
+                        name=u.Name,
+                        unitid=u.Unitid,disable=u.Disabled==1?true:false
+                    });
+                }
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "getuserlist", ex.Message);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+            }
+        }
     }
 }
