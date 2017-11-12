@@ -68,7 +68,7 @@ namespace trafficpolice.Controllers
                 }
                 else
                 {
-                    if (daylog.Draft==1)
+                    if (daylog.Draft==1||daylog.Draft==2)
                     {
                         daylog.Draft = input.draft;
                         daylog.Content = JsonConvert.SerializeObject(input);

@@ -170,7 +170,7 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }
-              for(var d = start; d <= end; d.AddDays(1))
+              for(var d = start; d <= end;d= d.AddDays(1))
                 {
                     ret.daysdata.Add(getonedayfour(d,rname));
                 }
@@ -332,7 +332,8 @@ namespace trafficpolice.Controllers
         }
         private unitdata sumonedata(DateTime start, DateTime end, string ut, string rname)
         {
-            var ret = new unitdata();           
+            var ret = new unitdata();
+            ret.unitid = ut.ToString();
 
             var dis = _db1.Dataitem.Where(c => (c.Tabletype == rname)
               && c.Deleted == 0);
@@ -392,7 +393,7 @@ namespace trafficpolice.Controllers
             out int video, out int audio, out int not, string rname)
         {
             var ret = new unitdata();
-         
+            ret.unitid = ut.ToString();
             ret.datalist = new List<Models.Dataitem>();
 
             var dis = _db1.Dataitem.Where(c => (c.Tabletype == rname)
