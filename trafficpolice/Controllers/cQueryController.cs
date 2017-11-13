@@ -208,7 +208,9 @@ namespace trafficpolice.Controllers
              && c.Deleted == 0);
             ret = GetBasicItems(dis);
             var data = _db1.Summarized.FirstOrDefault(c => c.Date == day
-    && c.Draft == 3);
+   // && c.Draft == 3
+   &&c.Reportname==rname
+    );
             ct = DateTime.Now;
             if (data == null) return ret;
             
@@ -227,7 +229,9 @@ namespace trafficpolice.Controllers
              && c.Deleted == 0);
             ret= GetBasicItems(dis);
             var data = _db1.Summarized.FirstOrDefault(c => c.Date==day
-    && c.Draft == 3);
+   // && c.Draft == 3
+   && c.Reportname == rname
+    );
 
             if (data == null) return ret;
             var one = JsonConvert.DeserializeObject<submitreq>(data.Content);
