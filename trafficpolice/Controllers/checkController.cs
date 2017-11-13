@@ -61,7 +61,7 @@ namespace trafficpolice.Controllers
                );
                 if (data == null)
                 {
-                    return global.commonreturn(responseStatus.nounit);
+                    return global.commonreturn(responseStatus.nodatacorrelated);
                 }
                 data.Draft = 3;
                 _db1.SaveChanges();
