@@ -49,8 +49,8 @@ namespace trafficpolice.Controllers
                
                 foreach (var d in data)
                 {
-                    var one = new onedata();
-                    one = (onedata)JsonConvert.DeserializeObject<submitreq>(d.Content);
+                   // var one = new onedata();
+                  var  one = JsonConvert.DeserializeObject<onedata>(d.Content);
                     one.date = d.Date;
                     ret.daydraft.Add(one);
                 }
@@ -60,8 +60,8 @@ namespace trafficpolice.Controllers
 
                 foreach (var d in data)
                 {
-                    var one = new onedata();
-                    one = (onedata)JsonConvert.DeserializeObject<submitreq>(d.Content);
+                  //  var one = new onedata();
+                  var  one = JsonConvert.DeserializeObject<onedata>(d.Content);
                     one.date = d.Date;
                     ret.weekdraft.Add(one);
                 }
