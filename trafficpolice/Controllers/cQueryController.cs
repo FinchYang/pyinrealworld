@@ -341,7 +341,7 @@ namespace trafficpolice.Controllers
 
             var data = _db1.Reportsdata.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
       && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
-      && c.Draft == 3
+      && c.Draft >=3
       && c.Unitid == ut);
 
             foreach (var d in data)
@@ -428,7 +428,7 @@ namespace trafficpolice.Controllers
 
             var data = _db1.Reportsdata.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
       && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
-      && c.Draft == 3
+      && c.Draft >= 3
       && c.Unitid == ut);
             audio = 0;
             video = 0;
