@@ -173,7 +173,7 @@ namespace trafficpolice.Controllers
                 if (input == null)
                 {
                     _log.LogInformation("login,{0}", responseStatus.requesterror);
-                    return global.commonreturn(responseStatus.requesterror);
+                    return global.commonreturn(responseStatus.requesterror,"body input is null");
                 }
                 var accinfo = global.GetInfoByToken(Request.Headers);
                 if (accinfo.status != responseStatus.ok) return accinfo;
@@ -188,11 +188,14 @@ namespace trafficpolice.Controllers
                     return global.commonreturn(responseStatus.forbidden);
                 }
 
-                if (string.IsNullOrEmpty(input.Name) || string.IsNullOrEmpty(input.tabletype))
+                if (string.IsNullOrEmpty(input.Name) )
                 {
-                    return global.commonreturn(responseStatus.requesterror);
+                    return global.commonreturn(responseStatus.requesterror, "data Name is illegal");
                 }
-
+                if ( string.IsNullOrEmpty(input.tabletype))
+                {
+                    return global.commonreturn(responseStatus.requesterror, "tabletype is illegal");
+                }
                 var thevs = _db1.Dataitem.FirstOrDefault(c => c.Name == input.Name
                 && c.Tabletype == input.tabletype
                 );
