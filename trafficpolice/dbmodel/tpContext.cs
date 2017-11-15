@@ -7,16 +7,13 @@ namespace trafficpolice.dbmodel
     public partial class tpContext : DbContext
     {
         public virtual DbSet<Dataitem> Dataitem { get; set; }
-        public virtual DbSet<ItemsDeprecated> ItemsDeprecated { get; set; }
         public virtual DbSet<Moban> Moban { get; set; }
-        public virtual DbSet<ReportlogDeprecated> ReportlogDeprecated { get; set; }
         public virtual DbSet<Reports> Reports { get; set; }
         public virtual DbSet<Reportsdata> Reportsdata { get; set; }
         public virtual DbSet<Summarized> Summarized { get; set; }
         public virtual DbSet<Unit> Unit { get; set; }
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<Userlog> Userlog { get; set; }
-        public virtual DbSet<VideoreportDeprecated> VideoreportDeprecated { get; set; }
         public virtual DbSet<Weeksummarized> Weeksummarized { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -24,7 +21,7 @@ namespace trafficpolice.dbmodel
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseMySql("Server=47.93.226.74;User Id=blah;Password=ycl1mail@A;Database=tp");
+                optionsBuilder.UseMySql("Server=localhost;User Id=blah;Password=ycl1mail@A;Database=tp");
             }
         }
 
@@ -102,80 +99,6 @@ namespace trafficpolice.dbmodel
                     .HasMaxLength(300);
             });
 
-            modelBuilder.Entity<ItemsDeprecated>(entity =>
-            {
-                entity.ToTable("items-deprecated");
-
-                entity.HasIndex(e => e.Id)
-                    .HasName("id_UNIQUE")
-                    .IsUnique();
-
-                entity.HasIndex(e => e.Name)
-                    .HasName("name_UNIQUE")
-                    .IsUnique();
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.Comment)
-                    .HasColumnName("comment")
-                    .HasMaxLength(300);
-
-                entity.Property(e => e.Defaultvalue)
-                    .HasColumnName("defaultvalue")
-                    .HasMaxLength(450);
-
-                entity.Property(e => e.Deleted)
-                    .HasColumnName("deleted")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("'0'");
-
-                entity.Property(e => e.Hassecond)
-                    .HasColumnName("hassecond")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("'0'");
-
-                entity.Property(e => e.Inputtype)
-                    .HasColumnName("inputtype")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("'2'");
-
-                entity.Property(e => e.Mandated)
-                    .HasColumnName("mandated")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("'1'");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasColumnName("name")
-                    .HasMaxLength(150);
-
-                entity.Property(e => e.Seconditem)
-                    .HasColumnName("seconditem")
-                    .HasMaxLength(5000);
-
-                entity.Property(e => e.Statisticstype)
-                    .HasColumnName("statisticstype")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("'0'");
-
-                entity.Property(e => e.Tabletype)
-                    .HasColumnName("tabletype")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("'0'");
-
-                entity.Property(e => e.Time)
-                    .HasColumnName("time")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.Units)
-                    .IsRequired()
-                    .HasColumnName("units")
-                    .HasMaxLength(300);
-            });
-
             modelBuilder.Entity<Moban>(entity =>
             {
                 entity.HasKey(e => e.Name);
@@ -216,52 +139,6 @@ namespace trafficpolice.dbmodel
                     .HasColumnType("datetime");
             });
 
-            modelBuilder.Entity<ReportlogDeprecated>(entity =>
-            {
-                entity.HasKey(e => new { e.Date, e.Unitid });
-
-                entity.ToTable("reportlog--deprecated");
-
-                entity.HasIndex(e => e.Unitid)
-                    .HasName("reportlogunitid_idx");
-
-                entity.Property(e => e.Date)
-                    .HasColumnName("date")
-                    .HasMaxLength(10);
-
-                entity.Property(e => e.Unitid)
-                    .HasColumnName("unitid")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Content)
-                    .IsRequired()
-                    .HasColumnName("content")
-                    .HasMaxLength(4500);
-
-                entity.Property(e => e.Declinereason)
-                    .HasColumnName("declinereason")
-                    .HasMaxLength(450);
-
-                entity.Property(e => e.Draft)
-                    .HasColumnName("draft")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("'1'");
-
-                entity.Property(e => e.Submittime)
-                    .HasColumnName("submittime")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.Time)
-                    .HasColumnName("time")
-                    .HasColumnType("datetime");
-
-                entity.HasOne(d => d.Unit)
-                    .WithMany(p => p.ReportlogDeprecated)
-                    .HasForeignKey(d => d.Unitid)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("reportlogunitid");
-            });
-
             modelBuilder.Entity<Reports>(entity =>
             {
                 entity.HasKey(e => e.Name);
@@ -297,10 +174,6 @@ namespace trafficpolice.dbmodel
                 entity.HasKey(e => new { e.Date, e.Unitid });
 
                 entity.ToTable("reportsdata");
-
-                entity.HasIndex(e => e.Date)
-                    .HasName("date_UNIQUE")
-                    .IsUnique();
 
                 entity.HasIndex(e => e.Unitid)
                     .HasName("reportsdataunitid_idx");
@@ -506,65 +379,6 @@ namespace trafficpolice.dbmodel
                     .HasForeignKey(d => d.Userid)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("userid");
-            });
-
-            modelBuilder.Entity<VideoreportDeprecated>(entity =>
-            {
-                entity.HasKey(e => new { e.Date, e.Unitid });
-
-                entity.ToTable("videoreport--deprecated");
-
-                entity.HasIndex(e => e.Date)
-                    .HasName("date_UNIQUE")
-                    .IsUnique();
-
-                entity.HasIndex(e => e.Unitid)
-                    .HasName("reportlogunitid_idx");
-
-                entity.Property(e => e.Date)
-                    .HasColumnName("date")
-                    .HasMaxLength(10);
-
-                entity.Property(e => e.Unitid)
-                    .HasColumnName("unitid")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Comment)
-                    .HasColumnName("comment")
-                    .HasMaxLength(450);
-
-                entity.Property(e => e.Content)
-                    .IsRequired()
-                    .HasColumnName("content")
-                    .HasMaxLength(4500);
-
-                entity.Property(e => e.Declinereason)
-                    .HasColumnName("declinereason")
-                    .HasMaxLength(450);
-
-                entity.Property(e => e.Draft)
-                    .HasColumnName("draft")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("'1'");
-
-                entity.Property(e => e.Signtype)
-                    .HasColumnName("signtype")
-                    .HasColumnType("smallint(2)")
-                    .HasDefaultValueSql("'0'");
-
-                entity.Property(e => e.Submittime)
-                    .HasColumnName("submittime")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.Time)
-                    .HasColumnName("time")
-                    .HasColumnType("datetime");
-
-                entity.HasOne(d => d.Unit)
-                    .WithMany(p => p.VideoreportDeprecated)
-                    .HasForeignKey(d => d.Unitid)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("videoreportunitid");
             });
 
             modelBuilder.Entity<Weeksummarized>(entity =>
