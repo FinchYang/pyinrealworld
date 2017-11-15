@@ -9,6 +9,6 @@
       , vcodeerror, losttimeerror, forbidden, startdateerror, enddateerror
       , abroadorserviceerror, passerror,overdueerror,nounit,newpasserror
             ,allreadysubmitted,dataitemallreadyexist,nodataitem,dateerror,notemplate
-            , reportType_allreadyexist,idexist,noreporttype,nodatacorrelated
+            , reportType_allreadyexist,idexist,noreporttype,nodatacorrelated,disabled
     };
 }

@@ -111,7 +111,10 @@ namespace trafficpolice.Controllers
                         status = responseStatus.passerror
                     };
                 }
-                //token process
+                if (theuser.Disabled != 0)
+                {
+                    return global.commonreturn(responseStatus.disabled, "user disabled");
+                }
                 var toke1n = GetToken();
                 var found = false;
 

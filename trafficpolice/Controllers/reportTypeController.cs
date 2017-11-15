@@ -108,7 +108,7 @@ namespace trafficpolice.Controllers
                 if (!string.IsNullOrEmpty(input.comment))
                     thevs.Comment = input.comment;
                 // Type = string.IsNullOrEmpty(input.reporttype) ? string.Empty : input.reporttype,
-                if(input.units!=null&& input.units.Count>0)
+                if(input.units!=null)//&& input.units.Count>0)
                 thevs.Units = JsonConvert.SerializeObject(input.units);
                 
                 _db1.SaveChanges();
