@@ -10,5 +10,6 @@
       , abroadorserviceerror, passerror,overdueerror,nounit,newpasserror
             ,allreadysubmitted,dataitemallreadyexist,nodataitem,dateerror,notemplate
             , reportType_allreadyexist,idexist,noreporttype,nodatacorrelated,disabled
+            ,illegallogin
     };
 }

@@ -115,6 +115,23 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.disabled, "user disabled");
                 }
+
+                //for test environment
+                if (theuser.Unitid == "laizhou")
+                {
+                    var theunit = _db1.Unit.FirstOrDefault(c => c.Id == theuser.Unitid);
+                    if (theunit==null)
+                    {
+                        return global.commonreturn(responseStatus.nounit, "user unit is illegal");
+                    }
+                    var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+                    if (ip != theunit.Ip)
+                    {
+                        _log.LogError("user login from illegal ip address {0},{1}", ip, theunit.Ip);
+                        return global.commonreturn(responseStatus.illegallogin, "user login from illegal ip address");
+                    }
+                }
+                   
                 var toke1n = GetToken();
                 var found = false;
 
@@ -235,6 +252,7 @@ namespace trafficpolice.Controllers
             public short level { get; set; }//1,2
             public string pass { get; set; }
             public unittype ut { get; set; }
+            public short unitclass { get; set; }//0-直属大队，1-县市区大队
         }
         [Route("adduser")]//增加用户接口
         [HttpPost]
@@ -274,6 +292,8 @@ namespace trafficpolice.Controllers
                 var pass=string.IsNullOrEmpty(input.pass)? "123456":input.pass;
                 short level = 2;
                 if (input.level == 1) level = 1;
+                short unitclass = 0;
+                if (input.unitclass > 0) unitclass = 1;
                 _db1.User.Add(new User
                 {
                     Id=input.id,
@@ -281,7 +301,7 @@ namespace trafficpolice.Controllers
                     Level =level,
                     Unitid =input.ut.ToString(),
                     Pass=pass,
-                    Disabled=0,
+                    Disabled=0,Unitclass=unitclass
                 });
                 _db1.SaveChanges();
                 return global.commonreturn(responseStatus.ok);

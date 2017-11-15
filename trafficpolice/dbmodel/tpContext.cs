@@ -327,6 +327,10 @@ namespace trafficpolice.dbmodel
                     .HasColumnName("token")
                     .HasMaxLength(45);
 
+                entity.Property(e => e.Unitclass)
+                    .HasColumnName("unitclass")
+                    .HasColumnType("smallint(2)");
+
                 entity.Property(e => e.Unitid)
                     .IsRequired()
                     .HasColumnName("unitid")
