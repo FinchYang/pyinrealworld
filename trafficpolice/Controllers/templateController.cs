@@ -118,6 +118,7 @@ namespace trafficpolice.Controllers
                 var mb = tp.Moban.FirstOrDefault(c => c.Name == user.name
                 //&& c.Tabletype == user.templatetype
                 );
+                var tt = string.IsNullOrEmpty(user.templatetype) ? string.Empty : user.templatetype;
                 if (mb == null)
                 {
                     tp.Moban.Add(new Moban
@@ -125,7 +126,7 @@ namespace trafficpolice.Controllers
                         Name = user.name,
                         Comment = user.comment,
                         Filename = fn,Time=DateTime.Now,
-                        Tabletype = user.templatetype
+                        Tabletype = tt
                     });
                 }
                 else
@@ -134,7 +135,6 @@ namespace trafficpolice.Controllers
                    if(!string.IsNullOrEmpty(user.comment))
                     mb.Comment = user.comment;
                    mb.Filename  = fn;
-
                 }
 
                 tp.SaveChanges();
@@ -142,7 +142,7 @@ namespace trafficpolice.Controllers
             catch(Exception ex)
             {
                 _log.LogError(" uploadtemplate error:{0}", ex.Message);
-                return global.commonreturn(responseStatus.processerror);
+                return global.commonreturn(responseStatus.processerror,ex.Message+ex.InnerException);
             }
            
 

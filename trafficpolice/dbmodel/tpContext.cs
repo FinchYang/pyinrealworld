@@ -171,7 +171,7 @@ namespace trafficpolice.dbmodel
 
             modelBuilder.Entity<Reportsdata>(entity =>
             {
-                entity.HasKey(e => new { e.Date, e.Unitid });
+                entity.HasKey(e => new { e.Date, e.Unitid, e.Rname });
 
                 entity.ToTable("reportsdata");
 
@@ -185,6 +185,10 @@ namespace trafficpolice.dbmodel
                 entity.Property(e => e.Unitid)
                     .HasColumnName("unitid")
                     .HasMaxLength(50);
+
+                entity.Property(e => e.Rname)
+                    .HasColumnName("rname")
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.Comment)
                     .HasColumnName("comment")
@@ -202,11 +206,6 @@ namespace trafficpolice.dbmodel
                 entity.Property(e => e.Draft)
                     .HasColumnName("draft")
                     .HasColumnType("smallint(2)");
-
-                entity.Property(e => e.Rname)
-                    .IsRequired()
-                    .HasColumnName("rname")
-                    .HasMaxLength(100);
 
                 entity.Property(e => e.Signtype)
                     .HasColumnName("signtype")

@@ -9,7 +9,7 @@ CREATE TABLE `reportsdata` (
   `declinereason` varchar(450) DEFAULT NULL,
   `submittime` datetime DEFAULT NULL,
   `rname` varchar(100) NOT NULL,
-  PRIMARY KEY (`date`,`unitid`),
+  PRIMARY KEY (`date`,`unitid`,`rname`),
   KEY `reportsdataunitid_idx` (`unitid`),
   CONSTRAINT `reportsdataunitid` FOREIGN KEY (`unitid`) REFERENCES `unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='//每日上报数据，包括草稿和提交，';

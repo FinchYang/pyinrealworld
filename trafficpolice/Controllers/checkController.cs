@@ -32,6 +32,7 @@ namespace trafficpolice.Controllers
         [HttpGet]//数据审核同意
         public commonresponse checkDataAgree(string unitid,string reportname="",string date="")
         {
+            _log.LogError("{0}-{1}-{2}", unitid, reportname, date);
             if (string.IsNullOrEmpty(unitid))
             {
                 return global.commonreturn(responseStatus.requesterror);
@@ -56,12 +57,13 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }
+
                 var data = _db1.Reportsdata.FirstOrDefault(c => c.Date == today&& c.Rname==reportname
                 && c.Unitid == unitid
                );
                 if (data == null)
                 {
-                    return global.commonreturn(responseStatus.nodatacorrelated);
+                    return global.commonreturn(responseStatus.nodatacorrelated,today+reportname+unitid);
                 }
                 data.Draft = 3;
                 _db1.SaveChanges();

@@ -60,6 +60,7 @@ namespace trafficpolice.Controllers
                     return global.commonreturn(responseStatus.noreporttype);
                 }
                 _db1.Reports.Remove(thevs);
+                //var items=_db1.Dataitem.Where()
                 _db1.SaveChanges();
                 return global.commonreturn(responseStatus.ok);
             }

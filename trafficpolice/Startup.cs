@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using trafficpolice.dbmodel;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace trafficpolice
 {
@@ -21,9 +22,23 @@ namespace trafficpolice
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
+        {        
+          
             services.AddDbContext<tpContext>(ServiceLifetime.Scoped);
             services.AddMvc();
+            services.Configure<FormOptions>(x =>
+            {
+                x.ValueLengthLimit = int.MaxValue;
+                x.MultipartBodyLengthLimit = int.MaxValue; // In case of multipart
+                x.BufferBodyLengthLimit = int.MaxValue;
+                x.KeyLengthLimit = int.MaxValue;
+                x.MemoryBufferThreshold = int.MaxValue;
+                x.BufferBody = true;
+                x.MultipartBoundaryLengthLimit = int.MaxValue;
+                x.MultipartHeadersCountLimit = int.MaxValue; 
+                x.MultipartHeadersLengthLimit = int.MaxValue;
+                x.ValueCountLimit = int.MaxValue;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

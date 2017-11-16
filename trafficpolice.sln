@@ -1,19 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "trafficpolice", "trafficpolice\trafficpolice.csproj", "{BA12BFBC-A266-45D2-A07E-40728D7D1E9F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{6C71F82B-4440-4579-876C-EF973C184927}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9086D3A6-056D-4BCC-8633-CA24782E9DD3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "Quick Application1\DAL\DAL.csproj", "{B6A7E202-05C1-4907-BB6E-5B5EDAA53268}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Npoi.Samples.CreateNewSpreadsheet", "..\clone\NPOI\samples\Npoi.Samples.CreateNewSpreadsheet\Npoi.Samples.CreateNewSpreadsheet.csproj", "{3BC166A0-8514-45BB-A2F1-F885E20F7B4E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebConfigBind", "..\clone\Docs\aspnetcore\fundamentals\configuration\sample\WebConfigBind\WebConfigBind.csproj", "{4D85E010-BF25-4748-97B8-8502CC196581}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,24 +21,9 @@ Global
 		{6C71F82B-4440-4579-876C-EF973C184927}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C71F82B-4440-4579-876C-EF973C184927}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C71F82B-4440-4579-876C-EF973C184927}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B6A7E202-05C1-4907-BB6E-5B5EDAA53268}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B6A7E202-05C1-4907-BB6E-5B5EDAA53268}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B6A7E202-05C1-4907-BB6E-5B5EDAA53268}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B6A7E202-05C1-4907-BB6E-5B5EDAA53268}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3BC166A0-8514-45BB-A2F1-F885E20F7B4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3BC166A0-8514-45BB-A2F1-F885E20F7B4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3BC166A0-8514-45BB-A2F1-F885E20F7B4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3BC166A0-8514-45BB-A2F1-F885E20F7B4E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4D85E010-BF25-4748-97B8-8502CC196581}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4D85E010-BF25-4748-97B8-8502CC196581}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4D85E010-BF25-4748-97B8-8502CC196581}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4D85E010-BF25-4748-97B8-8502CC196581}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{B6A7E202-05C1-4907-BB6E-5B5EDAA53268} = {9086D3A6-056D-4BCC-8633-CA24782E9DD3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BCDED963-E072-43CF-977B-015E77D9D7B8}

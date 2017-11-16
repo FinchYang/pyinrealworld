@@ -1,4 +1,8 @@
 ﻿using Newtonsoft.Json;
+using NPOI.HSSF.Util;
+using NPOI.SS.UserModel;
+using NPOI.SS.Util;
+using NPOI.XSSF.UserModel;
 using NPOI.XWPF.UserModel;
 using System;
 using System.Collections.Generic;
@@ -34,9 +38,19 @@ namespace ConsoleApp1
         {
 
             //  var sfile = @"F:\prototype\每日交管动态汇报项目补充.docx";
-            var sfile = @"F:\tp\trafficpolice\wwwroot\upload\daytemplate1.docx";
-            var tfile = @"F:\tp\trafficpolice\wwwroot\download\111.doc";
-            string error = generateDoc(sfile, tfile, DateTime.Now);
+            //var sfile = @"F:\tp\trafficpolice\wwwroot\upload\daytemplate1.docx";
+            //var tfile = @"F:\tp\trafficpolice\wwwroot\download\111.doc";
+            //string error = generateDoc(sfile, tfile, DateTime.Now);
+
+            //var sfile = @"F:\tp\trafficpolice\wwwroot\upload\考核表.xlsx";
+            //var tfile = @"F:\tp\trafficpolice\wwwroot\download\333-444-考核.xlsx";
+            //string error = generateexcel(sfile, tfile, DateTime.Now);
+            var now = DateTime.Now;
+          //  var b = DateTime.Parse("2017-11-16");
+            var c = new DateTime(now.Year,now.Month,now.Day);
+            var a = c.CompareTo(DateTime.Parse("2017-11-15"));
+            Console.WriteLine(a);
+          //  Console.WriteLine(b);
             Console.ReadLine();
         }
 
@@ -140,7 +154,97 @@ namespace ConsoleApp1
             }
             return string.Empty;
         }
+        private static string generateexcel(string sfile, string tfile, DateTime now)
+        {
+            try
+            {
+                if (System.IO.File.Exists(tfile)) System.IO.File.Delete(tfile);
+             
+                using (var fs = new FileStream(sfile, FileMode.Open, FileAccess.Read))
+                {
+                    Console.WriteLine("para-{0},1", 555);
+                  
+                    IWorkbook workbook = new XSSFWorkbook(fs);
+                    Console.WriteLine("111");
+                    var sheet1 = workbook.GetSheetAt(1);
+                    Console.WriteLine("222"+sheet1.SheetName);
+                    var row = sheet1.GetRow(3);
+                    Console.WriteLine("333"+row.Cells.Count);
+                    var cell = row.CreateCell(9);
+                    Console.WriteLine("444"+cell.StringCellValue);
+                    cell.SetCellValue("hahha");
+                 
+                    using (var wfs = new FileStream(tfile, FileMode.Create))
+                    {
+                        workbook.Write(wfs);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return string.Empty;
+        }
+        private static void ExportExcel()
+        {
+            var newFile = @"newbook.core.xlsx";
 
+            using (var fs = new FileStream(newFile, FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook = new XSSFWorkbook();
+                ISheet sheet1 = workbook.CreateSheet("Sheet1");
+                sheet1.AddMergedRegion(new CellRangeAddress(0, 0, 0, 10));
+                //ICreationHelper cH = wb.GetCreationHelper();
+                var rowIndex = 0;
+                IRow row = sheet1.CreateRow(rowIndex);
+                row.Height = 30 * 80;
+                var cell = row.CreateCell(0);
+                var font = workbook.CreateFont();
+                font.IsBold = true;
+                font.Color = HSSFColor.DarkBlue.Index2;
+                cell.CellStyle.SetFont(font);
+
+                cell.SetCellValue("A very long piece of text that I want to auto-fit innit, yeah. Although if it gets really, really long it'll probably start messing up more.");
+                sheet1.AutoSizeColumn(0);
+                rowIndex++;
+
+                // 新增試算表。
+                var sheet2 = workbook.CreateSheet("My Sheet");
+                // 建立儲存格樣式。
+                var style1 = workbook.CreateCellStyle();
+                style1.FillForegroundColor = HSSFColor.Blue.Index2;
+                style1.FillPattern = FillPattern.SolidForeground;
+
+                var style2 = workbook.CreateCellStyle();
+                style2.FillForegroundColor = HSSFColor.Yellow.Index2;
+                style2.FillPattern = FillPattern.SolidForeground;
+
+                // 設定儲存格樣式與資料。
+                var cell2 = sheet2.CreateRow(0).CreateCell(0);
+                cell2.CellStyle = style1;
+                cell2.SetCellValue(0);
+
+                cell2 = sheet2.CreateRow(1).CreateCell(0);
+                cell2.CellStyle = style2;
+                cell2.SetCellValue(1);
+
+                cell2 = sheet2.CreateRow(2).CreateCell(0);
+                cell2.CellStyle = style1;
+                cell2.SetCellValue(2);
+
+                cell2 = sheet2.CreateRow(3).CreateCell(0);
+                cell2.CellStyle = style2;
+                cell2.SetCellValue(3);
+
+                cell2 = sheet2.CreateRow(4).CreateCell(0);
+                cell2.CellStyle = style1;
+                cell2.SetCellValue(4);
+
+                workbook.Write(fs);
+            }
+            Console.WriteLine("Excel  Done");
+        }
         static void A(out int b)
         {
             b = 10;

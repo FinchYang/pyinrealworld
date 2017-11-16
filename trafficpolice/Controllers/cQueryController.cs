@@ -8,6 +8,9 @@ using trafficpolice.Models;
 using Newtonsoft.Json;
 //using perfectmsg.dbmodel;
 using trafficpolice.dbmodel;
+using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 //using perfectmsg.dbmodel;
 
 namespace trafficpolice.Controllers
@@ -29,6 +32,7 @@ namespace trafficpolice.Controllers
         {
             _log = log;
         }
+     
         [Route("cGetFourDataWeek")]//指挥中心每周交管动态数据查询接口
         [HttpGet]//4点数据
         public commonresponse cGetFourDataWeek(string startdate, string enddate,string rname="four")
@@ -172,7 +176,9 @@ namespace trafficpolice.Controllers
                 }
               for(var d = start; d <= end;d= d.AddDays(1))
                 {
-                    ret.daysdata.Add(getonedayfour(d,rname));
+                    var aaa = getonedayfour(d, rname);
+                    if(aaa.data.Count>0)
+                    ret.daysdata.Add(aaa);
                 }
               
                 return ret;
@@ -196,6 +202,7 @@ namespace trafficpolice.Controllers
             };
             var ct = DateTime.Now;
             ret.data = gethisdata(day,out ct,rname);
+            if(ret.data.Count<1) return ret;
             ret.createtime = ct;
             ret.yearoveryear = gethisdata(d.AddYears(-1).ToString("yyyy-MM-dd"),rname);
             ret.linkrelative = gethisdata(d.AddDays(-1).ToString("yyyy-MM-dd"),rname);
@@ -204,17 +211,18 @@ namespace trafficpolice.Controllers
         private List<Models.Dataitem> gethisdata(string day,out DateTime ct,string rname)
         {
             var ret = new List<Models.Dataitem>();
-            var dis = _db1.Dataitem.Where(c => (c.Tabletype == rname)
-             && c.Deleted == 0);
-            ret = GetBasicItems(dis);
+         
+          
             var data = _db1.Summarized.FirstOrDefault(c => c.Date == day
    // && c.Draft == 3
    &&c.Reportname==rname
     );
             ct = DateTime.Now;
             if (data == null) return ret;
-            
-                var one = JsonConvert.DeserializeObject<submitreq>(data.Content);
+            var dis = _db1.Dataitem.Where(c => (c.Tabletype == rname)
+          && c.Deleted == 0);
+            ret = GetBasicItems(dis);
+            var one = JsonConvert.DeserializeObject<submitreq>(data.Content);
                 foreach (var b in one.datalist)
                 {
                     SumData(ret, b);

@@ -11,6 +11,8 @@ using trafficpolice.dbmodel;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using NPOI.XWPF.UserModel;
+using NPOI.XSSF.UserModel;
+using NPOI.SS.UserModel;
 //using perfectmsg.dbmodel;
 
 namespace trafficpolice.Controllers
@@ -71,9 +73,259 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
+        private  string generateexcel(string sfile, string tfile, string start, string end)
+        {
+            try
+            {
+                if (System.IO.File.Exists(tfile)) System.IO.File.Delete(tfile);
+                var aa = _db1.Reports.Where(c => c.Type == "four").Select(c => c.Name).ToList();
+                var bb = _db1.Reports.Where(c => c.Type == "nine").Select(c => c.Name).ToList();
+                var days = DateTime.Parse(end).Subtract(DateTime.Parse(start)).Days+1;
+                using (var fs = new FileStream(sfile, FileMode.Open, FileAccess.Read))
+                {
+                    IWorkbook workbook = new XSSFWorkbook(fs);
+                    var sheet1 = workbook.GetSheetAt(1);
+                  //  Console.WriteLine("222" + sheet1.SheetName);
+                  for(int i = 2; i < 19; i++)
+                    {
+                        var row = sheet1.GetRow(i);
+                       
+                        var cellunsubmit = row.CreateCell(7);
+                        // Console.WriteLine("444" + cell.StringCellValue);
+                        var ut = unittype.unknown;
+                        switch (i)
+                        {
+                            case 2:
+                                ut = unittype.fushan;
+                                break;
+                            case 3:
+                                ut = unittype.muping;
+                                break;
+                            case 4:
+                                ut = unittype.haiyang;
+                                break;
+                            case 5:
+                                ut = unittype.laiyang;
+                                break;
+                            case 6:
+                                ut = unittype.qixia;
+                                break;
+                            case 7:
+                                ut = unittype.penglai;
+                                break;
+                            case 8:
+                                ut = unittype.changdao;
+                                break;
+                            case 9:
+                                ut = unittype.longkou;
+                                break;
+                            case 10:
+                                ut = unittype.zhaoyuan;
+                                break;
+                            case 11:
+                                ut = unittype.laizhou;
+                                break;
+                            case 12:
+                                ut = unittype.kaifaqu;
+                                break;
+                            case 13:
+                                ut = unittype.yantaigang;
+                                break;
+                            case 14:
+                                ut = unittype.jichang;
+                                break;
+                            case 15:
+                                ut = unittype.one;
+                                break;
+                            case 16:
+                                ut = unittype.two;
+                                break;
+                            case 17:
+                                ut = unittype.three;
+                                break;
+                            case 18:
+                                ut = unittype.four;
+                                break;
+                          
+                            default:
+                                break;
+                        }
+                        int un = getunsubmit(ut,start,end, aa);
+                        
+                        cellunsubmit.SetCellValue(days*aa.Count-un);
+                        var celldelay = row.CreateCell(8);
+                        int delay = getdelaysubmit(ut, start, end, aa);
+                        celldelay.SetCellValue(delay);
+
+                        var notsigncell = row.CreateCell(10);
+                        int notsign = getnotsign(ut, start, end, bb);
+                        notsigncell.SetCellValue(notsign);
+
+                        var substitutecell = row.CreateCell(11);
+                        int substitute = getsubstitute(ut, start, end, bb);
+                        substitutecell.SetCellValue(substitute);
+
+                        var videodelaycell = row.CreateCell(12);
+                        int videodelay = getvideodelay(ut, start, end, bb);
+                        videodelaycell.SetCellValue(videodelay);
+                    }                   
+
+                    using (var wfs = new FileStream(tfile, FileMode.Create))
+                    {
+                        workbook.Write(wfs);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return string.Empty;
+        }
+        private int getvideodelay(unittype fushan, string start, string end, List<string> rname)
+        {
+            var ret = 0;
+            foreach (var r in rname)
+            {
+                var rs = _db1.Reportsdata.Where(c => c.Date.CompareTo(start) >= 0
+                 && c.Date.CompareTo(end) <= 0
+                 && c.Unitid == fushan.ToString()
+                 && c.Rname == r
+               //  && c.Draft != 1
+                 );
+                foreach (var rr in rs)
+                {
+                    var now = rr.Submittime;
+                    var c = new DateTime(now.Year, now.Month, now.Day);
+                    var a = c.CompareTo(DateTime.Parse(rr.Date));
+                    if (a > 0) ret++;
+                }
+            }
+            return ret;
+        }
+        private int getsubstitute(unittype fushan, string start, string end, List<string> rname)
+        {
+            var ret = 0;
+            foreach (var r in rname)
+            {
+                _log.LogError("{0},{1},{2},{3}", start, end, fushan, r);
+                ret += _db1.Reportsdata.Count(c => c.Date.CompareTo(start) >= 0
+                && c.Date.CompareTo(end) <= 0
+                && c.Unitid == fushan.ToString()
+                && c.Rname == r
+                && c.Signtype == (short)signtype.substitute);
+            }
+            return ret;
+        }
+        private int getnotsign(unittype fushan, string start, string end, List<string> rname)
+        {
+            var ret = 0;
+            foreach (var r in rname)
+            {
+                _log.LogError("{0},{1},{2},{3}", start, end, fushan, r);
+                ret += _db1.Reportsdata.Count(c => c.Date.CompareTo(start) >= 0
+                && c.Date.CompareTo(end) <= 0
+                && c.Unitid == fushan.ToString()
+                && c.Rname == r
+                && c.Signtype==(short)signtype.notsign);
+            }
+            return ret;
+        }
+        private int getdelaysubmit(unittype fushan, string start, string end, List<string> rname)
+        {
+            var ret = 0;
+            foreach (var r in rname)
+            {
+                var rs = _db1.Reportsdata.Where(c => c.Date.CompareTo(start) >= 0
+                 && c.Date.CompareTo(end) <= 0
+                 && c.Unitid == fushan.ToString()
+                 && c.Rname == r
+                 && c.Draft != 1);
+                foreach(var rr in rs)
+                {
+                    var now = rr.Submittime;
+                    var c = new DateTime(now.Year, now.Month, now.Day);
+                    var a = c.CompareTo(DateTime.Parse(rr.Date));
+                    //
+                    if (a > 0) ret++;
+                }
+               //
+            }
+            return ret;
+        }
+        private int getunsubmit(unittype fushan, string start, string end,List<string> rname)
+        {
+            var ret = 0;
+            foreach (var r in rname)
+            {
+                _log.LogError("{0},{1},{2},{3}", start, end, fushan, r);
+                ret += _db1.Reportsdata.Count(c => c.Date.CompareTo(start) >= 0
+                && c.Date.CompareTo(end) <= 0
+                && c.Unitid == fushan.ToString()
+                && c.Rname == r
+                && c.Draft!=1);
+            }
+            return ret;
+        }
+
         public class gtres:commonresponse
         {
             public List<onetemplate> tlist { get; set; }
+        }
+        [Route("centerDownloadCheckReport")]//中心导出考核表
+        [HttpGet]
+        public commonresponse centerDownloadCheckReport([FromServices]IHostingEnvironment env,
+            string startdate, string enddate, unittype ut=unittype.all)
+        {
+            var accinfo = global.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+
+            var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+            if (unit == null)
+            {
+                return global.commonreturn(responseStatus.nounit);
+            }
+            if (unit.Level == 1)
+            {
+                return global.commonreturn(responseStatus.forbidden);
+            }
+            var start = DateTime.Now;
+            var end = start;
+            if (!DateTime.TryParse(startdate, out start))
+            {
+                return global.commonreturn(responseStatus.startdateerror);
+            }
+            if (!DateTime.TryParse(enddate, out end))
+            {
+                return global.commonreturn(responseStatus.enddateerror);
+            }
+            var ret = new downloadres
+            {
+                status = 0,
+            };
+
+            try
+            {
+                var spath = Path.Combine(env.WebRootPath, "upload", "考核表.xlsx");
+                var tpath = Path.Combine(env.WebRootPath, "download");
+                if (!Directory.Exists(tpath)) Directory.CreateDirectory(tpath);
+                var tfbase = startdate + "考核表" + enddate + ".xlsx";
+                var tfile = Path.Combine(tpath, tfbase);
+               
+
+                var aa = generateexcel(spath, tfile, start.ToString("yyyy-MM-dd"), end.ToString("yyyy-MM-dd"));
+                _log.LogWarning("para-{0},1", 444 + aa);
+              //  return @"download/" + tfbase;
+                ret.fileResoure = @"download/" + tfbase;
+                _log.LogWarning("para-{0},1", 111);
+               
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "centerDownloadCheckReport", ex.Message);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+            }
         }
         [Route("centerGetTemplates")]//中心交管动态模板查询
         [HttpGet]

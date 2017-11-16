@@ -139,7 +139,7 @@ namespace trafficpolice.Controllers
                 var one = new onedata();
                 one = JsonConvert.DeserializeObject<onedata>(d.Content);
                 one.date = d.Date;
-                one.submittime = d.Submittime.GetValueOrDefault();
+                one.submittime = d.Submittime;
                 one.createtime = d.Time;
                 ret.Add(one);
             }

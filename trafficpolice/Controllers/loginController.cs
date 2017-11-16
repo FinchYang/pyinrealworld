@@ -98,18 +98,15 @@ namespace trafficpolice.Controllers
                 if (theuser == null)
                 {
                     _log.LogInformation("login,{0}", responseStatus.nouser);
-                    return new commonresponse
-                    {
-                        status = responseStatus.nouser
-                    };
+                    
+                    return global.commonreturn ( responseStatus.nouser);
                 }
                 if (theuser.Pass != inputRequest.password)
                 {
                     _log.LogInformation("login,{0}", responseStatus.passerror);
-                    return new commonresponse
-                    {
-                        status = responseStatus.passerror
-                    };
+                    return global.commonreturn(
+                         responseStatus.passerror
+                    );
                 }
                 if (theuser.Disabled != 0)
                 {

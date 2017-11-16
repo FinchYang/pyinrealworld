@@ -13,7 +13,7 @@ namespace trafficpolice.dbmodel
         public string Comment { get; set; }
         public short Signtype { get; set; }
         public string Declinereason { get; set; }
-        public DateTime? Submittime { get; set; }
+        public DateTime Submittime { get; set; }
         public string Rname { get; set; }
 
         public Unit Unit { get; set; }

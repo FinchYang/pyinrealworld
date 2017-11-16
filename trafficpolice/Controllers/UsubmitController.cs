@@ -51,7 +51,8 @@ namespace trafficpolice.Controllers
                 }
                 var today = DateTime.Parse(input.date).ToString("yyyy-MM-dd");
                 var now = DateTime.Now;
-                var daylog = _db1.Reportsdata.FirstOrDefault(c => c.Unitid == accinfo.unitid && c.Date == today);
+                var daylog = _db1.Reportsdata.FirstOrDefault(c => c.Unitid == accinfo.unitid && c.Date == today
+                &&c.Rname==input.reportname);
                 if (daylog == null)
                 {
                     _db1.Reportsdata.Add(new Reportsdata
@@ -116,7 +117,7 @@ namespace trafficpolice.Controllers
             catch (Exception ex)
             {
                 _log.LogError("{0}-{1}-{2},inner={3}", DateTime.Now, "unitSubmitDataItems", ex.Message, ex.InnerException.Message);
-                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+                return new commonresponse { status = responseStatus.processerror, content =input.reportname+input.date+ ex.Message + ex.InnerException.Message };
             }
         }
         //[Route("SubmitDataItemsNine")]//视频点名前上报数据，包括草稿和提交，9点的

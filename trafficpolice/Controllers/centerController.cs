@@ -66,7 +66,7 @@ namespace trafficpolice.Controllers
                 {
                   var  one = JsonConvert.DeserializeObject<videosigndata>(d.Content);
                     one.createtime = d.Time;
-                    one.submittime = d.Submittime.GetValueOrDefault();
+                    one.submittime = d.Submittime;
                     one.draft = d.Draft;
                     one.date = d.Date;
                     one.unitid = d.Unitid;
@@ -88,7 +88,7 @@ namespace trafficpolice.Controllers
             if (accinfo.status != responseStatus.ok) return accinfo;
             var ret = new getvideosigndatares
             {
-                status = 0,
+                status = 0,signcount=0,
                 vsdata = new List<centerdata> ()
             };
             var today = DateTime.Now.ToString("yyyy-MM-dd");
@@ -111,7 +111,7 @@ namespace trafficpolice.Controllers
                     a.unitid = d.Unitid;
                     //a.date = d.Date;
                     //a.reportname = d.Rname;
-
+                    if (d.Draft == 4) ret.signcount++;
                     ret.vsdata.Add(a);
                 }
               
