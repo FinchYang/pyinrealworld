@@ -136,6 +136,7 @@ namespace trafficpolice.Controllers
             if (!string.IsNullOrEmpty(reportname)) data = data.Where(c => c.Rname == reportname);
             foreach (var d in data)
             {
+                if (string.IsNullOrEmpty(d.Content)) continue;
                 var one = new onedata();
                 one = JsonConvert.DeserializeObject<onedata>(d.Content);
                 one.date = d.Date;

@@ -354,15 +354,23 @@ namespace trafficpolice.Controllers
             var data = _db1.Reportsdata.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
       && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
       && c.Draft >=3
-      && c.Unitid == ut);
+      && c.Unitid == ut
+      && c.Rname==rname);
 
             foreach (var d in data)
-            {
-                var one = JsonConvert.DeserializeObject<submitreq>(d.Content);
+            { if (string.IsNullOrEmpty(d.Content)) continue;
+                try
+                {
+                    var one = JsonConvert.DeserializeObject<submitreq>(d.Content);
             //    d.Signtype
                 foreach (var b in one.datalist)
                 {
                     SumData(ret.datalist, b);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _log.LogError(" Reportsdata  table , content field is illegal" + ex.Message);
                 }
             }
             return ret;
@@ -441,7 +449,8 @@ namespace trafficpolice.Controllers
             var data = _db1.Reportsdata.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
       && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
       && c.Draft >= 3
-      && c.Unitid == ut);
+      && c.Unitid == ut
+      && c.Rname==rname);
             audio = 0;
             video = 0;
             not = 0;
@@ -449,7 +458,10 @@ namespace trafficpolice.Controllers
             sign = 0;
             foreach (var d in data)
             {
-                var one = JsonConvert.DeserializeObject<submitreq>(d.Content);
+                if (string.IsNullOrEmpty(d.Content)) continue;
+                try
+                {
+                    var one = JsonConvert.DeserializeObject<submitreq>(d.Content);
                 switch ((signtype)d.Signtype)
                 {
                     case signtype.audioerror:
@@ -475,6 +487,11 @@ namespace trafficpolice.Controllers
                     SumData(ret.datalist, b);
                 }
             }
+                   catch (Exception ex)
+            {
+                _log.LogError(" Reportsdata  table , content field is illegal" + ex.Message);
+            }
+        }
             return ret;
         }
 

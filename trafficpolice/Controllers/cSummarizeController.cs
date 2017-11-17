@@ -132,8 +132,16 @@ namespace trafficpolice.Controllers
                 && c.Draft == 3);
                 foreach (var d in data)
                 {
-                    var one = JsonConvert.DeserializeObject<submitreq>(d.Content);
+                    if (string.IsNullOrEmpty(d.Content)) continue;
+                    try
+                    {
+                        var one = JsonConvert.DeserializeObject<submitreq>(d.Content);
                     thelist.Add(one);
+                }
+                    catch (Exception ex)
+                    {
+                        _log.LogError(" Reportsdata  table , content field is illegal" + ex.Message);
+                    }
                 }
                 ret.sumdata.datalist = new List<Models.Dataitem>();
 
@@ -273,10 +281,18 @@ namespace trafficpolice.Controllers
 
                 var data = _db1.Reportsdata.Where(c => c.Date== theday&&c.Draft>=3 && c.Rname == rname);               
                 foreach (var d in data)
-                {                    
-                 var   one = JsonConvert.DeserializeObject<submitreq>(d.Content);
-                    thelist.Add(one);
-                }
+                {
+                    if (string.IsNullOrEmpty(d.Content)) continue;
+                    try
+                    {
+                        var one = JsonConvert.DeserializeObject<submitreq>(d.Content);
+                        thelist.Add(one);
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.LogError(" Reportsdata  table , content field is illegal" + ex.Message);
+                    }
+        }
                 ret.sumdata.datalist = new List<Models.Dataitem>();
                 ret.sumdata.datalist = getdataitems(rname);
              

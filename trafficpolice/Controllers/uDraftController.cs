@@ -65,7 +65,8 @@ namespace trafficpolice.Controllers
                     data.Where(c => c.Rname == reporttype);
                 _log.LogWarning("start={0},end={1},unitid={2},reporttype={3},count={4}", start, end, accinfo.unitid, reporttype,data.Count());
                 foreach (var d in data)
-                { 
+                {
+                    if (string.IsNullOrEmpty(d.Content)) continue;
                     var two= JsonConvert.DeserializeObject<rejectdata>(d.Content);
                     two.reason = string.IsNullOrEmpty( d.Declinereason)?string.Empty:d.Declinereason;
                     two.date = d.Date;
@@ -118,6 +119,7 @@ namespace trafficpolice.Controllers
                     data.Where(c => c.Rname == reporttype);
                foreach(var d in data)
                 {
+                    if (string.IsNullOrEmpty(d.Content)) continue;
                     var one = JsonConvert.DeserializeObject<submitreq>(d.Content);
                     one.date = d.Date;
                     one.draft = d.Draft;

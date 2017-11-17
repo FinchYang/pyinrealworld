@@ -64,13 +64,21 @@ namespace trafficpolice.Controllers
                 if (ut != unittype.unknown && ut != unittype.all) data = data.Where(c => c.Unitid == ut.ToString());
                 foreach (var d in data)
                 {
-                    var one = JsonConvert.DeserializeObject<videosigndata>(d.Content);
-                    one.createtime = d.Time;
-                    one.submittime = d.Submittime;
-                    one.draft = d.Draft;
-                    one.date = d.Date;
-                    one.unitid = d.Unitid;
-                    ret.videodata.Add(one);
+                    if (string.IsNullOrEmpty(d.Content)) continue;
+                    try
+                    {
+                        var one = JsonConvert.DeserializeObject<videosigndata>(d.Content);
+                        one.createtime = d.Time;
+                        one.submittime = d.Submittime;
+                        one.draft = d.Draft;
+                        one.date = d.Date;
+                        one.unitid = d.Unitid;
+                        ret.videodata.Add(one);
+                    }
+                   catch(Exception ex)
+                    {
+                        _log.LogError(" Reportsdata  table , content field is illegal" + ex.Message);
+                    }
                 }
                 return ret;
             }
@@ -107,13 +115,24 @@ namespace trafficpolice.Controllers
                 var data = _db1.Reportsdata.Where(c => c.Date == today && c.Rname == reportname);
                 foreach (var d in data)
                 {
-                    var a = JsonConvert.DeserializeObject<centerdata>(d.Content);
+                    if (d.Draft == 4) ret.signcount++;
+
+                   // if (string.IsNullOrEmpty(d.Content)) continue;
+                    if (string.IsNullOrEmpty(d.Content)) continue;
+                    try
+                    {
+                        var a = JsonConvert.DeserializeObject<centerdata>(d.Content);
                     a.draft = d.Draft;
                     a.unitid = d.Unitid;
                     //a.date = d.Date;
                     //a.reportname = d.Rname;
-                    if (d.Draft == 4) ret.signcount++;
+                  
                     ret.vsdata.Add(a);
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.LogError(" Reportsdata  table , content field is illegal" + ex.Message);
+                    }
                 }
 
                 return ret;
