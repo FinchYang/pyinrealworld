@@ -150,20 +150,29 @@ namespace trafficpolice.Controllers
                 var today = DateTime.Now.ToString("yyyy-MM-dd");
                 foreach (var d in input.videodata)
                 {
+                    var comment=string.IsNullOrEmpty(d.comment)?string.Empty: d.comment;
                     var thed = _db1.Reportsdata.FirstOrDefault(c => c.Date == today && c.Unitid == d.unitid
                     && c.Rname==d.reportname);
-                    if (thed == null)
+                    if (thed != null)
                     {
-                        _log.LogError("data {0} ,{1},{2},not found match, discarded", d.reportname, d.unitid, today);
-                        continue;
-                    }
+                        //_log.LogError("data {0} ,{1},{2},not found match, discarded", d.reportname, d.unitid, today);
+                        //continue;
+                    
                     if (d.signtype == signtype.unknown) continue;
                     thed.Signtype =(short) d.signtype;
                     thed.Draft = 4;//签到
-                    if (!string.IsNullOrEmpty(d.comment)) thed.Comment = d.comment;
-                  //  thed.Content = JsonConvert.SerializeObject(d);
-
-                    _db1.SaveChanges();
+                        thed.Comment = comment;
+                    //  thed.Content = JsonConvert.SerializeObject(d);
+                }
+                    else
+                    {
+                        _db1.Reportsdata.Add(new Reportsdata
+                        {
+                            Date = today, Unitid = d.unitid, Content = string.Empty,Draft=4,Time=DateTime.Now,
+                            Comment=comment,Signtype= (short)d.signtype,Submittime=DateTime.Parse("2222-2-2"),Rname=d.reportname
+                        });
+                    }
+                _db1.SaveChanges();
                 }              
                 
                 return global.commonreturn(responseStatus.ok);
