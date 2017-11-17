@@ -303,8 +303,12 @@ namespace trafficpolice.Controllers
             {
                 if (a.Name == b.Name)
                 {
-                    if(!string.IsNullOrEmpty(b.Content))
-                    a.Content += b.Content;
+                    if (b.StatisticsType.Count > 0) {
+                        if (!string.IsNullOrEmpty(b.Content))
+                        {
+                            a.Content += b.Content;
+                        }                           
+                    }                    
 
                     if (b.secondlist == null || b.secondlist.Count == 0)
                     {
@@ -334,6 +338,7 @@ namespace trafficpolice.Controllers
                 {
                     if (one.name == c.name)
                     {
+                        if (c.StatisticsType.Count < 1) break;
                         switch (c.secondtype)
                         {
                             case secondItemType.number:
@@ -342,6 +347,8 @@ namespace trafficpolice.Controllers
                                 var sub = 0;
                                 int.TryParse(c.data, out sub);
                                 one.data = (all + sub).ToString();
+                                break;
+                            case secondItemType.unknown:
                                 break;
                             case secondItemType.date:
                             default:

@@ -405,8 +405,7 @@ namespace trafficpolice.Controllers
                 }
                   ret.fileResoure = createreport(temp.Filename, template, date, env);
                 _log.LogWarning("para-{0},1", 111);
-              //  ret.fileResoure = createreport("daytemplate.doc", template, date, env);
-                _log.LogWarning("para-{0},1", 222);
+          
                 return ret;
             }
             catch (Exception ex)
@@ -501,7 +500,7 @@ namespace trafficpolice.Controllers
         //    Contact(tfile,data,spath);
         //    return @"download/320171031101311.doc";
         //}
-        private static string generateDoc(string sfile, string tfile, DateTime now, submitSumreq data)
+        private  string generateDoc(string sfile, string tfile, DateTime now, submitSumreq data)
         {
             try
             {
@@ -538,7 +537,7 @@ namespace trafficpolice.Controllers
                         {
                             para.ReplaceText(inspectstr, inspect);
                         }
-                        datareplace(para.ParagraphText, data);
+                        datareplace(para, data);
                     }
                   
                     using (var wfs = new FileStream(tfile, FileMode.Create))
@@ -554,23 +553,32 @@ namespace trafficpolice.Controllers
             return string.Empty;
         }
 
-        private static void datareplace(string paragraphText, submitSumreq data)
+        private void datareplace(XWPFParagraph para, submitSumreq data)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //private  void datareplace(string paragraphText, submitSumreq data)
         {
+          //  _log.LogError("data list count:{0}", data.datalist.Count);
             foreach(var d in data.datalist)
             {
+              //  _log.LogError("data description:{0},{1},{2}", d.Name,d.hasSecondItems,d.secondlist.Count);
                 var key = string.Format("<{0}>", d.Name);
-                if (paragraphText.Contains(key))
+                if (para.ParagraphText.Contains(key))
                 {
-                    paragraphText.Replace(key, d.Content);
+                    para.ReplaceText(key, d.Content);
                 }
-                if (d.hasSecondItems && d.secondlist != null)
-                {
+                if ( d.secondlist != null)
+                  //  if (d.hasSecondItems && d.secondlist != null)
+                    {
                     foreach(var sd in d.secondlist)
                     {
                         var skey = string.Format("<{1}-{0}>", sd.name,d.Name);
-                        if (paragraphText.Contains(skey))
+                     //   _log.LogError("seconde data description:{0},{1},{2}", skey, sd.secondtype, para.ParagraphText);
+                        if (para.ParagraphText.Contains(skey))
                         {
-                            paragraphText.Replace(skey, sd.data);
+                            para.ReplaceText(skey, sd.data);
                         }
                     }
                 }

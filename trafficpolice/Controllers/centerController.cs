@@ -150,9 +150,11 @@ namespace trafficpolice.Controllers
                 var today = DateTime.Now.ToString("yyyy-MM-dd");
                 foreach (var d in input.videodata)
                 {
-                    var thed = _db1.Reportsdata.FirstOrDefault(c => c.Date == today && c.Unitid == d.unitid);
+                    var thed = _db1.Reportsdata.FirstOrDefault(c => c.Date == today && c.Unitid == d.unitid
+                    && c.Rname==d.reportname);
                     if (thed == null)
                     {
+                        _log.LogError("data {0} ,{1},{2},not found match, discarded", d.reportname, d.unitid, today);
                         continue;
                     }
                     if (d.signtype == signtype.unknown) continue;
