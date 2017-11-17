@@ -10,6 +10,7 @@ namespace trafficpolice.Models
         public string name { get; set; }
         public bool unit { get; set; }//true 大队，false 中心
         public string token { get; set; }
+        public string unitid { get; set; }
 
     }
     public class commonresponse

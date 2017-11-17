@@ -166,6 +166,7 @@ namespace trafficpolice.Controllers
                     status = 0,
                     token = toke1n,
                     name=name,
+                    unitid=theuser.Unitid,
                     unit=unit>0?true:false,
                 };
             }
@@ -377,6 +378,7 @@ namespace trafficpolice.Controllers
             public short level { get; set; }//1,2
             public string unitid { get; set; }
             public bool disable { get; set; }//true  -禁用，false-激活
+            public short unitclass { get; set; }//0-直属大队，1-县市区大队
         }
         [Route("getuserlist")]//查询用户列表接口
         [HttpGet]
@@ -408,7 +410,8 @@ namespace trafficpolice.Controllers
                         id=u.Id,
                         level=u.Level,
                         name=u.Name,
-                        unitid=u.Unitid,disable=u.Disabled==1?true:false
+                        unitid=u.Unitid,disable=u.Disabled==1?true:false,
+                        unitclass=u.Unitclass
                     });
                 }
                 return ret;
