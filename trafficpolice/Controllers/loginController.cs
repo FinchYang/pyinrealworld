@@ -317,6 +317,8 @@ namespace trafficpolice.Controllers
             public short level { get; set; }//1,2
             public string pass { get; set; }
             public bool disable { get; set; }//true  -禁用，false-激活
+            public unittype ut { get; set; }
+            public short unitclass { get; set; }//0-直属大队，1-县市区大队
         }
         [Route("updateuser")]//变更用户信息接口
         [HttpPost]
@@ -354,7 +356,12 @@ namespace trafficpolice.Controllers
                 }
                 if(! string.IsNullOrEmpty(input.name) )theuser.Name= input.name;
                 if(! string.IsNullOrEmpty(input.pass))theuser.Pass= input.pass;
-                
+                if (input.ut == unittype.all || input.ut == unittype.unknown)
+                {
+                 return   global.commonreturn(responseStatus.nounit,"错误的unittype---"+input.ut);
+                }
+                theuser.Unitid = input.ut.ToString();
+                theuser.Unitclass = input.unitclass;
                 if (input.level == 1||input.level==2) theuser.Level=input.level;
                 if (input.disable) theuser.Disabled = 1;
                 else theuser.Disabled = 0;
@@ -363,8 +370,8 @@ namespace trafficpolice.Controllers
             }
             catch (Exception ex)
             {
-                _log.LogError("{0}-{1}-{2}", DateTime.Now, "updateuser", ex.Message);
-                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "updateuser", ex.Message + ex.InnerException);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message+ex.InnerException };
             }
         }
         public class gulRes : commonresponse
