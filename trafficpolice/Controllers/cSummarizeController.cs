@@ -177,6 +177,7 @@ namespace trafficpolice.Controllers
                     units = JsonConvert.DeserializeObject<List<unittype>>(di.Units),
                     Mandated = di.Mandated > 0 ? true : false,
                     Comment = di.Comment,
+                    StatisticsType= JsonConvert.DeserializeObject<List<StatisticsType>>(di.Statisticstype),
                     inputtype = (secondItemType)di.Inputtype,
                 };
 
@@ -189,6 +190,7 @@ namespace trafficpolice.Controllers
                         var sid = new seconditemdata { data = string.Empty };
                         sid.name = si.name;
                         sid.secondtype = si.secondtype;
+                        sid.StatisticsType = si.StatisticsType;
                         onedi.secondlist.Add(sid);
                     }
                 }
@@ -319,14 +321,14 @@ namespace trafficpolice.Controllers
             {
                 if (a.Name == b.Name)
                 {
-                    if (b.StatisticsType.Count > 0) {
+                    if (a.StatisticsType.Count > 0) {
                         if (!string.IsNullOrEmpty(b.Content))
                         {
                             a.Content += b.Content;
                         }                           
                     }                    
 
-                    if (b.secondlist == null || b.secondlist.Count == 0)
+                    if (a.secondlist == null || a.secondlist.Count == 0||b.secondlist==null)
                     {
                         break;
                     }
@@ -354,8 +356,8 @@ namespace trafficpolice.Controllers
                 {
                     if (one.name == c.name)
                     {
-                        if (c.StatisticsType.Count < 1) break;
-                        switch (c.secondtype)
+                        if (one.StatisticsType.Count < 1) break;
+                        switch (one.secondtype)
                         {
                             case secondItemType.number:
                                 var all = 0;
