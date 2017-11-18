@@ -267,7 +267,7 @@ namespace trafficpolice.Controllers
                 status = 0,
                 sumdata = new submitreq()
             };
-            var thelist = new List<submitreq>();
+            var thelist = new List<oneunitdata>();
             try
             {
                 if (!renew)
@@ -287,7 +287,9 @@ namespace trafficpolice.Controllers
                     if (string.IsNullOrEmpty(d.Content)) continue;
                     try
                     {
-                        var one = JsonConvert.DeserializeObject<submitreq>(d.Content);
+                        var one = JsonConvert.DeserializeObject<oneunitdata>(d.Content);
+                        one.unitname = _db1.Unit.FirstOrDefault(c => c.Id == d.Unitid)?.Name;
+                      //  d.Unitid
                         thelist.Add(one);
                     }
                     catch (Exception ex)
@@ -303,7 +305,7 @@ namespace trafficpolice.Controllers
                 {                    
                     foreach(var b in a.datalist)
                     {
-                        SumData(ret.sumdata.datalist, b);                       
+                        SumData(ret.sumdata.datalist, b,a.unitname);                       
                     }
                 }
                 return ret;
@@ -314,7 +316,31 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
+        private void SumData(List<Models.Dataitem> datalist, Models.Dataitem b,string uname)
+        {
+            foreach (var a in datalist)
+            {
+                if (a.Name == b.Name)
+                {
+                    if (a.StatisticsType.Count > 0)
+                    {
+                        if (!string.IsNullOrEmpty(b.Content))
+                        {
+                            a.Content += uname+"："+Environment.NewLine+ b.Content+"。"+Environment.NewLine;
+                        }
+                    }
 
+                    if (a.secondlist == null || a.secondlist.Count == 0 || b.secondlist == null)
+                    {
+                        break;
+                    }
+                    sumsecond(a.secondlist, b.secondlist);
+
+                    break;
+                }
+            }
+
+        }
         private void SumData(List<Models.Dataitem> datalist, Models.Dataitem b)
         {
             foreach(var a in datalist)

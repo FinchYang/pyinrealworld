@@ -50,7 +50,7 @@ namespace trafficpolice.Controllers
             {
                 return global.commonreturn(responseStatus.forbidden);
             }
-         
+
             var ret = new downloadres
             {
                 status = 0,
@@ -63,7 +63,7 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.notemplate);
                 }
-                ret.fileResoure = "upload/"+temp.Filename;
+                ret.fileResoure = "upload/" + temp.Filename;
                 //File.cop
                 return ret;
             }
@@ -73,23 +73,23 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
-        private  string generateexcel(string sfile, string tfile, string start, string end)
+        private string generateexcel(string sfile, string tfile, string start, string end)
         {
             try
             {
                 if (System.IO.File.Exists(tfile)) System.IO.File.Delete(tfile);
                 var aa = _db1.Reports.Where(c => c.Type == "four").Select(c => c.Name).ToList();
                 var bb = _db1.Reports.Where(c => c.Type == "nine").Select(c => c.Name).ToList();
-                var days = DateTime.Parse(end).Subtract(DateTime.Parse(start)).Days+1;
+                var days = DateTime.Parse(end).Subtract(DateTime.Parse(start)).Days + 1;
                 using (var fs = new FileStream(sfile, FileMode.Open, FileAccess.Read))
                 {
                     IWorkbook workbook = new XSSFWorkbook(fs);
                     var sheet1 = workbook.GetSheetAt(1);
-                  //  Console.WriteLine("222" + sheet1.SheetName);
-                  for(int i = 2; i < 19; i++)
+                    //  Console.WriteLine("222" + sheet1.SheetName);
+                    for (int i = 2; i < 19; i++)
                     {
                         var row = sheet1.GetRow(i);
-                       
+
                         var cellunsubmit = row.CreateCell(7);
                         // Console.WriteLine("444" + cell.StringCellValue);
                         var ut = unittype.unknown;
@@ -146,13 +146,13 @@ namespace trafficpolice.Controllers
                             case 18:
                                 ut = unittype.four;
                                 break;
-                          
+
                             default:
                                 break;
                         }
-                        int un = getunsubmit(ut,start,end, aa);
-                        
-                        cellunsubmit.SetCellValue(days*aa.Count-un);
+                        int un = getunsubmit(ut, start, end, aa);
+
+                        cellunsubmit.SetCellValue(days * aa.Count - un);
                         var celldelay = row.CreateCell(8);
                         int delay = getdelaysubmit(ut, start, end, aa);
                         celldelay.SetCellValue(delay);
@@ -168,7 +168,7 @@ namespace trafficpolice.Controllers
                         var videodelaycell = row.CreateCell(12);
                         int videodelay = getvideodelay(ut, start, end, bb);
                         videodelaycell.SetCellValue(videodelay);
-                    }                   
+                    }
 
                     using (var wfs = new FileStream(tfile, FileMode.Create))
                     {
@@ -191,7 +191,7 @@ namespace trafficpolice.Controllers
                  && c.Date.CompareTo(end) <= 0
                  && c.Unitid == fushan.ToString()
                  && c.Rname == r
-               //  && c.Draft != 1
+                 //  && c.Draft != 1
                  );
                 foreach (var rr in rs)
                 {
@@ -227,7 +227,7 @@ namespace trafficpolice.Controllers
                 && c.Date.CompareTo(end) <= 0
                 && c.Unitid == fushan.ToString()
                 && c.Rname == r
-                && c.Signtype==(short)signtype.notsign);
+                && c.Signtype == (short)signtype.notsign);
             }
             return ret;
         }
@@ -241,7 +241,7 @@ namespace trafficpolice.Controllers
                  && c.Unitid == fushan.ToString()
                  && c.Rname == r
                  && c.Draft != 1);
-                foreach(var rr in rs)
+                foreach (var rr in rs)
                 {
                     var now = rr.Submittime;
                     var c = new DateTime(now.Year, now.Month, now.Day);
@@ -249,11 +249,11 @@ namespace trafficpolice.Controllers
                     //
                     if (a > 0) ret++;
                 }
-               //
+                //
             }
             return ret;
         }
-        private int getunsubmit(unittype fushan, string start, string end,List<string> rname)
+        private int getunsubmit(unittype fushan, string start, string end, List<string> rname)
         {
             var ret = 0;
             foreach (var r in rname)
@@ -263,19 +263,19 @@ namespace trafficpolice.Controllers
                 && c.Date.CompareTo(end) <= 0
                 && c.Unitid == fushan.ToString()
                 && c.Rname == r
-                && c.Draft!=1);
+                && c.Draft != 1);
             }
             return ret;
         }
 
-        public class gtres:commonresponse
+        public class gtres : commonresponse
         {
             public List<onetemplate> tlist { get; set; }
         }
         [Route("centerDownloadCheckReport")]//中心导出考核表
         [HttpGet]
         public commonresponse centerDownloadCheckReport([FromServices]IHostingEnvironment env,
-            string startdate, string enddate, unittype ut=unittype.all)
+            string startdate, string enddate, unittype ut = unittype.all)
         {
             var accinfo = global.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
@@ -311,14 +311,14 @@ namespace trafficpolice.Controllers
                 if (!Directory.Exists(tpath)) Directory.CreateDirectory(tpath);
                 var tfbase = startdate + "考核表" + enddate + ".xlsx";
                 var tfile = Path.Combine(tpath, tfbase);
-               
+
 
                 var aa = generateexcel(spath, tfile, start.ToString("yyyy-MM-dd"), end.ToString("yyyy-MM-dd"));
                 _log.LogWarning("para-{0},1", 444 + aa);
-              //  return @"download/" + tfbase;
+                //  return @"download/" + tfbase;
                 ret.fileResoure = @"download/" + tfbase;
                 _log.LogWarning("para-{0},1", 111);
-               
+
                 return ret;
             }
             catch (Exception ex)
@@ -346,20 +346,21 @@ namespace trafficpolice.Controllers
             var ret = new gtres
             {
                 status = 0,
-                tlist = new  List<onetemplate>()
+                tlist = new List<onetemplate>()
             };
 
             try
             {
                 var tl = _db1.Moban.Where(c => !string.IsNullOrEmpty(c.Filename));
-                if(reporttype != "") tl=tl.Where(c =>c.Tabletype== reporttype);
+                if (reporttype != "") tl = tl.Where(c => c.Tabletype == reporttype);
                 foreach (var t in tl)
                 {
                     ret.tlist.Add(new onetemplate
                     {
                         name = t.Name,
                         comment = t.Comment,
-                        reporttype=t.Tabletype,time=t.Time
+                        reporttype = t.Tabletype,
+                        time = t.Time
                     });
                 }
                 return ret;
@@ -372,8 +373,8 @@ namespace trafficpolice.Controllers
         }
         [Route("centerDownloadSomeDay")]//中心某日交管动态选模板生成文件后下载
         [HttpGet]
-        public commonresponse centerDownloadSomeDay([FromServices]IHostingEnvironment env, string date,string template)
-        {           
+        public commonresponse centerDownloadSomeDay([FromServices]IHostingEnvironment env, string date, string template,string reportname)
+        {
             var accinfo = global.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
 
@@ -395,7 +396,7 @@ namespace trafficpolice.Controllers
             {
                 status = 0,
             };
-           
+
             try
             {
                 var temp = _db1.Moban.FirstOrDefault(c => c.Name == template);
@@ -403,12 +404,12 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.notemplate);
                 }
-                  ret.fileResoure = createreport(temp.Filename, template, date, env);
+                ret.fileResoure = createreport(temp.Filename, template, date, env, reportname);
                 _log.LogWarning("para-{0},1", 111);
                 if (!ret.fileResoure.Contains("download"))
                 {
                     return global.commonreturn(responseStatus.templateerror, ret.fileResoure);
-                  //  ret.status = responseStatus.templateerror;
+                    //  ret.status = responseStatus.templateerror;
                 }
                 return ret;
             }
@@ -419,27 +420,40 @@ namespace trafficpolice.Controllers
             }
         }
 
-        private string createreport(string filename, string template, string date, IHostingEnvironment env)
+        private string createreport(string filename, string template, string date, IHostingEnvironment env,string reportname)
         {
-            var spath = Path.Combine(env.WebRootPath, "upload",filename);
+            var spath = Path.Combine(env.WebRootPath, "upload", filename);
             var tpath = Path.Combine(env.WebRootPath, "download");
             if (!Directory.Exists(tpath)) Directory.CreateDirectory(tpath);
             var tfbase = template + date + ".doc";
             var tfile = Path.Combine(tpath, tfbase);
             var data = new submitSumreq();
             data.datalist = new List<Models.Dataitem>();
-            var sum = _db1.Summarized.FirstOrDefault(c => c.Date == date);
+            var sum = _db1.Summarized.FirstOrDefault(c => c.Date == date&&c.Reportname==reportname);
             if (sum != null)
             {
-                 data = JsonConvert.DeserializeObject<submitSumreq>(sum.Content);
+                data = JsonConvert.DeserializeObject<submitSumreq>(sum.Content);
+                _log.LogWarning("data={0}", sum.Content);
             }
             var dated = DateTime.Parse(date);
-          var aa= generateDoc(spath,tfile, dated, data);
-            _log.LogWarning("para-{0},1", 444+aa);
-            if (aa != string.Empty) return "模板处理失败，请检查模板文件，需要保存为非 97-2003 格式的 docx格式";
-            return @"download/"+ tfbase;
+            foreach(var a in data.datalist)
+            {
+                _log.LogWarning("-00-{0},{1},{2}", a.Name,a.Content,a.inputtype);
+                if (a.secondlist != null)
+                {
+                    foreach(var b in a.secondlist)
+                    {
+                        _log.LogWarning("-22-{0},{1},{2}", b.name, b.data, b.secondtype);
+                    }
+                }
+            }
+          
+            var aa = generateDoc(spath, tfile, dated, data);
+            _log.LogWarning("11-{0},1",  data);
+            if (aa != string.Empty) return aa;// "模板处理失败，请检查模板文件，需要保存为非 97-2003 格式的 docx格式";
+            return @"download/" + tfbase;
         }
-       
+
         [Route("centerDownloadWeek")]//中心每周交管动态选模板生成文件后下载
         [HttpGet]
         public commonresponse centerDownloadWeek([FromServices]IHostingEnvironment env, string start, string end, string template)
@@ -478,7 +492,7 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.notemplate);
                 }
-             //   ret.fileResoure = createreport(temp.Filename, start, end, env);
+                //   ret.fileResoure = createreport(temp.Filename, start, end, env);
                 return ret;
             }
             catch (Exception ex)
@@ -505,7 +519,7 @@ namespace trafficpolice.Controllers
         //    Contact(tfile,data,spath);
         //    return @"download/320171031101311.doc";
         //}
-        private  string generateDoc(string sfile, string tfile, DateTime now, submitSumreq data)
+        private string generateDoc(string sfile, string tfile, DateTime now, submitSumreq data)
         {
             try
             {
@@ -519,7 +533,12 @@ namespace trafficpolice.Controllers
                 var editorstr = "编辑：****";
                 using (var fs = new FileStream(sfile, FileMode.Open, FileAccess.Read))
                 {
+
+                    XWPFDocument wdoc = new XWPFDocument();
+                    
+
                     XWPFDocument doc = new XWPFDocument(fs);
+
                     foreach (var para in doc.Paragraphs)
                     {
                         if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**月"))
@@ -542,12 +561,22 @@ namespace trafficpolice.Controllers
                         {
                             para.ReplaceText(inspectstr, inspect);
                         }
-                        datareplace(para, data);
+
+                        var p0 = wdoc.CreateParagraph();
+                        p0.Alignment = para.Alignment;// ParagraphAlignment.LEFT;
+                        XWPFRun r0 = p0.CreateRun();
+                        //r0.FontFamily = para.Runs[0].FontFamily;// "宋体";
+                        //r0.FontSize = para.Runs[0].FontSize;// 18;
+                        //r0.IsBold = para.Runs[0].IsBold;// true;
+                        r0.SetText(datareplaceEx(para.ParagraphText, data));
+
+                      //  datareplace(para, data);
+                      
                     }
-                  
+                    
                     using (var wfs = new FileStream(tfile, FileMode.Create))
                     {
-                        doc.Write(wfs);
+                        wdoc.Write(wfs);
                     }
                 }
             }
@@ -558,29 +587,51 @@ namespace trafficpolice.Controllers
             return string.Empty;
         }
 
-        private void datareplace(XWPFParagraph para, submitSumreq data)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //private  void datareplace(string paragraphText, submitSumreq data)
+        private string datareplaceEx(string paragraphText, submitSumreq data)
         {
-          //  _log.LogError("data list count:{0}", data.datalist.Count);
-            foreach(var d in data.datalist)
+            foreach (var d in data.datalist)
             {
-              //  _log.LogError("data description:{0},{1},{2}", d.Name,d.hasSecondItems,d.secondlist.Count);
+                var key = string.Format("<{0}>", d.Name);
+                if (paragraphText.Contains(key))
+                {
+                    paragraphText= paragraphText.Replace(key, d.Content);
+                }
+                if (d.secondlist != null)
+                {
+                    foreach (var sd in d.secondlist)
+                    {
+                        var skey = string.Format("<{0}-{1}>", d.Name, sd.name);
+                      
+                        if (paragraphText.Contains(skey))
+                        {
+                            _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, paragraphText);
+                            paragraphText = paragraphText.Replace(skey, sd.data);
+                            _log.LogError("替换后段落文本={2}---,",  paragraphText);
+                        }
+                    }
+                }
+            }
+            return paragraphText;
+        }
+
+        private void datareplace(XWPFParagraph para, submitSumreq data)
+        {
+            //  _log.LogError("data list count:{0}", data.datalist.Count);
+            foreach (var d in data.datalist)
+            {
+                //  _log.LogError("data description:{0},{1},{2}", d.Name,d.hasSecondItems,d.secondlist.Count);
                 var key = string.Format("<{0}>", d.Name);
                 if (para.ParagraphText.Contains(key))
                 {
                     para.ReplaceText(key, d.Content);
                 }
-                if ( d.secondlist != null)
-                  //  if (d.hasSecondItems && d.secondlist != null)
+                if (d.secondlist != null)
+                //  if (d.hasSecondItems && d.secondlist != null)
+                {
+                    foreach (var sd in d.secondlist)
                     {
-                    foreach(var sd in d.secondlist)
-                    {
-                        var skey = string.Format("<{1}-{0}>", sd.name,d.Name);
-                     //   _log.LogError("seconde data description:{0},{1},{2}", skey, sd.secondtype, para.ParagraphText);
+                        var skey = string.Format("<{0}-{1}>", d.Name, sd.name);
+                        _log.LogError("seconde data description:--{0}---{1}---{2}---,", skey, sd.data, para.ParagraphText);
                         if (para.ParagraphText.Contains(skey))
                         {
                             para.ReplaceText(skey, sd.data);
@@ -720,8 +771,8 @@ namespace trafficpolice.Controllers
         //    //}
         //}
     }
-  
-    public class downloadres:commonresponse
+
+    public class downloadres : commonresponse
     {
         public string fileResoure { get; set; }
     }

@@ -8,6 +8,7 @@ namespace trafficpolice.dbmodel
     {
         public virtual DbSet<Dataitem> Dataitem { get; set; }
         public virtual DbSet<Moban> Moban { get; set; }
+        public virtual DbSet<Reportlog> Reportlog { get; set; }
         public virtual DbSet<Reports> Reports { get; set; }
         public virtual DbSet<Reportsdata> Reportsdata { get; set; }
         public virtual DbSet<Summarized> Summarized { get; set; }
@@ -137,6 +138,52 @@ namespace trafficpolice.dbmodel
                 entity.Property(e => e.Time)
                     .HasColumnName("time")
                     .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Reportlog>(entity =>
+            {
+                entity.HasKey(e => new { e.Date, e.Unitid });
+
+                entity.ToTable("reportlog");
+
+                entity.HasIndex(e => e.Date)
+                    .HasName("date_UNIQUE")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.Unitid)
+                    .HasName("reportlogunitid_idx");
+
+                entity.Property(e => e.Date)
+                    .HasColumnName("date")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.Unitid)
+                    .HasColumnName("unitid")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Content)
+                    .IsRequired()
+                    .HasColumnName("content")
+                    .HasMaxLength(4500);
+
+                entity.Property(e => e.Declinereason)
+                    .HasColumnName("declinereason")
+                    .HasMaxLength(450);
+
+                entity.Property(e => e.Draft)
+                    .HasColumnName("draft")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("'1'");
+
+                entity.Property(e => e.Time)
+                    .HasColumnName("time")
+                    .HasColumnType("datetime");
+
+                entity.HasOne(d => d.Unit)
+                    .WithMany(p => p.Reportlog)
+                    .HasForeignKey(d => d.Unitid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("reportlogunitid");
             });
 
             modelBuilder.Entity<Reports>(entity =>

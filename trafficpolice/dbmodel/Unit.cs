@@ -7,6 +7,7 @@ namespace trafficpolice.dbmodel
     {
         public Unit()
         {
+            Reportlog = new HashSet<Reportlog>();
             Reportsdata = new HashSet<Reportsdata>();
             User = new HashSet<User>();
         }
@@ -16,6 +17,7 @@ namespace trafficpolice.dbmodel
         public string Name { get; set; }
         public short Level { get; set; }
 
+        public ICollection<Reportlog> Reportlog { get; set; }
         public ICollection<Reportsdata> Reportsdata { get; set; }
         public ICollection<User> User { get; set; }
     }

@@ -118,14 +118,16 @@ namespace trafficpolice.Controllers
                 var mb = tp.Moban.FirstOrDefault(c => c.Name == user.name
                 //&& c.Tabletype == user.templatetype
                 );
+                var comment = string.IsNullOrEmpty(user.comment) ? string.Empty : user.comment;
                 var tt = string.IsNullOrEmpty(user.templatetype) ? string.Empty : user.templatetype;
                 if (mb == null)
                 {
                     tp.Moban.Add(new Moban
                     {
                         Name = user.name,
-                        Comment = user.comment,
-                        Filename = fn,Time=DateTime.Now,
+                        Comment = comment,
+                        Filename = fn,
+                        Time =DateTime.Now,
                         Tabletype = tt
                     });
                 }
