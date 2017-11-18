@@ -12,27 +12,26 @@ namespace ConsoleApp1
 {
     class Program
     {
-        public enum unittype
+        private static void ExportWord()
         {
-            unknown,//未知
-            all,//所有
-            one,//一大队
-            two,//二大队
-            three,//三大队
-            four,//四大队
-            fushan,//福山大队
-            muping,//牟平大队	10.231.53.176
-            haiyang,//海阳大队	10.50.191.8
-            laiyang,//莱阳大队	10.231.52.211
-            qixia,//栖霞大队	10.231.52.99
-            penglai,//蓬莱大队	10.231.61.70
-            changdao,//长岛大队	10.231.53.209
-            longkou,//龙口大队	10.231.50.222
-            zhaoyuan,//招远大队	10.231.200.87
-            laizhou,//莱州大队	10.231.59.103
-            kaifaqu,//开发区大队	10.231.54.14
-            yantaigang,//烟台港大队	10.231.55.189
-            jichang,//机场大队	10.50.219.241
+            var newFile2 = @"newbook.core.docx";
+            using (var fs = new FileStream(newFile2, FileMode.Create, FileAccess.Write))
+            {
+                XWPFDocument doc = new XWPFDocument();
+                var p0 = doc.CreateParagraph();
+                p0.Alignment = ParagraphAlignment.LEFT;
+                XWPFRun r0 = p0.CreateRun();
+                r0.FontFamily = "宋体";
+                r0.FontSize = 18;
+                r0.IsBold = true;
+               
+                r0.SetText("未登录过学生的账号密码" + Environment.NewLine + "hahha");
+                r0.AppendText("未登录过学生的账号密码" + Environment.NewLine + "hahha");
+                r0.AddCarriageReturn();
+                r0.AppendText("未登录过学生的账号密码" + Environment.NewLine + "hahha");
+                doc.Write(fs);
+            }
+            Console.WriteLine("Word  Done");
         }
         static void Main(string[] args)
         {
@@ -45,12 +44,14 @@ namespace ConsoleApp1
             //var sfile = @"F:\tp\trafficpolice\wwwroot\upload\考核表.xlsx";
             //var tfile = @"F:\tp\trafficpolice\wwwroot\download\333-444-考核.xlsx";
             //string error = generateexcel(sfile, tfile, DateTime.Now);
-            var now = DateTime.Now;
-          //  var b = DateTime.Parse("2017-11-16");
-            var c = new DateTime(now.Year,now.Month,now.Day);
-            var a = c.CompareTo(DateTime.Parse("2017-11-15"));
-            Console.WriteLine(a);
-          //  Console.WriteLine(b);
+            //  var now = DateTime.Now;
+            ////  var b = DateTime.Parse("2017-11-16");
+            //  var c = new DateTime(now.Year,now.Month,now.Day);
+            //  var a = c.CompareTo(DateTime.Parse("2017-11-15"));
+            //  Console.WriteLine(a);
+            //  Console.WriteLine(b);
+
+            ExportWord();
             Console.ReadLine();
         }
 

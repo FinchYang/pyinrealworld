@@ -373,7 +373,7 @@ namespace trafficpolice.Controllers
         }
         [Route("centerDownloadSomeDay")]//中心某日交管动态选模板生成文件后下载
         [HttpGet]
-        public commonresponse centerDownloadSomeDay([FromServices]IHostingEnvironment env, string date, string template,string reportname)
+        public commonresponse centerDownloadSomeDay([FromServices]IHostingEnvironment env, string date, string template, string reportname)
         {
             var accinfo = global.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
@@ -418,7 +418,7 @@ namespace trafficpolice.Controllers
             }
         }
 
-        private string createreport(string filename, string template, string date, IHostingEnvironment env,string reportname)
+        private string createreport(string filename, string template, string date, IHostingEnvironment env, string reportname)
         {
             var spath = Path.Combine(env.WebRootPath, "upload", filename);
             var tpath = Path.Combine(env.WebRootPath, "download");
@@ -427,25 +427,26 @@ namespace trafficpolice.Controllers
             var tfile = Path.Combine(tpath, tfbase);
             var data = new submitSumreq();
             data.datalist = new List<Models.Dataitem>();
-            var sum = _db1.Summarized.FirstOrDefault(c => c.Date == date&&c.Reportname==reportname);
+            _log.LogWarning("reportname={0},date={1}", reportname, date);
+            var sum = _db1.Summarized.FirstOrDefault(c => c.Date == date && c.Reportname == reportname);
             if (sum != null)
             {
                 data = JsonConvert.DeserializeObject<submitSumreq>(sum.Content);
-                _log.LogWarning("data={0}", sum.Content);
+                //  _log.LogWarning("data={0}", sum.Content);
             }
             var dated = DateTime.Parse(date);
-            foreach(var a in data.datalist)
-            {
-                _log.LogWarning("-00-{0},{1},{2}", a.Name,a.Content,a.inputtype);
-                if (a.secondlist != null)
-                {
-                    foreach(var b in a.secondlist)
-                    {
-                        _log.LogWarning("-22-{0},{1},{2}", b.name, b.data, b.secondtype);
-                    }
-                }
-            }
-          
+            //foreach(var a in data.datalist)
+            //{
+            //    _log.LogWarning("-00-{0},{1},{2}", a.Name,a.Content,a.inputtype);
+            //    if (a.secondlist != null)
+            //    {
+            //        foreach(var b in a.secondlist)
+            //        {
+            //            _log.LogWarning("-22-{0},{1},{2}", b.name, b.data, b.secondtype);
+            //        }
+            //    }
+            //}
+
             var aa = generateDoc(spath, tfile, dated, data);
             if (aa != string.Empty) return aa;// "模板处理失败，请检查模板文件，需要保存为非 97-2003 格式的 docx格式";
             return @"download/" + tfbase;
@@ -530,7 +531,7 @@ namespace trafficpolice.Controllers
                 var editorstr = "编辑：****";
                 using (var fs = new FileStream(sfile, FileMode.Open, FileAccess.Read))
                 {
-                   // XWPFDocument wdoc = new XWPFDocument(); 
+                    // XWPFDocument wdoc = new XWPFDocument(); 
                     XWPFDocument doc = new XWPFDocument(fs);
                     foreach (var para in doc.Paragraphs)
                     {
@@ -563,9 +564,9 @@ namespace trafficpolice.Controllers
                         ////r0.IsBold = para.Runs[0].IsBold;// true;
                         //r0.SetText(datareplaceEx(para.ParagraphText, data));
 
-                        datareplace(para, data);                      
+                        datareplace(para, data);
                     }
-                    
+
                     using (var wfs = new FileStream(tfile, FileMode.Create))
                     {
                         doc.Write(wfs);
@@ -586,19 +587,20 @@ namespace trafficpolice.Controllers
                 var key = string.Format("<{0}>", d.Name);
                 if (paragraphText.Contains(key))
                 {
-                    paragraphText= paragraphText.Replace(key, d.Content.Replace("\r\n","^l"));
+                    //  paragraphText= paragraphText.Replace(key, d.Content.Replace("\r\n","\n\r"));
+                    paragraphText = paragraphText.Replace(key, d.Content);
                 }
                 if (d.secondlist != null)
                 {
                     foreach (var sd in d.secondlist)
                     {
                         var skey = string.Format("<{0}-{1}>", d.Name, sd.name);
-                      
+
                         if (paragraphText.Contains(skey))
                         {
                             _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, paragraphText);
                             paragraphText = paragraphText.Replace(skey, sd.data);
-                            _log.LogError("替换后段落文本={2}---,",  paragraphText);
+                            _log.LogError("替换后段落文本={2}---,", paragraphText);
                         }
                     }
                 }
@@ -608,14 +610,45 @@ namespace trafficpolice.Controllers
 
         private void datareplace(XWPFParagraph para, submitSumreq data)
         {
-            //  _log.LogError("data list count:{0}", data.datalist.Count);
+            //   _log.LogError("data list count:{0}", data.datalist.Count);
             foreach (var d in data.datalist)
             {
                 //  _log.LogError("data description:{0},{1},{2}", d.Name,d.hasSecondItems,d.secondlist.Count);
                 var key = string.Format("<{0}>", d.Name);
                 if (para.ParagraphText.Contains(key))
                 {
-                    para.ReplaceText(key, d.Content);
+                    _log.LogError("1content={0},rm={1}", d.Content, "");
+                    //   var rm = d.Content.Replace("\n", "\r\n");//
+                    //  var rm = d.Content.Replace("\n", "\n\r");
+                    // var rm = d.Content.Replace("\n", "^l");
+                    // var rm = d.Content.Replace("\n", "\\^\\l");
+                    //   var rm = d.Content.Replace("\n", Environment.NewLine);
+                    //string strKey = "^p^p";
+                    //var rm = d.Content.Replace("\n", strKey);
+                    //  _log.LogError("2content={0},rm={1}", d.Content, rm);
+                    //  para.IsWordWrapped = true;//para.Alignment.HasFlag(new  )
+                    if (!d.Content.Contains("\n")) {
+                        para.ReplaceText(key, d.Content);
+                    }
+                    else
+                    {
+                        para.ReplaceText(key, "");
+                        var r = para.CreateRun();
+                        //foreach(var r in para.Runs)
+                        //{
+                          // if(r.Text.Contains(key))
+                           // {
+                                var lines = d.Content.Split("\n");
+                       // r.SetText("god");
+                              //  r.ReplaceText(key, "");
+                                foreach(var o in lines)
+                                {
+                                    r.AppendText(o);
+                                    r.AddCarriageReturn();
+                                }
+                           // }
+                       // }
+                    }
                 }
                 if (d.secondlist != null)
                 //  if (d.hasSecondItems && d.secondlist != null)
@@ -623,10 +656,14 @@ namespace trafficpolice.Controllers
                     foreach (var sd in d.secondlist)
                     {
                         var skey = string.Format("<{0}-{1}>", d.Name, sd.name);
-                        _log.LogError("seconde data description:--{0}---{1}---{2}---,", skey, sd.data, para.ParagraphText);
+                        //  _log.LogError("seconde data description:--{0}---{1}---{2}---,", skey, sd.data, para.ParagraphText);
                         if (para.ParagraphText.Contains(skey))
                         {
+                            _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, para.ParagraphText);
+                            // paragraphText = paragraphText.Replace(skey, sd.data);
+
                             para.ReplaceText(skey, sd.data);
+                            _log.LogError("替换后段落文本={2}---,", para.ParagraphText);
                         }
                     }
                 }
