@@ -405,11 +405,9 @@ namespace trafficpolice.Controllers
                     return global.commonreturn(responseStatus.notemplate);
                 }
                 ret.fileResoure = createreport(temp.Filename, template, date, env, reportname);
-                _log.LogWarning("para-{0},1", 111);
                 if (!ret.fileResoure.Contains("download"))
                 {
                     return global.commonreturn(responseStatus.templateerror, ret.fileResoure);
-                    //  ret.status = responseStatus.templateerror;
                 }
                 return ret;
             }
@@ -449,7 +447,6 @@ namespace trafficpolice.Controllers
             }
           
             var aa = generateDoc(spath, tfile, dated, data);
-            _log.LogWarning("11-{0},1",  data);
             if (aa != string.Empty) return aa;// "模板处理失败，请检查模板文件，需要保存为非 97-2003 格式的 docx格式";
             return @"download/" + tfbase;
         }
@@ -533,12 +530,8 @@ namespace trafficpolice.Controllers
                 var editorstr = "编辑：****";
                 using (var fs = new FileStream(sfile, FileMode.Open, FileAccess.Read))
                 {
-
-                    XWPFDocument wdoc = new XWPFDocument();
-                    
-
+                   // XWPFDocument wdoc = new XWPFDocument(); 
                     XWPFDocument doc = new XWPFDocument(fs);
-
                     foreach (var para in doc.Paragraphs)
                     {
                         if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**月"))
@@ -562,21 +555,20 @@ namespace trafficpolice.Controllers
                             para.ReplaceText(inspectstr, inspect);
                         }
 
-                        var p0 = wdoc.CreateParagraph();
-                        p0.Alignment = para.Alignment;// ParagraphAlignment.LEFT;
-                        XWPFRun r0 = p0.CreateRun();
-                        //r0.FontFamily = para.Runs[0].FontFamily;// "宋体";
-                        //r0.FontSize = para.Runs[0].FontSize;// 18;
-                        //r0.IsBold = para.Runs[0].IsBold;// true;
-                        r0.SetText(datareplaceEx(para.ParagraphText, data));
+                        //var p0 = wdoc.CreateParagraph();
+                        //p0.Alignment = para.Alignment;// ParagraphAlignment.LEFT;
+                        //XWPFRun r0 = p0.CreateRun();
+                        ////r0.FontFamily = para.Runs[0].FontFamily;// "宋体";
+                        ////r0.FontSize = para.Runs[0].FontSize;// 18;
+                        ////r0.IsBold = para.Runs[0].IsBold;// true;
+                        //r0.SetText(datareplaceEx(para.ParagraphText, data));
 
-                      //  datareplace(para, data);
-                      
+                        datareplace(para, data);                      
                     }
                     
                     using (var wfs = new FileStream(tfile, FileMode.Create))
                     {
-                        wdoc.Write(wfs);
+                        doc.Write(wfs);
                     }
                 }
             }
@@ -594,7 +586,7 @@ namespace trafficpolice.Controllers
                 var key = string.Format("<{0}>", d.Name);
                 if (paragraphText.Contains(key))
                 {
-                    paragraphText= paragraphText.Replace(key, d.Content);
+                    paragraphText= paragraphText.Replace(key, d.Content.Replace("\r\n","^l"));
                 }
                 if (d.secondlist != null)
                 {

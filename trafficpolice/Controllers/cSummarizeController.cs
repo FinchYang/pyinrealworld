@@ -177,8 +177,9 @@ namespace trafficpolice.Controllers
                     units = JsonConvert.DeserializeObject<List<unittype>>(di.Units),
                     Mandated = di.Mandated > 0 ? true : false,
                     Comment = di.Comment,
-                    StatisticsType= JsonConvert.DeserializeObject<List<StatisticsType>>(di.Statisticstype),
+                    StatisticsType = JsonConvert.DeserializeObject<List<StatisticsType>>(di.Statisticstype),
                     inputtype = (secondItemType)di.Inputtype,
+                    index = di.Index,
                 };
 
                 if (di.Hassecond == 1 && !string.IsNullOrEmpty(di.Seconditem))
@@ -270,6 +271,7 @@ namespace trafficpolice.Controllers
             var thelist = new List<oneunitdata>();
             try
             {
+                _log.LogError("{0},{1},{2}", rname, theday, renew);
                 if (!renew)
                 {
                     var olddata = _db1.Summarized.FirstOrDefault(c => c.Date == theday&&c.Reportname==rname);
@@ -277,11 +279,14 @@ namespace trafficpolice.Controllers
                     {
                         ret.datastatus = (datastatus)olddata.Draft;
                         ret.sumdata = JsonConvert.DeserializeObject<submitreq>(olddata.Content);
+                        _log.LogError("{0},{1},{2}", rname, theday, olddata.Content);
                         return ret;
                     }
                 }
-
-                var data = _db1.Reportsdata.Where(c => c.Date== theday&&c.Draft>=3 && c.Rname == rname);               
+                _log.LogError("{0},", "没有汇总过？");
+                var data = _db1.Reportsdata.Where(c => c.Date== theday
+                &&c.Draft>=3 
+                && c.Rname == rname);               
                 foreach (var d in data)
                 {
                     if (string.IsNullOrEmpty(d.Content)) continue;
@@ -299,15 +304,16 @@ namespace trafficpolice.Controllers
         }
                 ret.sumdata.datalist = new List<Models.Dataitem>();
                 ret.sumdata.datalist = getdataitems(rname);
-             
+                _log.LogError("--{0}--,", thelist.Count);
 
-                foreach(var a in thelist)
+                foreach (var a in thelist)
                 {                    
                     foreach(var b in a.datalist)
                     {
                         SumData(ret.sumdata.datalist, b,a.unitname);                       
                     }
                 }
+                _log.LogError("--{0}-ret-,", ret.sumdata.datalist.Count);
                 return ret;
             }
             catch (Exception ex)

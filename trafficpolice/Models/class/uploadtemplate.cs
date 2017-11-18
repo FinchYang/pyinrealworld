@@ -15,9 +15,9 @@ namespace trafficpolice.Models
         [MaxLength(300)]
         public string comment { set; get; }
 
-        [Required]
-        [Display(Name = "模板文件")]
-        [FileExtensions(Extensions = ".doc,.docx", ErrorMessage = "word文档格式错误")]
+        //[Required]
+        //[Display(Name = "模板文件")]
+        //[FileExtensions(Extensions = ".doc,.docx", ErrorMessage = "word文档格式错误")]
         public IFormFile templatefile { get; set; }
     }
 }

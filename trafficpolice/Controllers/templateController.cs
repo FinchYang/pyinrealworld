@@ -110,7 +110,7 @@ namespace trafficpolice.Controllers
 
             using (var stream = new FileStream(fileName, FileMode.CreateNew))
             {
-                user.templatefile.CopyTo(stream);
+                user?.templatefile?.CopyTo(stream);
             }
 
             try
@@ -137,6 +137,7 @@ namespace trafficpolice.Controllers
                    if(!string.IsNullOrEmpty(user.comment))
                     mb.Comment = user.comment;
                    mb.Filename  = fn;
+                    mb.Tabletype = tt;
                 }
 
                 tp.SaveChanges();
