@@ -141,7 +141,7 @@ namespace trafficpolice.Controllers
             }
             catch(Exception ex)
             {
-                _log.LogError(" uploadtemplate error:{0}", ex.Message);
+                _log.LogError(" uploadtemplate error:{0}", ex.Message + ex.InnerException);
                 return global.commonreturn(responseStatus.processerror,ex.Message+ex.InnerException);
             }
            

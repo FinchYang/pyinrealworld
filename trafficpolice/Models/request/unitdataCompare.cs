@@ -7,6 +7,7 @@
         public int videoerror { set; get; }//视频异常
         public int notsign { set; get; }//未签到
         public int audioerror { set; get; }//音频异常
+        public int other { set; get; }//其它
         public unitdata current { set; get; }
         public unitdata yearoveryear { set; get; }//同比数据
         public unitdata linkrelative { set; get; }//环比数据

@@ -330,13 +330,14 @@ namespace trafficpolice.Controllers
             var video = 0;
             var audio = 0;
             var not = 0;
-            ret.current = sumonedataEx(start, end, ut, out sign, out sub, out video, out audio, out not,rname);
+            var other = 0;
+            ret.current = sumonedataEx(start, end, ut, out sign, out sub, out video, out audio, out not,rname,out other);
             ret.notsign = not;
             ret.substitute = sub;
             ret.sign = sign;
             ret.audioerror = audio;
             ret.videoerror = video;
-
+            ret.other = other;
             ret.yearoveryear = sumonedata(start.AddYears(-1), end.AddYears(-1), ut,rname);
             var ts = end.Subtract(start).Days+1;
             ret.linkrelative = sumonedata(start.AddDays(-ts), end.AddDays(-ts), ut,rname);
@@ -410,7 +411,7 @@ namespace trafficpolice.Controllers
         }
 
         private unitdata sumonedataEx(DateTime start, DateTime end, string ut, out int sign, out int substitute,
-            out int video, out int audio, out int not, string rname)
+            out int video, out int audio, out int not, string rname,out int other)
         {
             var ret = new unitdata();
             ret.unitid = ut.ToString();
@@ -455,6 +456,7 @@ namespace trafficpolice.Controllers
             video = 0;
             not = 0;
             substitute = 0;
+            other = 0;
             sign = 0;
             foreach (var d in data)
             {
@@ -464,13 +466,16 @@ namespace trafficpolice.Controllers
                     var one = JsonConvert.DeserializeObject<submitreq>(d.Content);
                 switch ((signtype)d.Signtype)
                 {
-                    case signtype.audioerror:
-                        audio++;
-                        break;
-                    case signtype.videoerror:
-                        video++;
-                        break;
-                    case signtype.notsign:
+                        //case signtype.audioerror:
+                        //    audio++;
+                        //    break;
+                        //case signtype.videoerror:
+                        //    video++;
+                        //    break;
+                        case signtype.other:
+                            other++;
+                            break;
+                        case signtype.notsign:
                         not++;
                         break;
                     case signtype.substitute:

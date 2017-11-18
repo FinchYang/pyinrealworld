@@ -21,6 +21,7 @@ namespace trafficpolice
             public static IWebHost BuildWebHost(string[] args) =>
                 WebHost.CreateDefaultBuilder(args)
                     .UseStartup<Startup>().UseUrls("http://*:8000")
+            .ConfigureLogging(builder => builder.AddFile())
                     .Build();
         
         //public static void Main(string[] args)

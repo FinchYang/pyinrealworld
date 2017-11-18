@@ -405,7 +405,11 @@ namespace trafficpolice.Controllers
                 }
                   ret.fileResoure = createreport(temp.Filename, template, date, env);
                 _log.LogWarning("para-{0},1", 111);
-          
+                if (!ret.fileResoure.Contains("download"))
+                {
+                    return global.commonreturn(responseStatus.templateerror, ret.fileResoure);
+                  //  ret.status = responseStatus.templateerror;
+                }
                 return ret;
             }
             catch (Exception ex)
@@ -432,6 +436,7 @@ namespace trafficpolice.Controllers
             var dated = DateTime.Parse(date);
           var aa= generateDoc(spath,tfile, dated, data);
             _log.LogWarning("para-{0},1", 444+aa);
+            if (aa != string.Empty) return "模板处理失败，请检查模板文件，需要保存为非 97-2003 格式的 docx格式";
             return @"download/"+ tfbase;
         }
        
