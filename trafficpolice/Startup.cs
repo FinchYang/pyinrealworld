@@ -39,6 +39,10 @@ namespace trafficpolice
                 x.MultipartHeadersLengthLimit = int.MaxValue;
                 x.ValueCountLimit = int.MaxValue;
             });
+//            services.Configure<IISOptions>(options =>
+//            {
+
+//});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

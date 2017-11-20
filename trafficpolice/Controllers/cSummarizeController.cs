@@ -207,9 +207,17 @@ namespace trafficpolice.Controllers
         {
             try
             {
-                if (input == null || input.datalist == null||string.IsNullOrEmpty( input.reportname))
+                if (input == null )
                 {
-                    return global.commonreturn(responseStatus.requesterror);
+                    return global.commonreturn(responseStatus.requesterror,"body is null, 请检查数据准确性");
+                }
+                if ( string.IsNullOrEmpty(input.reportname))
+                {
+                    return global.commonreturn(responseStatus.requesterror,"报表名称不能为空");
+                }
+                if ( input.datalist == null || input.datalist.Count<1)
+                {
+                    return global.commonreturn(responseStatus.requesterror,"数据项列表不能为空");
                 }
 
                 var accinfo = global.GetInfoByToken(Request.Headers);
