@@ -244,7 +244,7 @@ namespace trafficpolice.dbmodel
                 entity.Property(e => e.Content)
                     .IsRequired()
                     .HasColumnName("content")
-                    .HasColumnType("varchar(9000)");
+                    .HasColumnType("varchar(20000)");
 
                 entity.Property(e => e.Declinereason)
                     .HasColumnName("declinereason")
@@ -266,12 +266,6 @@ namespace trafficpolice.dbmodel
                 entity.Property(e => e.Time)
                     .HasColumnName("time")
                     .HasColumnType("datetime");
-
-                entity.HasOne(d => d.Unit)
-                    .WithMany(p => p.Reportsdata)
-                    .HasForeignKey(d => d.Unitid)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("reportsdataunitid");
             });
 
             modelBuilder.Entity<Summarized>(entity =>
@@ -295,7 +289,7 @@ namespace trafficpolice.dbmodel
                 entity.Property(e => e.Content)
                     .IsRequired()
                     .HasColumnName("content")
-                    .HasColumnType("varchar(9000)");
+                    .HasColumnType("varchar(21000)");
 
                 entity.Property(e => e.Draft)
                     .HasColumnName("draft")
@@ -456,7 +450,7 @@ namespace trafficpolice.dbmodel
                 entity.Property(e => e.Content)
                     .IsRequired()
                     .HasColumnName("content")
-                    .HasColumnType("varchar(9000)");
+                    .HasColumnType("varchar(21000)");
 
                 entity.Property(e => e.Draft)
                     .HasColumnName("draft")

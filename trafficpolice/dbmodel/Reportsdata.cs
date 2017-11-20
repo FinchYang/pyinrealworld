@@ -15,7 +15,5 @@ namespace trafficpolice.dbmodel
         public string Declinereason { get; set; }
         public DateTime Submittime { get; set; }
         public string Rname { get; set; }
-
-        public Unit Unit { get; set; }
     }
 }
