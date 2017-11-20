@@ -208,7 +208,7 @@ namespace trafficpolice.Controllers
             var ret = 0;
             foreach (var r in rname)
             {
-                _log.LogError("{0},{1},{2},{3}", start, end, fushan, r);
+              //  _log.LogError("{0},{1},{2},{3}", start, end, fushan, r);
                 ret += _db1.Reportsdata.Count(c => c.Date.CompareTo(start) >= 0
                 && c.Date.CompareTo(end) <= 0
                 && c.Unitid == fushan.ToString()
@@ -222,7 +222,7 @@ namespace trafficpolice.Controllers
             var ret = 0;
             foreach (var r in rname)
             {
-                _log.LogError("{0},{1},{2},{3}", start, end, fushan, r);
+              //  _log.LogError("{0},{1},{2},{3}", start, end, fushan, r);
                 ret += _db1.Reportsdata.Count(c => c.Date.CompareTo(start) >= 0
                 && c.Date.CompareTo(end) <= 0
                 && c.Unitid == fushan.ToString()
@@ -258,7 +258,7 @@ namespace trafficpolice.Controllers
             var ret = 0;
             foreach (var r in rname)
             {
-                _log.LogError("{0},{1},{2},{3}", start, end, fushan, r);
+              //  _log.LogError("{0},{1},{2},{3}", start, end, fushan, r);
                 ret += _db1.Reportsdata.Count(c => c.Date.CompareTo(start) >= 0
                 && c.Date.CompareTo(end) <= 0
                 && c.Unitid == fushan.ToString()

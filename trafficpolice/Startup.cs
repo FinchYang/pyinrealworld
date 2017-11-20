@@ -31,13 +31,13 @@ namespace trafficpolice
                 x.ValueLengthLimit = int.MaxValue;
                 x.MultipartBodyLengthLimit = int.MaxValue; // In case of multipart
                 x.BufferBodyLengthLimit = int.MaxValue;
-                x.KeyLengthLimit = int.MaxValue;
+             //   x.KeyLengthLimit = int.MaxValue;
                 x.MemoryBufferThreshold = int.MaxValue;
                 x.BufferBody = true;
-                x.MultipartBoundaryLengthLimit = int.MaxValue;
-                x.MultipartHeadersCountLimit = int.MaxValue; 
-                x.MultipartHeadersLengthLimit = int.MaxValue;
-                x.ValueCountLimit = int.MaxValue;
+               // x.MultipartBoundaryLengthLimit = int.MaxValue;
+             //   x.MultipartHeadersCountLimit = int.MaxValue; 
+              //  x.MultipartHeadersLengthLimit = int.MaxValue;
+              //  x.ValueCountLimit = int.MaxValue;
             });
 //            services.Configure<IISOptions>(options =>
 //            {
