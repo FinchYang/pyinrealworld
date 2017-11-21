@@ -51,7 +51,11 @@ namespace ConsoleApp1
             //  Console.WriteLine(a);
             //  Console.WriteLine(b);
 
-            ExportWord();
+            //  ExportWord();
+            string a=null;
+            Console.WriteLine(a ?? "hahah");
+            a = "bb";
+            Console.WriteLine(a ?? "hahah");
             Console.ReadLine();
         }
 

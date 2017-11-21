@@ -9,5 +9,6 @@ namespace trafficpolice.Models
     public class oneunitdata : submitreq
     {
         public String unitname { set; get; }//大队名称
+        public String unitid { set; get; }
     }
 }

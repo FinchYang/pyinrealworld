@@ -124,9 +124,10 @@ namespace trafficpolice.Controllers
                         var a = JsonConvert.DeserializeObject<centerdata>(d.Content);
                     a.draft = d.Draft;
                     a.unitid = d.Unitid;
-                    //a.date = d.Date;
-                    //a.reportname = d.Rname;
-                  
+                        //a.date = d.Date;
+                        //a.reportname = d.Rname;
+                        a.createtime = d.Time;
+                        a.submittime = d.Submittime;
                     ret.vsdata.Add(a);
                     }
                     catch (Exception ex)

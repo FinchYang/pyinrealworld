@@ -302,7 +302,7 @@ namespace trafficpolice.Controllers
                     {
                         var one = JsonConvert.DeserializeObject<oneunitdata>(d.Content);
                         one.unitname = _db1.Unit.FirstOrDefault(c => c.Id == d.Unitid)?.Name;
-                      //  d.Unitid
+                        one.unitid =d.Unitid;
                         thelist.Add(one);
                     }
                     catch (Exception ex)
@@ -318,6 +318,9 @@ namespace trafficpolice.Controllers
                 {                    
                     foreach(var b in a.datalist)
                     {
+                        var theu = unittype.unknown;
+                        Enum.TryParse<unittype>(a.unitid, out theu);
+                        if (!b.units.Contains(unittype.all) && !b.units.Contains(theu)) continue;
                         SumData(ret.sumdata.datalist, b,a.unitname);                       
                     }
                 }
