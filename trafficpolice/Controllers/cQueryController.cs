@@ -32,10 +32,10 @@ namespace trafficpolice.Controllers
         {
             _log = log;
         }
-     
+
         [Route("cGetFourDataWeek")]//指挥中心每周交管动态数据查询接口
         [HttpGet]//4点数据
-        public commonresponse cGetFourDataWeek(string startdate, string enddate,string rname="four")
+        public commonresponse cGetFourDataWeek(string startdate, string enddate, string rname = "four")
         {
             var start = DateTime.Now;
             var end = start;
@@ -54,7 +54,7 @@ namespace trafficpolice.Controllers
                 status = 0,
                 daysdata = new List<queryoneday>()
             };
-          
+
             try
             {
                 var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
@@ -66,12 +66,12 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }
-                var sday = start.DayOfWeek==DayOfWeek.Sunday?7:(int)start.DayOfWeek;
-                var eday=end.DayOfWeek== DayOfWeek.Sunday ? 7 : (int)end.DayOfWeek;
+                var sday = start.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)start.DayOfWeek;
+                var eday = end.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)end.DayOfWeek;
 
-                for (var d = start.AddDays(-sday+1); d <= end.AddDays(-(eday-7)); d.AddDays(7))
+                for (var d = start.AddDays(-sday + 1); d <= end.AddDays(-(eday - 7)); d.AddDays(7))
                 {
-                    ret.daysdata.Add(getonedayfourweek(d,rname));
+                    ret.daysdata.Add(getonedayfourweek(d, rname));
                 }
 
                 return ret;
@@ -85,22 +85,22 @@ namespace trafficpolice.Controllers
         private queryoneday getonedayfourweek(DateTime d, string rname)
         {
             var day = d.ToString("yyyy-MM-dd");
-            var seday=d.AddDays(6).ToString("yyyy-MM-dd");
+            var seday = d.AddDays(6).ToString("yyyy-MM-dd");
             var ret = new queryoneday
             {
-                date = day+"--"+seday,
+                date = day + "--" + seday,
                 data = new List<Models.Dataitem>(),
                 yearoveryear = new List<Models.Dataitem>(),
                 linkrelative = new List<Models.Dataitem>()
             };
             var ct = DateTime.Now;
-            ret.data = gethisdata(d,out ct,rname);
+            ret.data = gethisdata(d, out ct, rname);
             ret.createtime = ct;
-            ret.yearoveryear = gethisdata(d.AddYears(-1),rname);
-            ret.linkrelative = gethisdata(d.AddDays(-7),rname);
+            ret.yearoveryear = gethisdata(d.AddYears(-1), rname);
+            ret.linkrelative = gethisdata(d.AddDays(-7), rname);
             return ret;
         }
-        private List<Models.Dataitem> gethisdata(DateTime day,out DateTime ct,string rname)
+        private List<Models.Dataitem> gethisdata(DateTime day, out DateTime ct, string rname)
         {
             var ret = new List<Models.Dataitem>();
             var dis = _db1.Dataitem.Where(c => (c.Tabletype == rname)
@@ -121,29 +121,29 @@ namespace trafficpolice.Controllers
 
             return ret;
         }
-        private List<Models.Dataitem> gethisdata(DateTime day,string rname)
+        private List<Models.Dataitem> gethisdata(DateTime day, string rname)
         {
             var ret = new List<Models.Dataitem>();
             var dis = _db1.Dataitem.Where(c => (c.Tabletype == rname)
              && c.Deleted == 0);
             ret = GetBasicItems(dis);
 
-            var sday=day.ToString("yyyy-MM-dd");
-            var eday= day.AddDays(6).ToString("yyyy-MM-dd");
-            var data = _db1.Weeksummarized.FirstOrDefault(c => c.Startdate==sday&&c.Enddate==eday    && c.Draft == 3);
+            var sday = day.ToString("yyyy-MM-dd");
+            var eday = day.AddDays(6).ToString("yyyy-MM-dd");
+            var data = _db1.Weeksummarized.FirstOrDefault(c => c.Startdate == sday && c.Enddate == eday && c.Draft == 3);
             if (data == null) return ret;
-          
-                var one = JsonConvert.DeserializeObject<submitreq>(data.Content);
-                foreach (var b in one.datalist)
-                {
-                    SumData(ret, b);
-                }
-           
+
+            var one = JsonConvert.DeserializeObject<submitreq>(data.Content);
+            foreach (var b in one.datalist)
+            {
+                SumData(ret, b);
+            }
+
             return ret;
         }
         [Route("cGetFourData")]//指挥中心交管动态数据查询接口
         [HttpGet]//4点数据
-        public commonresponse cGetFourData(string startdate, string enddate, string rname="four")
+        public commonresponse cGetFourData(string startdate, string enddate, string rname = "four")
         {
             var start = DateTime.Now;
             var end = start;
@@ -160,7 +160,7 @@ namespace trafficpolice.Controllers
             var ret = new centerdayquereres
             {
                 status = 0,
-                daysdata=new List<queryoneday>()
+                daysdata = new List<queryoneday>()
             };
             //   var today = DateTime.Now.ToString("yyyy-MM-dd");
             try
@@ -174,13 +174,13 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }
-              for(var d = start; d <= end;d= d.AddDays(1))
+                for (var d = start; d <= end; d = d.AddDays(1))
                 {
                     var aaa = getonedayfour(d, rname);
-                    if(aaa.data.Count>0)
-                    ret.daysdata.Add(aaa);
+                    if (aaa.data.Count > 0)
+                        ret.daysdata.Add(aaa);
                 }
-              
+
                 return ret;
             }
             catch (Exception ex)
@@ -192,30 +192,31 @@ namespace trafficpolice.Controllers
 
         private queryoneday getonedayfour(DateTime d, string rname)
         {
-            var day=d.ToString("yyyy-MM-dd");
+            var day = d.ToString("yyyy-MM-dd");
             var ret = new queryoneday
             {
-                date = day,createtime=DateTime.Now,
+                date = day,
+                createtime = DateTime.Now,
                 data = new List<Models.Dataitem>(),
                 yearoveryear = new List<Models.Dataitem>(),
-                linkrelative=new List<Models.Dataitem>()
+                linkrelative = new List<Models.Dataitem>()
             };
             var ct = DateTime.Now;
-            ret.data = gethisdata(day,out ct,rname);
-            if(ret.data.Count<1) return ret;
+            ret.data = gethisdata(day, out ct, rname);
+            if (ret.data.Count < 1) return ret;
             ret.createtime = ct;
-            ret.yearoveryear = gethisdata(d.AddYears(-1).ToString("yyyy-MM-dd"),rname);
-            ret.linkrelative = gethisdata(d.AddDays(-1).ToString("yyyy-MM-dd"),rname);
+            ret.yearoveryear = gethisdata(d.AddYears(-1).ToString("yyyy-MM-dd"), rname);
+            ret.linkrelative = gethisdata(d.AddDays(-1).ToString("yyyy-MM-dd"), rname);
             return ret;
         }
-        private List<Models.Dataitem> gethisdata(string day,out DateTime ct,string rname)
+        private List<Models.Dataitem> gethisdata(string day, out DateTime ct, string rname)
         {
             var ret = new List<Models.Dataitem>();
-         
-          
+
+
             var data = _db1.Summarized.FirstOrDefault(c => c.Date == day
    // && c.Draft == 3
-   &&c.Reportname==rname
+   && c.Reportname == rname
     );
             ct = DateTime.Now;
             if (data == null) return ret;
@@ -223,11 +224,11 @@ namespace trafficpolice.Controllers
           && c.Deleted == 0);
             ret = GetBasicItems(dis);
             var one = JsonConvert.DeserializeObject<submitreq>(data.Content);
-                foreach (var b in one.datalist)
-                {
-                    SumData(ret, b);
-                }
-                ct = data.Time;
+            foreach (var b in one.datalist)
+            {
+                SumData(ret, b);
+            }
+            ct = data.Time;
             return ret;
         }
         private List<Models.Dataitem> gethisdata(string day, string rname)
@@ -235,25 +236,25 @@ namespace trafficpolice.Controllers
             var ret = new List<Models.Dataitem>();
             var dis = _db1.Dataitem.Where(c => (c.Tabletype == rname)
              && c.Deleted == 0);
-            ret= GetBasicItems(dis);
-            var data = _db1.Summarized.FirstOrDefault(c => c.Date==day
+            ret = GetBasicItems(dis);
+            var data = _db1.Summarized.FirstOrDefault(c => c.Date == day
    // && c.Draft == 3
    && c.Reportname == rname
     );
 
             if (data == null) return ret;
             var one = JsonConvert.DeserializeObject<submitreq>(data.Content);
-                foreach (var b in one.datalist)
-                {
-                    SumData(ret, b);
-                }
-            
+            foreach (var b in one.datalist)
+            {
+                SumData(ret, b);
+            }
+
             return ret;
         }
 
         [Route("centerGetSignSumData")]//中心获取视频签到汇总数据
         [HttpGet]
-        public commonresponse centerGetSignSumData(string startdate, string enddate,unittype ut=unittype.all, string rname="nine")
+        public commonresponse centerGetSignSumData(string startdate, string enddate, unittype ut = unittype.all, string rname = "nine")
         {
             var accinfo = global.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
@@ -286,7 +287,7 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.forbidden);
                 }
-                if (ut != unittype.all) ret.data.Add(getoneunit(start, end, ut.ToString(),rname));
+                if (ut != unittype.all) ret.data.Add(getoneunit(start, end, ut.ToString(), rname));
                 else
                 {
                     var units = _db1.Set<Unit>();
@@ -299,10 +300,10 @@ namespace trafficpolice.Controllers
                         //    _log.LogError("unitid {0} can not been parse", u.Id);
                         //    continue;
                         //}
-                        ret.data.Add(getoneunit(start, end, u.Id,rname));
+                        ret.data.Add(getoneunit(start, end, u.Id, rname));
                     }
-                }               
-           
+                }
+
                 return ret;
             }
             catch (Exception ex)
@@ -319,11 +320,11 @@ namespace trafficpolice.Controllers
                 sign = 0,
                 substitute = 0,
                 videoerror = 0,
-                notsign=0,
-                audioerror=0,
+                notsign = 0,
+                audioerror = 0,
                 current = new unitdata(),
-                yearoveryear=new unitdata(),
-                linkrelative=new unitdata()
+                yearoveryear = new unitdata(),
+                linkrelative = new unitdata()
             };
             var sign = 0;
             var sub = 0;
@@ -331,16 +332,16 @@ namespace trafficpolice.Controllers
             var audio = 0;
             var not = 0;
             var other = 0;
-            ret.current = sumonedataEx(start, end, ut, out sign, out sub, out video, out audio, out not,rname,out other);
+            ret.current = sumonedataEx(start, end, ut, out sign, out sub, out video, out audio, out not, rname, out other);
             ret.notsign = not;
             ret.substitute = sub;
             ret.sign = sign;
             ret.audioerror = audio;
             ret.videoerror = video;
             ret.other = other;
-            ret.yearoveryear = sumonedata(start.AddYears(-1), end.AddYears(-1), ut,rname);
-            var ts = end.Subtract(start).Days+1;
-            ret.linkrelative = sumonedata(start.AddDays(-ts), end.AddDays(-ts), ut,rname);
+            ret.yearoveryear = sumonedata(start.AddYears(-1), end.AddYears(-1), ut, rname);
+            var ts = end.Subtract(start).Days + 1;
+            ret.linkrelative = sumonedata(start.AddDays(-ts), end.AddDays(-ts), ut, rname);
             return ret;
         }
         private unitdata sumonedata(DateTime start, DateTime end, string ut, string rname)
@@ -350,23 +351,24 @@ namespace trafficpolice.Controllers
 
             var dis = _db1.Dataitem.Where(c => (c.Tabletype == rname)
               && c.Deleted == 0);
-            ret.datalist = GetBasicItems(dis);           
+            ret.datalist = GetBasicItems(dis);
 
             var data = _db1.Reportsdata.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
       && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
-      && c.Draft >=3
+      && c.Draft >= 3
       && c.Unitid == ut
-      && c.Rname==rname);
+      && c.Rname == rname);
 
             foreach (var d in data)
-            { if (string.IsNullOrEmpty(d.Content)) continue;
+            {
+                if (string.IsNullOrEmpty(d.Content)) continue;
                 try
                 {
                     var one = JsonConvert.DeserializeObject<submitreq>(d.Content);
-            //    d.Signtype
-                foreach (var b in one.datalist)
-                {
-                    SumData(ret.datalist, b);
+                    //    d.Signtype
+                    foreach (var b in one.datalist)
+                    {
+                        SumData(ret.datalist, b);
                     }
                 }
                 catch (Exception ex)
@@ -411,7 +413,7 @@ namespace trafficpolice.Controllers
         }
 
         private unitdata sumonedataEx(DateTime start, DateTime end, string ut, out int sign, out int substitute,
-            out int video, out int audio, out int not, string rname,out int other)
+            out int video, out int audio, out int not, string rname, out int other)
         {
             var ret = new unitdata();
             ret.unitid = ut.ToString();
@@ -451,7 +453,7 @@ namespace trafficpolice.Controllers
       && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
       && c.Draft >= 3
       && c.Unitid == ut
-      && c.Rname==rname);
+      && c.Rname == rname);
             audio = 0;
             video = 0;
             not = 0;
@@ -460,22 +462,18 @@ namespace trafficpolice.Controllers
             sign = 0;
             foreach (var d in data)
             {
-                if (string.IsNullOrEmpty(d.Content)) continue;
-                try
-                {
-                    var one = JsonConvert.DeserializeObject<submitreq>(d.Content);
                 switch ((signtype)d.Signtype)
                 {
-                        //case signtype.audioerror:
-                        //    audio++;
-                        //    break;
-                        //case signtype.videoerror:
-                        //    video++;
-                        //    break;
-                        case signtype.other:
-                            other++;
-                            break;
-                        case signtype.notsign:
+                    //case signtype.audioerror:
+                    //    audio++;
+                    //    break;
+                    //case signtype.videoerror:
+                    //    video++;
+                    //    break;
+                    case signtype.other:
+                        other++;
+                        break;
+                    case signtype.notsign:
                         not++;
                         break;
                     case signtype.substitute:
@@ -487,16 +485,21 @@ namespace trafficpolice.Controllers
                     default:
                         break;
                 }
-                foreach (var b in one.datalist)
+                if (string.IsNullOrEmpty(d.Content)) continue;
+                try
                 {
-                    SumData(ret.datalist, b);
+                    var one = JsonConvert.DeserializeObject<submitreq>(d.Content);
+
+                    foreach (var b in one.datalist)
+                    {
+                        SumData(ret.datalist, b);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _log.LogError(" Reportsdata  table , content field is illegal" + ex.Message);
                 }
             }
-                   catch (Exception ex)
-            {
-                _log.LogError(" Reportsdata  table , content field is illegal" + ex.Message);
-            }
-        }
             return ret;
         }
 
