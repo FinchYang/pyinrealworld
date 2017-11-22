@@ -28,11 +28,11 @@ namespace trafficpolice
             services.AddMvc();
             services.Configure<FormOptions>(x =>
             {
-                x.ValueLengthLimit = int.MaxValue;
-                x.MultipartBodyLengthLimit = int.MaxValue; // In case of multipart
-                x.BufferBodyLengthLimit = int.MaxValue;
-             //   x.KeyLengthLimit = int.MaxValue;
-                x.MemoryBufferThreshold = int.MaxValue;
+                x.ValueLengthLimit = 10240000;// int.MaxValue;
+                x.MultipartBodyLengthLimit = 10240000;//int.MaxValue; // In case of multipart
+                x.BufferBodyLengthLimit = 10240000;// int.MaxValue;
+                                                   //   x.KeyLengthLimit = int.MaxValue;
+                x.MemoryBufferThreshold = 10240000;// int.MaxValue;
                 x.BufferBody = true;
                // x.MultipartBoundaryLengthLimit = int.MaxValue;
              //   x.MultipartHeadersCountLimit = int.MaxValue; 
