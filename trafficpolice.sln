@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "trafficpolice", "trafficpol
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{6C71F82B-4440-4579-876C-EF973C184927}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Npoi.Samples.CreateNewSpreadsheet", "..\clone\NPOI\samples\Npoi.Samples.CreateNewSpreadsheet\Npoi.Samples.CreateNewSpreadsheet.csproj", "{07D6D41A-6D3C-49DD-B45B-210B193BE508}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{6C71F82B-4440-4579-876C-EF973C184927}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C71F82B-4440-4579-876C-EF973C184927}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C71F82B-4440-4579-876C-EF973C184927}.Release|Any CPU.Build.0 = Release|Any CPU
-		{07D6D41A-6D3C-49DD-B45B-210B193BE508}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{07D6D41A-6D3C-49DD-B45B-210B193BE508}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{07D6D41A-6D3C-49DD-B45B-210B193BE508}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{07D6D41A-6D3C-49DD-B45B-210B193BE508}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

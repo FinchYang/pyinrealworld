@@ -23,7 +23,6 @@ namespace trafficpolice.dbmodel
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseMySql("Server=localhost;port=5678;User Id=blah;Password=ycl1mail@A;Database=tp");
-             //   optionsBuilder.UseMySql("Server=localhost;User Id=blah;Password=ycl1mail@A;Database=tp");
             }
         }
 
@@ -68,6 +67,10 @@ namespace trafficpolice.dbmodel
                     .HasColumnName("inputtype")
                     .HasColumnType("smallint(2)");
 
+                entity.Property(e => e.Lastdata)
+                    .HasColumnName("lastdata")
+                    .HasColumnType("smallint(2)");
+
                 entity.Property(e => e.Mandated)
                     .HasColumnName("mandated")
                     .HasColumnType("smallint(2)");
@@ -85,6 +88,10 @@ namespace trafficpolice.dbmodel
                     .IsRequired()
                     .HasColumnName("statisticstype")
                     .HasMaxLength(600);
+
+                entity.Property(e => e.Sumunits)
+                    .HasColumnName("sumunits")
+                    .HasMaxLength(300);
 
                 entity.Property(e => e.Tabletype)
                     .IsRequired()

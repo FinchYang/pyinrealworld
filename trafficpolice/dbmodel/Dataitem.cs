@@ -19,5 +19,7 @@ namespace trafficpolice.dbmodel
         public string Statisticstype { get; set; }
         public string Defaultvalue { get; set; }
         public int Index { get; set; }
+        public string Sumunits { get; set; }
+        public short? Lastdata { get; set; }
     }
 }

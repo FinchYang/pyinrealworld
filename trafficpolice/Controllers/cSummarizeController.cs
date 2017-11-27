@@ -293,7 +293,8 @@ namespace trafficpolice.Controllers
                 }
                 _log.LogError("{0},", "没有汇总过？");
                 var data = _db1.Reportsdata.Where(c => c.Date== theday
-                &&c.Draft>=3 
+               // &&c.Draft>=3
+                 && (c.Draft >= 3||c.Draft==0)
                 && c.Rname == rname);               
                 foreach (var d in data)
                 {
@@ -321,6 +322,7 @@ namespace trafficpolice.Controllers
                         var theu = unittype.unknown;
                         Enum.TryParse<unittype>(a.unitid, out theu);
                         if (!b.units.Contains(unittype.all) && !b.units.Contains(theu)) continue;
+                        if (!b.sumunits.Contains(unittype.all) && !b.sumunits.Contains(theu)) continue;
                         SumData(ret.sumdata.datalist, b,a.unitname);                       
                     }
                 }
@@ -339,6 +341,7 @@ namespace trafficpolice.Controllers
             {
                 if (a.Name == b.Name)
                 {
+
                     if (a.StatisticsType.Count > 0)
                     {
                         if (!string.IsNullOrEmpty(b.Content))
