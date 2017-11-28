@@ -372,6 +372,50 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
+        [Route("unitDownloadDataLists")]//各大队自己打印选模板生成文件后下载
+        [HttpGet]
+        public commonresponse unitDownloadDataLists([FromServices]IHostingEnvironment env, string date, string template, string reportname)
+        {
+            var accinfo = global.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+
+            var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+            if (unit == null)
+            {
+                return global.commonreturn(responseStatus.nounit);
+            }
+          
+            var cd = global.checkdate(date);
+            if (cd.status != responseStatus.ok)
+            {
+                return cd;
+            }
+            var ret = new downloadres
+            {
+                status = 0,
+            };
+
+            try
+            {
+                var temp = _db1.Moban.FirstOrDefault(c => c.Name == template);
+                if (temp == null)
+                {
+                    return global.commonreturn(responseStatus.notemplate);
+                }
+                ret.fileResoure = createreportudlunit(temp.Filename, template, date, env, reportname);
+                if (!ret.fileResoure.Contains("download"))
+                {
+                    return global.commonreturn(responseStatus.templateerror, ret.fileResoure);
+                }
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "unitDownloadDataLists", ex.Message);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+            }
+        }
+
         [Route("centerDownloadUnitDataLists")]//中心某日多区单列不汇总选模板生成文件后下载
         [HttpGet]
         public commonresponse centerDownloadUnitDataLists([FromServices]IHostingEnvironment env, string date, string template, string reportname)
@@ -519,6 +563,27 @@ namespace trafficpolice.Controllers
             if (aa != string.Empty) return aa;// "模板处理失败，请检查模板文件，需要保存为非 97-2003 格式的 docx格式";
             return @"download/" + tfbase;
         }
+        private string createreportudlunit(string filename, string template, string date, IHostingEnvironment env, string reportname)
+        {
+            var spath = Path.Combine(env.WebRootPath, "upload", filename);
+            var tpath = Path.Combine(env.WebRootPath, "download");
+            if (!Directory.Exists(tpath)) Directory.CreateDirectory(tpath);
+            var tfbase = template + date + ".doc";
+            var tfile = Path.Combine(tpath, tfbase);
+            //   var data = new submitSumreq();
+            //   data.datalist = new List<Models.Dataitem>();
+            //  _log.LogWarning("reportname={0},date={1}", reportname, date);
+            var sum = _db1.Reportsdata.Where(c => c.Date == date && c.Rname == reportname);
+            //if (sum != null)
+            //{
+            //    data = JsonConvert.DeserializeObject<submitSumreq>(sum.Content);
+            //}
+            var dated = DateTime.Parse(date);
+
+            var aa = generateDocudl(spath, tfile, dated, sum);
+            if (aa != string.Empty) return aa;// "模板处理失败，请检查模板文件，需要保存为非 97-2003 格式的 docx格式";
+            return @"download/" + tfbase;
+        }
 
         private string generateDocudl(string sfile, string tfile, DateTime now, IQueryable<Reportsdata> sum)
         {
@@ -545,26 +610,32 @@ namespace trafficpolice.Controllers
                         {
                             var datecalculate = @"<当前日期[+-]\d+>";
                             Regex myRegex = new Regex(datecalculate, RegexOptions.None);
-                            var m = myRegex.Match(para.ParagraphText);
-                            if (m.Success)
-                            {
-                                var newdate = getnewdate(m.Value, DateTime.Now);
-                                para.ReplaceText(m.Value, newdate);
+                            var ms = myRegex.Matches(para.ParagraphText);
+                            foreach(Match m in ms)
+                            {                                
+                              //  var m = myRegex.Match(para.ParagraphText);
+                                if (m.Success)
+                                {
+                                    var newdate = getnewdate(m.Value, DateTime.Now);
+                                    para.ReplaceText(m.Value, newdate);
+                                }
                             }
+                           
                         }
                         if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(datecalculate1))
                         {
                             var datecalculate = @"<汇报日期[+-]\d+>";
                             Regex myRegex = new Regex(datecalculate, RegexOptions.None);
-                            var m = myRegex.Match(para.ParagraphText);
-                            if (m.Success)
+                            var ms = myRegex.Matches(para.ParagraphText);
+                            _log.LogWarning("matches={0},{1}", ms.Count, para.Text);
+                            foreach (Match m in ms)
                             {
-                                //  Console.WriteLine("Value={0}", m.Value);
+                                _log.LogWarning("matches={0},{1}", m.Success, m.Value);
+                                //if (m.Success)
+                                //{
                                 var newdate = getnewdate(m.Value, now);
-                                // var old = "";
-                                //  Console.WriteLine("Value={0}", "111");
-                                para.ReplaceText(m.Value, newdate);
-                                //  Console.WriteLine("Value={0}", "222");
+                                    para.ReplaceText(m.Value, newdate);
+                               // }
                             }
                         }
                         if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(dayindex))
@@ -738,26 +809,31 @@ namespace trafficpolice.Controllers
                         {
                             var datecalculate = @"<当前日期[+-]\d+>";
                             Regex myRegex = new Regex(datecalculate, RegexOptions.None);
-                            var m = myRegex.Match(para.ParagraphText);
-                            if (m.Success)
+                            var ms = myRegex.Matches(para.ParagraphText);
+                            foreach (Match m in ms)
                             {
-                                var newdate = getnewdate(m.Value, DateTime.Now);
-                                para.ReplaceText(m.Value, newdate);
+                                //  var m = myRegex.Match(para.ParagraphText);
+                                if (m.Success)
+                                {
+                                    var newdate = getnewdate(m.Value, DateTime.Now);
+                                    para.ReplaceText(m.Value, newdate);
+                                }
                             }
                         }
                         if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(datecalculate1))
                         {
                             var datecalculate = @"<汇报日期[+-]\d+>";
                             Regex myRegex = new Regex(datecalculate, RegexOptions.None);
-                            var m = myRegex.Match(para.ParagraphText);
-                            if (m.Success)
+                            var ms = myRegex.Matches(para.ParagraphText);
+                            _log.LogWarning("matches={0},{1}", ms.Count, para.Text);
+                            foreach (Match m in ms)
                             {
-                              //  Console.WriteLine("Value={0}", m.Value);
+                                _log.LogWarning("matches={0},{1}", m.Success, m.Value);
+                                //if (m.Success)
+                                //{
                                 var newdate = getnewdate(m.Value, now);
-                                // var old = "";
-                              //  Console.WriteLine("Value={0}", "111");
                                 para.ReplaceText(m.Value, newdate);
-                              //  Console.WriteLine("Value={0}", "222");
+                                // }
                             }
                         }
                         if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(dayindex))

@@ -151,7 +151,7 @@ namespace trafficpolice.Controllers
                 {
                     foreach (var b in a.datalist)
                     {
-                        SumData(ret.sumdata.datalist, b);
+                  //      SumData(ret.sumdata.datalist, b);
                     }
                 }
                 return ret;
@@ -261,7 +261,8 @@ namespace trafficpolice.Controllers
         [Route("centerGetSumData")]//中心获取 生成汇总 数据
         [HttpGet]
         public commonresponse centerGetSumData(string seldate,string rname="four",bool renew=false)
-        {           
+        {
+            _log.LogError("centerGetSumData--{0},{1},{2}", seldate, rname, renew);
             var accinfo = global.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
 
@@ -291,11 +292,12 @@ namespace trafficpolice.Controllers
                         return ret;
                     }
                 }
-                _log.LogError("{0},", "没有汇总过？");
+               
                 var data = _db1.Reportsdata.Where(c => c.Date== theday
                // &&c.Draft>=3
                  && (c.Draft >= 3||c.Draft==0)
-                && c.Rname == rname);               
+                && c.Rname == rname);
+                _log.LogError("没有汇总过--{0}条数据,", data.Count());
                 foreach (var d in data)
                 {
                     if (string.IsNullOrEmpty(d.Content)) continue;
@@ -320,10 +322,16 @@ namespace trafficpolice.Controllers
                     foreach(var b in a.datalist)
                     {
                         var theu = unittype.unknown;
-                        Enum.TryParse<unittype>(a.unitid, out theu);
+                        if (!Enum.TryParse<unittype>(a.unitid, out theu))
+                        {
+                            _log.LogError("--{0}-大队id非法-,", a.unitid);
+                            continue;
+                        }
+                        _log.LogError("--{0}-units-,",JsonConvert.SerializeObject( b?.units));
                         if (!b.units.Contains(unittype.all) && !b.units.Contains(theu)) continue;
-                        if (b.sumunits!=null && !b.sumunits.Contains(unittype.all) && !b.sumunits.Contains(theu)) continue;
-                        SumData(ret.sumdata.datalist, b,a.unitname);                       
+                        _log.LogError("--{0}-sumunits-,", JsonConvert.SerializeObject(b?.sumunits));
+                        if (b.sumunits!=null && !(b.sumunits.Contains(unittype.all) || b.sumunits.Contains(theu))) continue;
+                        SumData(ret.sumdata.datalist, b,a.unitname, theu);                       
                     }
                 }
                 _log.LogError("--{0}-ret-,", ret.sumdata.datalist.Count);
@@ -335,8 +343,9 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
-        private void SumData(List<Models.Dataitem> datalist, Models.Dataitem b,string uname)
+        private void SumData(List<Models.Dataitem> datalist, Models.Dataitem b,string uname,unittype theu)
         {
+            _log.LogError("{0}-{1}-{2}", uname,b.Name,b.Content);
             foreach (var a in datalist)
             {
                 if (a.Name == b.Name)
@@ -354,7 +363,7 @@ namespace trafficpolice.Controllers
                     {
                         break;
                     }
-                    sumsecond(a.secondlist, b.secondlist);
+                    sumsecond(a.secondlist, b.secondlist, theu,uname);
 
                     break;
                 }
@@ -378,7 +387,7 @@ namespace trafficpolice.Controllers
                     {
                         break;
                     }
-                    sumsecond(a.secondlist, b.secondlist);                   
+                //    sumsecond(a.secondlist, b.secondlist);                   
 
                     break;
                 }
@@ -386,15 +395,16 @@ namespace trafficpolice.Controllers
           
         }
 
-        private void sumsecond(List<seconditemdata> sum, List<seconditemdata> source)
+        private void sumsecond(List<seconditemdata> sum, List<seconditemdata> source,unittype theu,string uname)
         {
             foreach (var c in source)
             {
-                sumonesecond(sum, c);               
+                if (c.sumunits != null && !(c.sumunits.Contains(unittype.all) || c.sumunits.Contains(theu))) continue;
+                sumonesecond(sum, c,uname);               
             }
         }
 
-        private void sumonesecond(List<seconditemdata> sum, seconditemdata c)
+        private void sumonesecond(List<seconditemdata> sum, seconditemdata c,string uname)
         {
             foreach(var one in sum)
             {
@@ -416,7 +426,11 @@ namespace trafficpolice.Controllers
                                 break;
                             case secondItemType.date:
                             default:
-                                one.data += c.data;
+                                if (!string.IsNullOrEmpty(c.data))
+                                {
+                                    one.data += uname + "：" + Environment.NewLine + c.data + "。" + Environment.NewLine;
+                                }
+                              //  one.data += c.data;
                                 break;
                         }
 
