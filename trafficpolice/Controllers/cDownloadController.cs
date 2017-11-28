@@ -372,6 +372,52 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
+        [Route("centerDownloadUnitDataLists")]//中心某日多区单列不汇总选模板生成文件后下载
+        [HttpGet]
+        public commonresponse centerDownloadUnitDataLists([FromServices]IHostingEnvironment env, string date, string template, string reportname)
+        {
+            var accinfo = global.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+
+            var unit = _db1.Unit.FirstOrDefault(c => c.Id == accinfo.unitid);
+            if (unit == null)
+            {
+                return global.commonreturn(responseStatus.nounit);
+            }
+            if (unit.Level == 1)
+            {
+                return global.commonreturn(responseStatus.forbidden);
+            }
+            var cd = global.checkdate(date);
+            if (cd.status != responseStatus.ok)
+            {
+                return cd;
+            }
+            var ret = new downloadres
+            {
+                status = 0,
+            };
+
+            try
+            {
+                var temp = _db1.Moban.FirstOrDefault(c => c.Name == template);
+                if (temp == null)
+                {
+                    return global.commonreturn(responseStatus.notemplate);
+                }
+                ret.fileResoure = createreportudl(temp.Filename, template, date, env, reportname);
+                if (!ret.fileResoure.Contains("download"))
+                {
+                    return global.commonreturn(responseStatus.templateerror, ret.fileResoure);
+                }
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "centerDownloadUnitDataLists", ex.Message);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
+            }
+        }
         [Route("centerDownloadSomeDay")]//中心某日交管动态选模板生成文件后下载
         [HttpGet]
         public commonresponse centerDownloadSomeDay([FromServices]IHostingEnvironment env, string date, string template, string reportname)
@@ -451,6 +497,146 @@ namespace trafficpolice.Controllers
             var aa = generateDoc(spath, tfile, dated, data);
             if (aa != string.Empty) return aa;// "模板处理失败，请检查模板文件，需要保存为非 97-2003 格式的 docx格式";
             return @"download/" + tfbase;
+        }
+        private string createreportudl(string filename, string template, string date, IHostingEnvironment env, string reportname)
+        {
+            var spath = Path.Combine(env.WebRootPath, "upload", filename);
+            var tpath = Path.Combine(env.WebRootPath, "download");
+            if (!Directory.Exists(tpath)) Directory.CreateDirectory(tpath);
+            var tfbase = template + date + ".doc";
+            var tfile = Path.Combine(tpath, tfbase);
+         //   var data = new submitSumreq();
+         //   data.datalist = new List<Models.Dataitem>();
+          //  _log.LogWarning("reportname={0},date={1}", reportname, date);
+            var sum = _db1.Reportsdata.Where(c => c.Date == date && c.Rname == reportname);
+            //if (sum != null)
+            //{
+            //    data = JsonConvert.DeserializeObject<submitSumreq>(sum.Content);
+            //}
+            var dated = DateTime.Parse(date);          
+
+            var aa = generateDocudl(spath, tfile, dated, sum);
+            if (aa != string.Empty) return aa;// "模板处理失败，请检查模板文件，需要保存为非 97-2003 格式的 docx格式";
+            return @"download/" + tfbase;
+        }
+
+        private string generateDocudl(string sfile, string tfile, DateTime now, IQueryable<Reportsdata> sum)
+        {
+            try
+            {
+                if (System.IO.File.Exists(tfile)) System.IO.File.Delete(tfile);
+                var year = now.Year + "年";
+                var month = now.Month + "月";
+                var day = now.Day + "日";
+                var inspect = "审核：" + "哈哈哈";
+                var editor = "编辑：" + "呵呵呵";
+                var inspectstr = "审核：****";
+                var editorstr = "编辑：****";
+                var dayindex = "<日期序号>";
+                var sdayindex = now.DayOfYear.ToString();
+                var currentdate = "<当前日期";
+                var datecalculate1 = "<汇报日期";
+                using (var fs = new FileStream(sfile, FileMode.Open, FileAccess.Read))
+                {
+                    XWPFDocument doc = new XWPFDocument(fs);
+                    foreach (var para in doc.Paragraphs)
+                    {
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(currentdate))
+                        {
+                            var datecalculate = @"<当前日期[+-]\d+>";
+                            Regex myRegex = new Regex(datecalculate, RegexOptions.None);
+                            var m = myRegex.Match(para.ParagraphText);
+                            if (m.Success)
+                            {
+                                var newdate = getnewdate(m.Value, DateTime.Now);
+                                para.ReplaceText(m.Value, newdate);
+                            }
+                        }
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(datecalculate1))
+                        {
+                            var datecalculate = @"<汇报日期[+-]\d+>";
+                            Regex myRegex = new Regex(datecalculate, RegexOptions.None);
+                            var m = myRegex.Match(para.ParagraphText);
+                            if (m.Success)
+                            {
+                                //  Console.WriteLine("Value={0}", m.Value);
+                                var newdate = getnewdate(m.Value, now);
+                                // var old = "";
+                                //  Console.WriteLine("Value={0}", "111");
+                                para.ReplaceText(m.Value, newdate);
+                                //  Console.WriteLine("Value={0}", "222");
+                            }
+                        }
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(dayindex))
+                        {
+                            para.ReplaceText(dayindex, sdayindex);
+                        }
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**月"))
+                        {
+                            para.ReplaceText("**月", month);
+                        }
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**日"))
+                        {
+                            para.ReplaceText("**日", day);
+                        }
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("****年"))
+                        {
+                            para.ReplaceText("****年", year);
+                        }
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(editorstr))
+                        {
+                            para.ReplaceText(editorstr, editor);
+                        }
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(inspectstr))
+                        {
+                            para.ReplaceText(inspectstr, inspect);
+                        }
+                        datareplaceudl(para, sum);
+                    }
+
+                    using (var wfs = new FileStream(tfile, FileMode.Create))
+                    {
+                        doc.Write(wfs);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+            return string.Empty;
+        }
+
+        private void datareplaceudl(XWPFParagraph para, IQueryable<Reportsdata> sum)
+        {
+            foreach (var d in sum)
+            {
+                if (string.IsNullOrEmpty(d.Content)) continue;
+                var data = JsonConvert.DeserializeObject<submitreq>(d.Content);
+                foreach(var onedata in data.datalist)
+                {
+                    var key = string.Format("<{0}-{1}>", d.Unitid , onedata.Name);
+                    if (para.ParagraphText.Contains(key))
+                    {
+                        if(!string.IsNullOrEmpty(onedata.Content))
+                            para.ReplaceText(key, onedata.Content);                      
+                    }
+                    if (onedata.secondlist != null)
+                    {
+                        foreach (var sd in onedata.secondlist)
+                        {
+                            var skey = string.Format("<{0}-{1}-{2}>", d.Unitid, onedata.Name, sd.name);
+                            if (para.ParagraphText.Contains(skey))
+                            {
+                                // _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, para.ParagraphText);
+                                if (!string.IsNullOrEmpty(sd.data))
+                                    para.ReplaceText(skey, sd.data);
+                               // _log.LogError("替换后段落文本={2}---,", para.ParagraphText);
+                            }
+                        }
+                    }
+                }             
+            }
         }
 
         [Route("centerDownloadWeek")]//中心每周交管动态选模板生成文件后下载
