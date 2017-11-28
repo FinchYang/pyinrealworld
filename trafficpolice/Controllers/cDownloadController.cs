@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Hosting;
 using NPOI.XWPF.UserModel;
 using NPOI.XSSF.UserModel;
 using NPOI.SS.UserModel;
+using System.Text.RegularExpressions;
 //using perfectmsg.dbmodel;
 
 namespace trafficpolice.Controllers
@@ -500,23 +501,30 @@ namespace trafficpolice.Controllers
             }
         }
 
-        //private string createreportweek(string filename, string start, string end, IHostingEnvironment env)
-        //{
-        //    var spath = Path.Combine(env.WebRootPath, "upload", filename);
-        //    var tpath = Path.Combine(env.WebRootPath, "download");
-        //    if (!Directory.Exists(tpath)) Directory.CreateDirectory(tpath);
-        //    var tfile = Path.Combine(tpath, "320171031101311.doc");
-        //    var data = new submitSumreq();
-        //    data.datalist = new List<Models.Dataitem>();
-        //    var sum = _db1.Weeksummarized.FirstOrDefault(c => c.Startdate == start&&c.Enddate==end);
-        //    if (sum != null)
-        //    {
-        //        data = JsonConvert.DeserializeObject<submitSumreq>(sum.Content);
-        //    }
+        private static string getnewdate(string datecalculate, DateTime now)
+        {
+          //  Console.WriteLine("datecalculate={0}", datecalculate);
+            var ret = now.ToString("yyyy-MM-dd");
+            string strRegex = @"\d+";
+            Regex myRegex = new Regex(strRegex, RegexOptions.None);
+            var m = myRegex.Match(datecalculate);
+            var date = now;
+            if (m.Success)
+            {
+                var day = int.Parse(m.Value);
+                if (datecalculate.Contains("+"))
+                {
+                    date = date.AddDays(day);
+                }
+                else if (datecalculate.Contains("-"))
+                {
+                    date = date.AddDays(-day);
+                }
+            }
+          //  Console.WriteLine("date={0}", date);
 
-        //    Contact(tfile,data,spath);
-        //    return @"download/320171031101311.doc";
-        //}
+            return date.ToString("yyyy年MM月dd日");
+        }
         private string generateDoc(string sfile, string tfile, DateTime now, submitSumreq data)
         {
             try
@@ -529,12 +537,47 @@ namespace trafficpolice.Controllers
                 var editor = "编辑：" + "呵呵呵";
                 var inspectstr = "审核：****";
                 var editorstr = "编辑：****";
+               // var dayindex = "<dayindex>";
+                var dayindex = "<日期序号>";
+                var sdayindex = now.DayOfYear.ToString();
+                var currentdate = "<当前日期";
+                var datecalculate1 = "<汇报日期";
                 using (var fs = new FileStream(sfile, FileMode.Open, FileAccess.Read))
                 {
                     // XWPFDocument wdoc = new XWPFDocument(); 
                     XWPFDocument doc = new XWPFDocument(fs);
                     foreach (var para in doc.Paragraphs)
                     {
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(currentdate))
+                        {
+                            var datecalculate = @"<当前日期[+-]\d+>";
+                            Regex myRegex = new Regex(datecalculate, RegexOptions.None);
+                            var m = myRegex.Match(para.ParagraphText);
+                            if (m.Success)
+                            {
+                                var newdate = getnewdate(m.Value, DateTime.Now);
+                                para.ReplaceText(m.Value, newdate);
+                            }
+                        }
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(datecalculate1))
+                        {
+                            var datecalculate = @"<汇报日期[+-]\d+>";
+                            Regex myRegex = new Regex(datecalculate, RegexOptions.None);
+                            var m = myRegex.Match(para.ParagraphText);
+                            if (m.Success)
+                            {
+                              //  Console.WriteLine("Value={0}", m.Value);
+                                var newdate = getnewdate(m.Value, now);
+                                // var old = "";
+                              //  Console.WriteLine("Value={0}", "111");
+                                para.ReplaceText(m.Value, newdate);
+                              //  Console.WriteLine("Value={0}", "222");
+                            }
+                        }
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(dayindex))
+                        {
+                            para.ReplaceText(dayindex, sdayindex);
+                        }
                         if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**月"))
                         {
                             para.ReplaceText("**月", month);

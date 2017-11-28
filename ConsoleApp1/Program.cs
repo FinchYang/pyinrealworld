@@ -7,6 +7,7 @@ using NPOI.XWPF.UserModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace ConsoleApp1
 {
@@ -37,9 +38,9 @@ namespace ConsoleApp1
         {
 
             //  var sfile = @"F:\prototype\每日交管动态汇报项目补充.docx";
-            //var sfile = @"F:\tp\trafficpolice\wwwroot\upload\daytemplate1.docx";
-            //var tfile = @"F:\tp\trafficpolice\wwwroot\download\111.doc";
-            //string error = generateDoc(sfile, tfile, DateTime.Now);
+            var sfile = @"F:\temperature.docx";
+            var tfile = @"F:\111.doc";
+            string error = generateDoc(sfile, tfile, DateTime.Now);
 
             //var sfile = @"F:\tp\trafficpolice\wwwroot\upload\考核表.xlsx";
             //var tfile = @"F:\tp\trafficpolice\wwwroot\download\333-444-考核.xlsx";
@@ -52,10 +53,10 @@ namespace ConsoleApp1
             //  Console.WriteLine(b);
 
             //  ExportWord();
-            string a=null;
-            Console.WriteLine(a ?? "hahah");
-            a = "bb";
-            Console.WriteLine(a ?? "hahah");
+            //string a =null;
+            //Console.WriteLine(a ?? "hahah");
+            //a = "bb";
+            //Console.WriteLine(a ?? "hahah");
             Console.ReadLine();
         }
 
@@ -71,18 +72,36 @@ namespace ConsoleApp1
                 var editor = "编辑："+ "呵呵呵";
                 var inspectstr = "审核：****";
                 var editorstr = "编辑：****";
-                Console.WriteLine("para-{0},1", 000);
+                var dayindex = "<dayindex>";
+                var sdayindex = now.DayOfYear.ToString();
+                var datecalculate1 = "<汇报日期";
+               
                 using (var fs = new FileStream(sfile, FileMode.Open, FileAccess.Read))
                 {
-                    Console.WriteLine("para-{0},1", 555);
                     XWPFDocument doc = new XWPFDocument(fs);
-                    Console.WriteLine("para-{0},1", 666);
-                    Console.WriteLine("para-{0},table={1}", doc.Paragraphs.Count, doc.Tables.Count);
-                 //   Console.WriteLine("para-{0},1", 777);
-                   // var index = 0;
+                  
                     foreach (var para in doc.Paragraphs)
                     {
-                       // Console.WriteLine("index-{0}", index);
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(datecalculate1))
+                        {
+                            var datecalculate = @"<汇报日期[+-]\d+>";
+                            Regex myRegex = new Regex(datecalculate, RegexOptions.None);
+                            var m = myRegex.Match(para.ParagraphText);                           
+                            if (m.Success)
+                            {
+                                Console.WriteLine("Value={0}", m.Value);
+                                var newdate = getnewdate(m.Value, now);
+                                // var old = "";
+                                Console.WriteLine("Value={0}", "111");
+                                para.ReplaceText(m.Value, newdate);
+                                Console.WriteLine("Value={0}", "222");
+                            }                        
+                            
+                        }
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(dayindex))
+                        {
+                            para.ReplaceText(dayindex, sdayindex);
+                        }
                         if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**月"))
                         {
                           //  Console.WriteLine("ParagraphText-{0}", para.ParagraphText);
@@ -112,46 +131,12 @@ namespace ConsoleApp1
                         //  ReplaceKey(para);
                     }
                     Console.WriteLine("para-{0},1", 888);
-                    //遍历表格
-                    //var tables = doc.Tables;
-                    //foreach (var table in tables)
-                    //{
-                    //    foreach (var row in table.Rows)
-                    //    {
-                    //        foreach (var cell in row.GetTableCells())
-                    //        {
-                    //            foreach (var para in cell.Paragraphs)
-                    //            {
-                    //                //   Console.WriteLine("2222para-{0},{1}", para.ParagraphText, para.Text);
-                    //                //  para.ReplaceText("**月", "----11月-");
-                    //                //  ReplaceKey(para);
-                    //            }
-                    //        }
-                    //    }
-                    //}
-                    //var p0 = doc.CreateParagraph();
-                    //p0.Alignment = ParagraphAlignment.CENTER;
-                    //XWPFRun r0 = p0.CreateRun();
-                    //r0.FontFamily = "microsoft yahei";
-                    //r0.FontSize = 18;
-                    //r0.IsBold = true;
-                    //r0.SetText("This is title");
-
-                    //var p1 = doc.CreateParagraph();
-                    //p1.Alignment = ParagraphAlignment.LEFT;
-                    //p1.IndentationFirstLine = 500;
-                    //XWPFRun r1 = p1.CreateRun();
-                    //r1.FontFamily = "·ÂËÎ";
-                    //r1.FontSize = 12;
-                    //r1.IsBold = true;
-                    //r1.SetText("This is content, content content content content content content content content content");
+                  
                     using (var wfs = new FileStream(tfile, FileMode.Create))
                     {
                         doc.Write(wfs);
                     }
                 }
-
-                //   return "ok";
             }
             catch (Exception ex)
             {
@@ -159,6 +144,32 @@ namespace ConsoleApp1
             }
             return string.Empty;
         }
+
+        private static string getnewdate(string datecalculate, DateTime now)
+        {
+            Console.WriteLine("datecalculate={0}", datecalculate);
+           var ret=now.ToString("yyyy-MM-dd");
+            string strRegex = @"\d+";
+            Regex myRegex = new Regex(strRegex, RegexOptions.None);
+            var m = myRegex.Match(datecalculate);
+            var date = now;
+         if (m .Success)
+            {
+                var day = int.Parse(m.Value);
+                if(datecalculate.Contains("+"))
+                {
+                    date = date.AddDays(day);
+                }
+                else if (datecalculate.Contains("-"))
+                {
+                    date = date.AddDays(-day);
+                }
+            }
+            Console.WriteLine("date={0}", date);
+
+            return date.ToString("yyyy年MM月dd日");
+        }
+
         private static string generateexcel(string sfile, string tfile, DateTime now)
         {
             try
