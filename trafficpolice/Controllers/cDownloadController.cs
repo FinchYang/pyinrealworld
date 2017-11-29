@@ -402,7 +402,7 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.notemplate);
                 }
-                ret.fileResoure = createreportudlunit(temp.Filename, template, date, env, reportname);
+                ret.fileResoure = createreportudlunit(temp.Filename, template, date, env, reportname,accinfo.unitid,unit.Name);
                 if (!ret.fileResoure.Contains("download"))
                 {
                     return global.commonreturn(responseStatus.templateerror, ret.fileResoure);
@@ -563,26 +563,186 @@ namespace trafficpolice.Controllers
             if (aa != string.Empty) return aa;// "模板处理失败，请检查模板文件，需要保存为非 97-2003 格式的 docx格式";
             return @"download/" + tfbase;
         }
-        private string createreportudlunit(string filename, string template, string date, IHostingEnvironment env, string reportname)
+        private string createreportudlunit(string filename, string template, string date,
+            IHostingEnvironment env, string reportname,string unitid,string uname)
         {
             var spath = Path.Combine(env.WebRootPath, "upload", filename);
             var tpath = Path.Combine(env.WebRootPath, "download");
             if (!Directory.Exists(tpath)) Directory.CreateDirectory(tpath);
             var tfbase = template + date + ".doc";
             var tfile = Path.Combine(tpath, tfbase);
-            //   var data = new submitSumreq();
-            //   data.datalist = new List<Models.Dataitem>();
-            //  _log.LogWarning("reportname={0},date={1}", reportname, date);
-            var sum = _db1.Reportsdata.Where(c => c.Date == date && c.Rname == reportname);
-            //if (sum != null)
-            //{
-            //    data = JsonConvert.DeserializeObject<submitSumreq>(sum.Content);
-            //}
+            var sum = _db1.Reportsdata.FirstOrDefault(c => c.Date == date && c.Rname == reportname&&c.Unitid==unitid);
+            if (sum == null)
+            {
+                return string.Format("unit={0},date={1},report={2}, 没有数据",unitid,date,reportname);
+            }
             var dated = DateTime.Parse(date);
 
-            var aa = generateDocudl(spath, tfile, dated, sum);
+            var aa = generateDocudlunit(spath, tfile, dated, sum,uname);
             if (aa != string.Empty) return aa;// "模板处理失败，请检查模板文件，需要保存为非 97-2003 格式的 docx格式";
             return @"download/" + tfbase;
+        }
+
+        private string generateDocudlunit(string sfile, string tfile, DateTime now, Reportsdata data,string uname)
+       //   private string generateDocudl(string sfile, string tfile, DateTime now, IQueryable<Reportsdata> sum)
+        {
+            try
+            {
+                if (System.IO.File.Exists(tfile)) System.IO.File.Delete(tfile);
+                var year = now.Year + "年";
+                var month = now.Month + "月";
+                var day = now.Day + "日";
+                var inspect = "审核：" + "哈哈哈";
+                var editor = "编辑：" + "呵呵呵";
+                var inspectstr = "审核：****";
+                var editorstr = "编辑：****";
+                var dayindex = "<日期序号>";
+                var sdayindex = now.DayOfYear.ToString();
+                var currentdate = "<当前日期";
+                var datecalculate1 = "<汇报日期";
+                var unitname = "<大队名称>";
+                using (var fs = new FileStream(sfile, FileMode.Open, FileAccess.Read))
+                {
+                    XWPFDocument doc = new XWPFDocument(fs);
+                    foreach (var para in doc.Paragraphs)
+                    {
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(currentdate))
+                        {
+                            var datecalculate = @"<当前日期[+-]\d+>";
+                            Regex myRegex = new Regex(datecalculate, RegexOptions.None);
+                            var ms = myRegex.Matches(para.ParagraphText);
+                            foreach (Match m in ms)
+                            {
+                                //  var m = myRegex.Match(para.ParagraphText);
+                                if (m.Success)
+                                {
+                                    var newdate = getnewdate(m.Value, DateTime.Now);
+                                    para.ReplaceText(m.Value, newdate);
+                                }
+                            }
+
+                        }
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(datecalculate1))
+                        {
+                            var datecalculate = @"<汇报日期[+-]\d+>";
+                            Regex myRegex = new Regex(datecalculate, RegexOptions.None);
+                            var ms = myRegex.Matches(para.ParagraphText);
+                            _log.LogWarning("matches={0},{1}", ms.Count, para.Text);
+                            foreach (Match m in ms)
+                            {
+                                _log.LogWarning("matches={0},{1}", m.Success, m.Value);
+                                //if (m.Success)
+                                //{
+                                var newdate = getnewdate(m.Value, now);
+                                para.ReplaceText(m.Value, newdate);
+                                // }
+                            }
+                        }
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(unitname))
+                        {
+                            para.ReplaceText(unitname, uname);
+                        }
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(dayindex))
+                        {
+                            para.ReplaceText(dayindex, sdayindex);
+                        }
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**月"))
+                        {
+                            para.ReplaceText("**月", month);
+                        }
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**日"))
+                        {
+                            para.ReplaceText("**日", day);
+                        }
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("****年"))
+                        {
+                            para.ReplaceText("****年", year);
+                        }
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(editorstr))
+                        {
+                            para.ReplaceText(editorstr, editor);
+                        }
+                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(inspectstr))
+                        {
+                            para.ReplaceText(inspectstr, inspect);
+                        }
+                        datareplaceudlunit(para, data);
+                    }
+
+                    using (var wfs = new FileStream(tfile, FileMode.Create))
+                    {
+                        doc.Write(wfs);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+            return string.Empty;
+        }
+
+        private void datareplaceudlunit(XWPFParagraph para, Reportsdata datar)
+       //  private void datareplace(XWPFParagraph para, submitSumreq data)
+        {
+            if (string.IsNullOrEmpty(datar.Content)) return;
+            var data = JsonConvert.DeserializeObject<submitreq>(datar.Content);
+            //   _log.LogError("data list count:{0}", data.datalist.Count);
+            foreach (var d in data.datalist)
+            {
+                //  _log.LogError("data description:{0},{1},{2}", d.Name,d.hasSecondItems,d.secondlist.Count);
+                var key = string.Format("<{0}>", d.Name);
+                if (para.ParagraphText.Contains(key))
+                {
+                    _log.LogError("1content={0},rm={1}", d.Content, "");
+                    if (!d.Content.Contains("\n"))
+                    {
+                        para.ReplaceText(key, d.Content);
+                    }
+                    else
+                    {
+                        para.ReplaceText(key, "");
+                        var r = para.CreateRun();
+                        var lines = d.Content.Split("\n");
+                        foreach (var o in lines)
+                        {
+                            r.AppendText(o);
+                            r.AddCarriageReturn();
+                        }
+                    }
+                }
+                if (d.secondlist != null)
+                //  if (d.hasSecondItems && d.secondlist != null)
+                {
+                    foreach (var sd in d.secondlist)
+                    {
+                        var skey = string.Format("<{0}-{1}>", d.Name, sd.name);
+                        //  _log.LogError("seconde data description:--{0}---{1}---{2}---,", skey, sd.data, para.ParagraphText);
+                        if (para.ParagraphText.Contains(skey))
+                        {
+                            _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, para.ParagraphText);
+                            // paragraphText = paragraphText.Replace(skey, sd.data);
+
+                            if (!sd.data.Contains("\n"))
+                            {
+                                para.ReplaceText(skey, sd.data);
+                            }
+                            else
+                            {
+                                para.ReplaceText(skey, "");
+                                var r = para.CreateRun();
+                                var lines = sd.data.Split("\n");
+                                foreach (var o in lines)
+                                {
+                                    r.AppendText(o);
+                                    r.AddCarriageReturn();
+                                }
+                            }
+                            _log.LogError("替换后段落文本={2}---,", para.ParagraphText);
+                        }
+                    }
+                }
+            }
         }
 
         private string generateDocudl(string sfile, string tfile, DateTime now, IQueryable<Reportsdata> sum)
@@ -860,18 +1020,46 @@ namespace trafficpolice.Controllers
                         {
                             para.ReplaceText(inspectstr, inspect);
                         }
-
-                        //var p0 = wdoc.CreateParagraph();
-                        //p0.Alignment = para.Alignment;// ParagraphAlignment.LEFT;
-                        //XWPFRun r0 = p0.CreateRun();
-                        ////r0.FontFamily = para.Runs[0].FontFamily;// "宋体";
-                        ////r0.FontSize = para.Runs[0].FontSize;// 18;
-                        ////r0.IsBold = para.Runs[0].IsBold;// true;
-                        //r0.SetText(datareplaceEx(para.ParagraphText, data));
-
                         datareplace(para, data);
                     }
-
+                    //foreach (var t in doc.Tables)
+                    //{
+                    //    foreach(var r in t.Rows)
+                    //    {
+                    //        var cs = r.GetTableCells();
+                    //        foreach(var c in cs)
+                    //        {
+                    //            var ct = c.GetText();
+                    //            {
+                    //                var datecalculate = @"<当前日期[+-]\d+>";
+                    //                Regex myRegex = new Regex(datecalculate, RegexOptions.None);
+                    //                var ms = myRegex.Matches(ct);
+                    //                foreach (Match m in ms)
+                    //                {
+                    //                    var newdate = getnewdate(m.Value, DateTime.Now);
+                    //                    ct = ct.Replace(m.Value, newdate);
+                    //                }
+                    //            }
+                    //            {
+                    //                var datesum = @"<汇报日期[+-]\d+>";
+                    //                Regex myRegex1 = new Regex(datesum, RegexOptions.None);
+                    //                var ms = myRegex1.Matches(ct);
+                    //                foreach (Match m in ms)
+                    //                {
+                    //                    var newdate = getnewdate(m.Value, now);
+                    //                    ct = ct.Replace(m.Value, newdate);
+                    //                }
+                    //            }
+                    //           // c.SetText(ct);
+                    //           //c.
+                    //           //foreach(var p in c.Paragraphs)
+                    //           // {
+                    //           //     p.ReplaceText(p.ParagraphText, ct);
+                    //           //     break;
+                    //           // }
+                    //        }
+                    //    }                     
+                    //}
                     using (var wfs = new FileStream(tfile, FileMode.Create))
                     {
                         doc.Write(wfs);
@@ -923,15 +1111,6 @@ namespace trafficpolice.Controllers
                 if (para.ParagraphText.Contains(key))
                 {
                     _log.LogError("1content={0},rm={1}", d.Content, "");
-                    //   var rm = d.Content.Replace("\n", "\r\n");//
-                    //  var rm = d.Content.Replace("\n", "\n\r");
-                    // var rm = d.Content.Replace("\n", "^l");
-                    // var rm = d.Content.Replace("\n", "\\^\\l");
-                    //   var rm = d.Content.Replace("\n", Environment.NewLine);
-                    //string strKey = "^p^p";
-                    //var rm = d.Content.Replace("\n", strKey);
-                    //  _log.LogError("2content={0},rm={1}", d.Content, rm);
-                    //  para.IsWordWrapped = true;//para.Alignment.HasFlag(new  )
                     if (!d.Content.Contains("\n")) {
                         para.ReplaceText(key, d.Content);
                     }
@@ -939,20 +1118,12 @@ namespace trafficpolice.Controllers
                     {
                         para.ReplaceText(key, "");
                         var r = para.CreateRun();
-                        //foreach(var r in para.Runs)
-                        //{
-                          // if(r.Text.Contains(key))
-                           // {
                                 var lines = d.Content.Split("\n");
-                       // r.SetText("god");
-                              //  r.ReplaceText(key, "");
                                 foreach(var o in lines)
                                 {
                                     r.AppendText(o);
                                     r.AddCarriageReturn();
                                 }
-                           // }
-                       // }
                     }
                 }
                 if (d.secondlist != null)
@@ -966,8 +1137,22 @@ namespace trafficpolice.Controllers
                         {
                             _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, para.ParagraphText);
                             // paragraphText = paragraphText.Replace(skey, sd.data);
-
-                            para.ReplaceText(skey, sd.data);
+                            
+                            if (!sd.data.Contains("\n"))
+                            {
+                                para.ReplaceText(skey, sd.data);
+                            }
+                            else
+                            {
+                                para.ReplaceText(skey, "");
+                                var r = para.CreateRun();
+                                var lines = sd.data.Split("\n");
+                                foreach (var o in lines)
+                                {
+                                    r.AppendText(o);
+                                    r.AddCarriageReturn();
+                                }
+                            }
                             _log.LogError("替换后段落文本={2}---,", para.ParagraphText);
                         }
                     }
