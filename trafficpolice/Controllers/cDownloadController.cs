@@ -340,10 +340,10 @@ namespace trafficpolice.Controllers
             {
                 return global.commonreturn(responseStatus.nounit);
             }
-            if (unit.Level == 1)
-            {
-                return global.commonreturn(responseStatus.forbidden);
-            }
+            //if (unit.Level == 1)
+            //{
+            //    return global.commonreturn(responseStatus.forbidden);
+            //}
             var ret = new gtres
             {
                 status = 0,

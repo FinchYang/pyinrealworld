@@ -114,20 +114,20 @@ namespace trafficpolice.Controllers
                 }
 
                 //for test environment
-                if (theuser.Unitid == "laizhou")
-                {
-                    var theunit = _db1.Unit.FirstOrDefault(c => c.Id == theuser.Unitid);
-                    if (theunit==null)
-                    {
-                        return global.commonreturn(responseStatus.nounit, "user unit is illegal");
-                    }
-                    var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
-                    if (ip != theunit.Ip)
-                    {
-                        _log.LogError("user login from illegal ip address {0},{1}", ip, theunit.Ip);
-                        return global.commonreturn(responseStatus.illegallogin, "user login from illegal ip address");
-                    }
-                }
+                //if (theuser.Unitid == "laizhou")
+                //{
+                //    var theunit = _db1.Unit.FirstOrDefault(c => c.Id == theuser.Unitid);
+                //    if (theunit==null)
+                //    {
+                //        return global.commonreturn(responseStatus.nounit, "user unit is illegal");
+                //    }
+                //    var ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+                //    if (ip != theunit.Ip)
+                //    {
+                //        _log.LogError("user login from illegal ip address {0},{1}", ip, theunit.Ip);
+                //        return global.commonreturn(responseStatus.illegallogin, "user login from illegal ip address");
+                //    }
+                //}
                    
                 var toke1n = GetToken();
                 var found = false;
