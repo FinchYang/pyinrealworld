@@ -612,78 +612,15 @@ namespace trafficpolice.Controllers
 
         private void unitdocreplace(XWPFParagraph para, Reportsdata data, DateTime now,string uname, List<Models.Dataitem> dlist)
         {
-            var year = now.Year + "年";
-            var month = now.Month + "月";
-            var day = now.Day + "日";
-            var inspect = "审核：" + "哈哈哈";
-            var editor = "编辑：" + "呵呵呵";
-            var inspectstr = "审核：****";
-            var editorstr = "编辑：****";
-            var dayindex = "<日期序号>";
-            var sdayindex = now.DayOfYear.ToString();
-            var currentdate = "<当前日期";
-            var datecalculate1 = "<汇报日期";
+            commonReplace(now, para);
+           
             var unitname = "<大队名称>";
-            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(currentdate))
-            {
-                var datecalculate = @"<当前日期[+-]\d+>";
-                Regex myRegex = new Regex(datecalculate, RegexOptions.None);
-                var ms = myRegex.Matches(para.ParagraphText);
-                foreach (Match m in ms)
-                {
-                    //  var m = myRegex.Match(para.ParagraphText);
-                    if (m.Success)
-                    {
-                        var newdate = getnewdate(m.Value, DateTime.Now);
-                        para.ReplaceText(m.Value, newdate);
-                    }
-                }
-
-            }
-            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(datecalculate1))
-            {
-                var datecalculate = @"<汇报日期[+-]\d+>";
-                Regex myRegex = new Regex(datecalculate, RegexOptions.None);
-                var ms = myRegex.Matches(para.ParagraphText);
-                _log.LogWarning("matches={0},{1}", ms.Count, para.Text);
-                foreach (Match m in ms)
-                {
-                    _log.LogWarning("matches={0},{1}", m.Success, m.Value);
-                    //if (m.Success)
-                    //{
-                    var newdate = getnewdate(m.Value, now);
-                    para.ReplaceText(m.Value, newdate);
-                    // }
-                }
-            }
+          
             if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(unitname))
             {
                 para.ReplaceText(unitname, uname);
             }
-            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(dayindex))
-            {
-                para.ReplaceText(dayindex, sdayindex);
-            }
-            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**月"))
-            {
-                para.ReplaceText("**月", month);
-            }
-            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**日"))
-            {
-                para.ReplaceText("**日", day);
-            }
-            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("****年"))
-            {
-                para.ReplaceText("****年", year);
-            }
-            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(editorstr))
-            {
-                para.ReplaceText(editorstr, editor);
-            }
-            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(inspectstr))
-            {
-                para.ReplaceText(inspectstr, inspect);
-            }
+          
             datareplaceudlunit(para, data, dlist);
         }
 
@@ -865,110 +802,51 @@ namespace trafficpolice.Controllers
 
         private void parareplace(IQueryable<Reportsdata> sum, XWPFParagraph para, DateTime now, List<Models.Dataitem> dlist)
         {
-            var year = now.Year + "年";
-            var month = now.Month + "月";
-            var day = now.Day + "日";
-            var inspect = "审核：" + "哈哈哈";
-            var editor = "编辑：" + "呵呵呵";
-            var inspectstr = "审核：****";
-            var editorstr = "编辑：****";
-            var dayindex = "<日期序号>";
-            var sdayindex = now.DayOfYear.ToString();
-            var currentdate = "<当前日期";
-            var datecalculate1 = "<汇报日期";
-            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(currentdate))
-            {
-                var datecalculate = @"<当前日期[+-]\d+>";
-                Regex myRegex = new Regex(datecalculate, RegexOptions.None);
-                var ms = myRegex.Matches(para.ParagraphText);
-                foreach (Match m in ms)
-                {
-                    if (m.Success)
-                    {
-                        var newdate = getnewdate(m.Value, DateTime.Now);
-                        para.ReplaceText(m.Value, newdate);
-                    }
-                }
-            }
-            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(datecalculate1))
-            {
-                var datecalculate = @"<汇报日期[+-]\d+>";
-                Regex myRegex = new Regex(datecalculate, RegexOptions.None);
-                var ms = myRegex.Matches(para.ParagraphText);
-               // _log.LogWarning("matches={0},{1}", ms.Count, para.Text);
-                foreach (Match m in ms)
-                {
-                  //  _log.LogWarning("matches={0},{1}", m.Success, m.Value);
-                    var newdate = getnewdate(m.Value, now);
-                    para.ReplaceText(m.Value, newdate);
-                }
-            }
-            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(dayindex))
-            {
-                para.ReplaceText(dayindex, sdayindex);
-            }
-            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**月"))
-            {
-                para.ReplaceText("**月", month);
-            }
-            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**日"))
-            {
-                para.ReplaceText("**日", day);
-            }
-            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("****年"))
-            {
-                para.ReplaceText("****年", year);
-            }
-            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(editorstr))
-            {
-                para.ReplaceText(editorstr, editor);
-            }
-            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(inspectstr))
-            {
-                para.ReplaceText(inspectstr, inspect);
-            }
+            commonReplace(now, para);        
+          
+          
             datareplaceudl(para, sum, dlist);
         }
 
-        private string datareplaceudlex(string ct, IQueryable<Reportsdata> sum)
-        {
-            foreach (var d in sum)
-            {
-                if (string.IsNullOrEmpty(d.Content)) continue;
-                var data = JsonConvert.DeserializeObject<submitreq>(d.Content);
-                foreach (var onedata in data.datalist)
-                {
-                    var key = string.Format("<{0}-{1}>", d.Unitid, onedata.Name);
+        //private string datareplaceudlex(string ct, IQueryable<Reportsdata> sum)
+        //{
+        //    foreach (var d in sum)
+        //    {
+        //        if (string.IsNullOrEmpty(d.Content)) continue;
+        //        var data = JsonConvert.DeserializeObject<submitreq>(d.Content);
+        //        foreach (var onedata in data.datalist)
+        //        {
+        //            var key = string.Format("<{0}-{1}>", d.Unitid, onedata.Name);
 
-                    if (ct.Contains(key))
-                    {
-                        _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", key, onedata.Content, ct);
-                        if (!string.IsNullOrEmpty(onedata.Content))
-                        {
-                            ct = ct.Replace(key, onedata.Content);
-                            _log.LogError("替换后段落文本={0}---,", ct);
-                        }
-                    }
-                    if (onedata.secondlist != null)
-                    {
-                        foreach (var sd in onedata.secondlist)
-                        {
-                            var skey = string.Format("<{0}-{1}-{2}>", d.Unitid, onedata.Name, sd.name);
-                            if (ct.Contains(skey))
-                            {
-                                _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, ct);
-                                if (!string.IsNullOrEmpty(sd.data))
-                                {
-                                    ct = ct.Replace(skey, sd.data);
-                                    _log.LogError("替换后段落文本={0}---,", ct);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return ct;
-        }
+        //            if (ct.Contains(key))
+        //            {
+        //                _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", key, onedata.Content, ct);
+        //                if (!string.IsNullOrEmpty(onedata.Content))
+        //                {
+        //                    ct = ct.Replace(key, onedata.Content);
+        //                    _log.LogError("替换后段落文本={0}---,", ct);
+        //                }
+        //            }
+        //            if (onedata.secondlist != null)
+        //            {
+        //                foreach (var sd in onedata.secondlist)
+        //                {
+        //                    var skey = string.Format("<{0}-{1}-{2}>", d.Unitid, onedata.Name, sd.name);
+        //                    if (ct.Contains(skey))
+        //                    {
+        //                        _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, ct);
+        //                        if (!string.IsNullOrEmpty(sd.data))
+        //                        {
+        //                            ct = ct.Replace(skey, sd.data);
+        //                            _log.LogError("替换后段落文本={0}---,", ct);
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return ct;
+        //}
 
         private void datareplaceudl(XWPFParagraph para, IQueryable<Reportsdata> sum, List<Models.Dataitem> dlist)
         {
@@ -1191,6 +1069,13 @@ namespace trafficpolice.Controllers
 
         private void docreplace(submitSumreq data, XWPFParagraph para, DateTime now)
         {
+            commonReplace(now, para);
+          
+            datareplace(para, data);
+        }
+
+        private void commonReplace(DateTime now, XWPFParagraph para)
+        {
             var year = now.Year + "年";
             var month = now.Month + "月";
             var day = now.Day + "日";
@@ -1258,36 +1143,35 @@ namespace trafficpolice.Controllers
             {
                 para.ReplaceText(inspectstr, inspect);
             }
-            datareplace(para, data);
         }
 
-        private string datareplaceEx(string paragraphText, submitSumreq data)
-        {
-            foreach (var d in data.datalist)
-            {
-                var key = string.Format("<{0}>", d.Name);
-                if (paragraphText.Contains(key))
-                {
-                    //  paragraphText= paragraphText.Replace(key, d.Content.Replace("\r\n","\n\r"));
-                    paragraphText = paragraphText.Replace(key, d.Content);
-                }
-                if (d.secondlist != null)
-                {
-                    foreach (var sd in d.secondlist)
-                    {
-                        var skey = string.Format("<{0}-{1}>", d.Name, sd.name);
+        //private string datareplaceEx(string paragraphText, submitSumreq data)
+        //{
+        //    foreach (var d in data.datalist)
+        //    {
+        //        var key = string.Format("<{0}>", d.Name);
+        //        if (paragraphText.Contains(key))
+        //        {
+        //            //  paragraphText= paragraphText.Replace(key, d.Content.Replace("\r\n","\n\r"));
+        //            paragraphText = paragraphText.Replace(key, d.Content);
+        //        }
+        //        if (d.secondlist != null)
+        //        {
+        //            foreach (var sd in d.secondlist)
+        //            {
+        //                var skey = string.Format("<{0}-{1}>", d.Name, sd.name);
 
-                        if (paragraphText.Contains(skey))
-                        {
-                            _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, paragraphText);
-                            paragraphText = paragraphText.Replace(skey, sd.data);
-                            _log.LogError("替换后段落文本={2}---,", paragraphText);
-                        }
-                    }
-                }
-            }
-            return paragraphText;
-        }
+        //                if (paragraphText.Contains(skey))
+        //                {
+        //                    _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, paragraphText);
+        //                    paragraphText = paragraphText.Replace(skey, sd.data);
+        //                    _log.LogError("替换后段落文本={2}---,", paragraphText);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return paragraphText;
+        //}
 
         private void datareplace(XWPFParagraph para, submitSumreq data)
         {
