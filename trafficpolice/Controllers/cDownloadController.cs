@@ -209,7 +209,7 @@ namespace trafficpolice.Controllers
             var ret = 0;
             foreach (var r in rname)
             {
-              //  _log.LogError("{0},{1},{2},{3}", start, end, fushan, r);
+                //  _log.LogError("{0},{1},{2},{3}", start, end, fushan, r);
                 ret += _db1.Reportsdata.Count(c => c.Date.CompareTo(start) >= 0
                 && c.Date.CompareTo(end) <= 0
                 && c.Unitid == fushan.ToString()
@@ -223,7 +223,7 @@ namespace trafficpolice.Controllers
             var ret = 0;
             foreach (var r in rname)
             {
-              //  _log.LogError("{0},{1},{2},{3}", start, end, fushan, r);
+                //  _log.LogError("{0},{1},{2},{3}", start, end, fushan, r);
                 ret += _db1.Reportsdata.Count(c => c.Date.CompareTo(start) >= 0
                 && c.Date.CompareTo(end) <= 0
                 && c.Unitid == fushan.ToString()
@@ -259,7 +259,7 @@ namespace trafficpolice.Controllers
             var ret = 0;
             foreach (var r in rname)
             {
-              //  _log.LogError("{0},{1},{2},{3}", start, end, fushan, r);
+                //  _log.LogError("{0},{1},{2},{3}", start, end, fushan, r);
                 ret += _db1.Reportsdata.Count(c => c.Date.CompareTo(start) >= 0
                 && c.Date.CompareTo(end) <= 0
                 && c.Unitid == fushan.ToString()
@@ -384,7 +384,7 @@ namespace trafficpolice.Controllers
             {
                 return global.commonreturn(responseStatus.nounit);
             }
-          
+
             var cd = global.checkdate(date);
             if (cd.status != responseStatus.ok)
             {
@@ -402,7 +402,7 @@ namespace trafficpolice.Controllers
                 {
                     return global.commonreturn(responseStatus.notemplate);
                 }
-                ret.fileResoure = createreportudlunit(temp.Filename, template, date, env, reportname,accinfo.unitid,unit.Name);
+                ret.fileResoure = createreportudlunit(temp.Filename, template, date, env, reportname, accinfo.unitid, unit.Name);
                 if (!ret.fileResoure.Contains("download"))
                 {
                     return global.commonreturn(responseStatus.templateerror, ret.fileResoure);
@@ -549,126 +549,74 @@ namespace trafficpolice.Controllers
             if (!Directory.Exists(tpath)) Directory.CreateDirectory(tpath);
             var tfbase = template + date + ".doc";
             var tfile = Path.Combine(tpath, tfbase);
-         //   var data = new submitSumreq();
-         //   data.datalist = new List<Models.Dataitem>();
-          //  _log.LogWarning("reportname={0},date={1}", reportname, date);
+            //   var data = new submitSumreq();
+            //   data.datalist = new List<Models.Dataitem>();
+            //  _log.LogWarning("reportname={0},date={1}", reportname, date);
             var sum = _db1.Reportsdata.Where(c => c.Date == date && c.Rname == reportname);
             //if (sum != null)
             //{
             //    data = JsonConvert.DeserializeObject<submitSumreq>(sum.Content);
             //}
-            var dated = DateTime.Parse(date);          
+            var dated = DateTime.Parse(date);
 
             var aa = generateDocudl(spath, tfile, dated, sum);
             if (aa != string.Empty) return aa;// "模板处理失败，请检查模板文件，需要保存为非 97-2003 格式的 docx格式";
             return @"download/" + tfbase;
         }
         private string createreportudlunit(string filename, string template, string date,
-            IHostingEnvironment env, string reportname,string unitid,string uname)
+            IHostingEnvironment env, string reportname, string unitid, string uname)
         {
             var spath = Path.Combine(env.WebRootPath, "upload", filename);
             var tpath = Path.Combine(env.WebRootPath, "download");
             if (!Directory.Exists(tpath)) Directory.CreateDirectory(tpath);
             var tfbase = template + date + ".doc";
             var tfile = Path.Combine(tpath, tfbase);
-            var sum = _db1.Reportsdata.FirstOrDefault(c => c.Date == date && c.Rname == reportname&&c.Unitid==unitid);
+            var sum = _db1.Reportsdata.FirstOrDefault(c => c.Date == date && c.Rname == reportname && c.Unitid == unitid);
             if (sum == null)
             {
-                return string.Format("unit={0},date={1},report={2}, 没有数据",unitid,date,reportname);
+                return string.Format("unit={0},date={1},report={2}, 没有数据", unitid, date, reportname);
             }
             var dated = DateTime.Parse(date);
 
-            var aa = generateDocudlunit(spath, tfile, dated, sum,uname);
+            var aa = generateDocudlunit(spath, tfile, dated, sum, uname);
             if (aa != string.Empty) return aa;// "模板处理失败，请检查模板文件，需要保存为非 97-2003 格式的 docx格式";
             return @"download/" + tfbase;
         }
 
-        private string generateDocudlunit(string sfile, string tfile, DateTime now, Reportsdata data,string uname)
-       //   private string generateDocudl(string sfile, string tfile, DateTime now, IQueryable<Reportsdata> sum)
+        private string generateDocudlunit(string sfile, string tfile, DateTime now, Reportsdata data, string uname)
         {
             try
             {
                 if (System.IO.File.Exists(tfile)) System.IO.File.Delete(tfile);
-                var year = now.Year + "年";
-                var month = now.Month + "月";
-                var day = now.Day + "日";
-                var inspect = "审核：" + "哈哈哈";
-                var editor = "编辑：" + "呵呵呵";
-                var inspectstr = "审核：****";
-                var editorstr = "编辑：****";
-                var dayindex = "<日期序号>";
-                var sdayindex = now.DayOfYear.ToString();
-                var currentdate = "<当前日期";
-                var datecalculate1 = "<汇报日期";
-                var unitname = "<大队名称>";
+              
                 using (var fs = new FileStream(sfile, FileMode.Open, FileAccess.Read))
                 {
                     XWPFDocument doc = new XWPFDocument(fs);
                     foreach (var para in doc.Paragraphs)
                     {
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(currentdate))
+                        unitdocreplace(para, data, now,uname);
+                    
+                    }
+                    foreach (var t in doc.Tables)
+                    {
+                        // var wt = wdoc.CreateTable();
+                        foreach (var r in t.Rows)
                         {
-                            var datecalculate = @"<当前日期[+-]\d+>";
-                            Regex myRegex = new Regex(datecalculate, RegexOptions.None);
-                            var ms = myRegex.Matches(para.ParagraphText);
-                            foreach (Match m in ms)
+                            // var wr = wt.CreateRow();
+                            var cs = r.GetTableCells();
+                            foreach (var c in cs)
                             {
-                                //  var m = myRegex.Match(para.ParagraphText);
-                                if (m.Success)
+                                //  var wc = wr.CreateCell();
+                             //   _log.LogWarning("cell={0},para={1}", c.GetText(), c.Paragraphs == null ? -1 : c.Paragraphs.Count());
+                                foreach (var para in c?.Paragraphs)
                                 {
-                                    var newdate = getnewdate(m.Value, DateTime.Now);
-                                    para.ReplaceText(m.Value, newdate);
+                                  //  _log.LogWarning("para={1},cell={0},", c.GetText(), para.ParagraphText);
+                                    if (string.IsNullOrEmpty(para.ParagraphText) || string.IsNullOrWhiteSpace(para.ParagraphText)) continue;
+                                    unitdocreplace(para, data, now, uname);
                                 }
                             }
-
                         }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(datecalculate1))
-                        {
-                            var datecalculate = @"<汇报日期[+-]\d+>";
-                            Regex myRegex = new Regex(datecalculate, RegexOptions.None);
-                            var ms = myRegex.Matches(para.ParagraphText);
-                            _log.LogWarning("matches={0},{1}", ms.Count, para.Text);
-                            foreach (Match m in ms)
-                            {
-                                _log.LogWarning("matches={0},{1}", m.Success, m.Value);
-                                //if (m.Success)
-                                //{
-                                var newdate = getnewdate(m.Value, now);
-                                para.ReplaceText(m.Value, newdate);
-                                // }
-                            }
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(unitname))
-                        {
-                            para.ReplaceText(unitname, uname);
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(dayindex))
-                        {
-                            para.ReplaceText(dayindex, sdayindex);
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**月"))
-                        {
-                            para.ReplaceText("**月", month);
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**日"))
-                        {
-                            para.ReplaceText("**日", day);
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("****年"))
-                        {
-                            para.ReplaceText("****年", year);
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(editorstr))
-                        {
-                            para.ReplaceText(editorstr, editor);
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(inspectstr))
-                        {
-                            para.ReplaceText(inspectstr, inspect);
-                        }
-                        datareplaceudlunit(para, data);
                     }
-
                     using (var wfs = new FileStream(tfile, FileMode.Create))
                     {
                         doc.Write(wfs);
@@ -682,8 +630,84 @@ namespace trafficpolice.Controllers
             return string.Empty;
         }
 
+        private void unitdocreplace(XWPFParagraph para, Reportsdata data, DateTime now,string uname)
+        {
+            var year = now.Year + "年";
+            var month = now.Month + "月";
+            var day = now.Day + "日";
+            var inspect = "审核：" + "哈哈哈";
+            var editor = "编辑：" + "呵呵呵";
+            var inspectstr = "审核：****";
+            var editorstr = "编辑：****";
+            var dayindex = "<日期序号>";
+            var sdayindex = now.DayOfYear.ToString();
+            var currentdate = "<当前日期";
+            var datecalculate1 = "<汇报日期";
+            var unitname = "<大队名称>";
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(currentdate))
+            {
+                var datecalculate = @"<当前日期[+-]\d+>";
+                Regex myRegex = new Regex(datecalculate, RegexOptions.None);
+                var ms = myRegex.Matches(para.ParagraphText);
+                foreach (Match m in ms)
+                {
+                    //  var m = myRegex.Match(para.ParagraphText);
+                    if (m.Success)
+                    {
+                        var newdate = getnewdate(m.Value, DateTime.Now);
+                        para.ReplaceText(m.Value, newdate);
+                    }
+                }
+
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(datecalculate1))
+            {
+                var datecalculate = @"<汇报日期[+-]\d+>";
+                Regex myRegex = new Regex(datecalculate, RegexOptions.None);
+                var ms = myRegex.Matches(para.ParagraphText);
+                _log.LogWarning("matches={0},{1}", ms.Count, para.Text);
+                foreach (Match m in ms)
+                {
+                    _log.LogWarning("matches={0},{1}", m.Success, m.Value);
+                    //if (m.Success)
+                    //{
+                    var newdate = getnewdate(m.Value, now);
+                    para.ReplaceText(m.Value, newdate);
+                    // }
+                }
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(unitname))
+            {
+                para.ReplaceText(unitname, uname);
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(dayindex))
+            {
+                para.ReplaceText(dayindex, sdayindex);
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**月"))
+            {
+                para.ReplaceText("**月", month);
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**日"))
+            {
+                para.ReplaceText("**日", day);
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("****年"))
+            {
+                para.ReplaceText("****年", year);
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(editorstr))
+            {
+                para.ReplaceText(editorstr, editor);
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(inspectstr))
+            {
+                para.ReplaceText(inspectstr, inspect);
+            }
+            datareplaceudlunit(para, data);
+        }
+
         private void datareplaceudlunit(XWPFParagraph para, Reportsdata datar)
-       //  private void datareplace(XWPFParagraph para, submitSumreq data)
         {
             if (string.IsNullOrEmpty(datar.Content)) return;
             var data = JsonConvert.DeserializeObject<submitreq>(datar.Content);
@@ -694,7 +718,7 @@ namespace trafficpolice.Controllers
                 var key = string.Format("<{0}>", d.Name);
                 if (para.ParagraphText.Contains(key))
                 {
-                    _log.LogError("1content={0},rm={1}", d.Content, "");
+                   // _log.LogError("1content={0},rm={1}", d.Content, "");
                     if (!d.Content.Contains("\n"))
                     {
                         para.ReplaceText(key, d.Content);
@@ -738,7 +762,7 @@ namespace trafficpolice.Controllers
                                     r.AddCarriageReturn();
                                 }
                             }
-                            _log.LogError("替换后段落文本={2}---,", para.ParagraphText);
+                            _log.LogError("替换后段落文本={0}---,", para.ParagraphText);
                         }
                     }
                 }
@@ -750,83 +774,40 @@ namespace trafficpolice.Controllers
             try
             {
                 if (System.IO.File.Exists(tfile)) System.IO.File.Delete(tfile);
-                var year = now.Year + "年";
-                var month = now.Month + "月";
-                var day = now.Day + "日";
-                var inspect = "审核：" + "哈哈哈";
-                var editor = "编辑：" + "呵呵呵";
-                var inspectstr = "审核：****";
-                var editorstr = "编辑：****";
-                var dayindex = "<日期序号>";
-                var sdayindex = now.DayOfYear.ToString();
-                var currentdate = "<当前日期";
-                var datecalculate1 = "<汇报日期";
+             
+               
                 using (var fs = new FileStream(sfile, FileMode.Open, FileAccess.Read))
                 {
-                    XWPFDocument doc = new XWPFDocument(fs);
-                    foreach (var para in doc.Paragraphs)
-                    {
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(currentdate))
-                        {
-                            var datecalculate = @"<当前日期[+-]\d+>";
-                            Regex myRegex = new Regex(datecalculate, RegexOptions.None);
-                            var ms = myRegex.Matches(para.ParagraphText);
-                            foreach(Match m in ms)
-                            {                                
-                              //  var m = myRegex.Match(para.ParagraphText);
-                                if (m.Success)
-                                {
-                                    var newdate = getnewdate(m.Value, DateTime.Now);
-                                    para.ReplaceText(m.Value, newdate);
-                                }
-                            }
-                           
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(datecalculate1))
-                        {
-                            var datecalculate = @"<汇报日期[+-]\d+>";
-                            Regex myRegex = new Regex(datecalculate, RegexOptions.None);
-                            var ms = myRegex.Matches(para.ParagraphText);
-                            _log.LogWarning("matches={0},{1}", ms.Count, para.Text);
-                            foreach (Match m in ms)
-                            {
-                                _log.LogWarning("matches={0},{1}", m.Success, m.Value);
-                                //if (m.Success)
-                                //{
-                                var newdate = getnewdate(m.Value, now);
-                                    para.ReplaceText(m.Value, newdate);
-                               // }
-                            }
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(dayindex))
-                        {
-                            para.ReplaceText(dayindex, sdayindex);
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**月"))
-                        {
-                            para.ReplaceText("**月", month);
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**日"))
-                        {
-                            para.ReplaceText("**日", day);
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("****年"))
-                        {
-                            para.ReplaceText("****年", year);
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(editorstr))
-                        {
-                            para.ReplaceText(editorstr, editor);
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(inspectstr))
-                        {
-                            para.ReplaceText(inspectstr, inspect);
-                        }
-                        datareplaceudl(para, sum);
-                    }
-
                     using (var wfs = new FileStream(tfile, FileMode.Create))
                     {
+                        XWPFDocument doc = new XWPFDocument(fs);
+                    //    XWPFDocument wdoc = new XWPFDocument();
+                      
+                        foreach (var para in doc.Paragraphs)
+                        {
+                            parareplace(sum, para, now);
+                        
+                        }
+                        foreach (var t in doc.Tables)
+                        {
+                           // var wt = wdoc.CreateTable();
+                            foreach (var r in t.Rows)
+                            {
+                               // var wr = wt.CreateRow();
+                                var cs = r.GetTableCells();
+                                foreach (var c in cs)
+                                {
+                                    //  var wc = wr.CreateCell();
+                                  //  _log.LogWarning("cell={0},para={1}", c.GetText(), c.Paragraphs == null ? -1 : c.Paragraphs.Count());
+                                    foreach (var para in c?.Paragraphs)
+                                    {
+                                      //  _log.LogWarning("para={1},cell={0},", c.GetText(), para.ParagraphText);
+                                        if (string.IsNullOrEmpty(para.ParagraphText) || string.IsNullOrWhiteSpace(para.ParagraphText)) continue;
+                                        parareplace(sum, para, now);
+                                    }                                    
+                                }
+                            }
+                        }
                         doc.Write(wfs);
                     }
                 }
@@ -838,19 +819,133 @@ namespace trafficpolice.Controllers
             return string.Empty;
         }
 
-        private void datareplaceudl(XWPFParagraph para, IQueryable<Reportsdata> sum)
+        private void parareplace(IQueryable<Reportsdata> sum, XWPFParagraph para, DateTime now)
+        {
+            var year = now.Year + "年";
+            var month = now.Month + "月";
+            var day = now.Day + "日";
+            var inspect = "审核：" + "哈哈哈";
+            var editor = "编辑：" + "呵呵呵";
+            var inspectstr = "审核：****";
+            var editorstr = "编辑：****";
+            var dayindex = "<日期序号>";
+            var sdayindex = now.DayOfYear.ToString();
+            var currentdate = "<当前日期";
+            var datecalculate1 = "<汇报日期";
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(currentdate))
+            {
+                var datecalculate = @"<当前日期[+-]\d+>";
+                Regex myRegex = new Regex(datecalculate, RegexOptions.None);
+                var ms = myRegex.Matches(para.ParagraphText);
+                foreach (Match m in ms)
+                {
+                    if (m.Success)
+                    {
+                        var newdate = getnewdate(m.Value, DateTime.Now);
+                        para.ReplaceText(m.Value, newdate);
+                    }
+                }
+
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(datecalculate1))
+            {
+                var datecalculate = @"<汇报日期[+-]\d+>";
+                Regex myRegex = new Regex(datecalculate, RegexOptions.None);
+                var ms = myRegex.Matches(para.ParagraphText);
+                _log.LogWarning("matches={0},{1}", ms.Count, para.Text);
+                foreach (Match m in ms)
+                {
+                    _log.LogWarning("matches={0},{1}", m.Success, m.Value);
+                    var newdate = getnewdate(m.Value, now);
+                    para.ReplaceText(m.Value, newdate);
+                }
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(dayindex))
+            {
+                para.ReplaceText(dayindex, sdayindex);
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**月"))
+            {
+                para.ReplaceText("**月", month);
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**日"))
+            {
+                para.ReplaceText("**日", day);
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("****年"))
+            {
+                para.ReplaceText("****年", year);
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(editorstr))
+            {
+                para.ReplaceText(editorstr, editor);
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(inspectstr))
+            {
+                para.ReplaceText(inspectstr, inspect);
+            }
+            datareplaceudl(para, sum);
+        }
+
+        private string datareplaceudlex(string ct, IQueryable<Reportsdata> sum)
         {
             foreach (var d in sum)
             {
                 if (string.IsNullOrEmpty(d.Content)) continue;
                 var data = JsonConvert.DeserializeObject<submitreq>(d.Content);
-                foreach(var onedata in data.datalist)
+                foreach (var onedata in data.datalist)
                 {
-                    var key = string.Format("<{0}-{1}>", d.Unitid , onedata.Name);
+                    var key = string.Format("<{0}-{1}>", d.Unitid, onedata.Name);
+
+                    if (ct.Contains(key))
+                    {
+                        _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", key, onedata.Content, ct);
+                        if (!string.IsNullOrEmpty(onedata.Content))
+                        {
+                            ct = ct.Replace(key, onedata.Content);
+                            _log.LogError("替换后段落文本={0}---,", ct);
+                        }
+                    }
+                    if (onedata.secondlist != null)
+                    {
+                        foreach (var sd in onedata.secondlist)
+                        {
+                            var skey = string.Format("<{0}-{1}-{2}>", d.Unitid, onedata.Name, sd.name);
+                            if (ct.Contains(skey))
+                            {
+                                _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, ct);
+                                if (!string.IsNullOrEmpty(sd.data))
+                                {
+                                    ct = ct.Replace(skey, sd.data);
+                                    _log.LogError("替换后段落文本={0}---,", ct);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return ct;
+        }
+
+        private void datareplaceudl(XWPFParagraph para, IQueryable<Reportsdata> sum)
+        {
+            foreach (var d in sum)
+            { 
+               
+                if (string.IsNullOrEmpty(d.Content)) continue;
+                var data = JsonConvert.DeserializeObject<submitreq>(d.Content);
+                _log.LogWarning("unit={0}-datacount-{1}-,", d.Unitid, data.datalist.Count);
+                foreach (var onedata in data.datalist)
+                {
+                    
+                        var key = string.Format("<{0}-{1}>", d.Unitid, onedata.Name);
+                  
                     if (para.ParagraphText.Contains(key))
                     {
-                        if(!string.IsNullOrEmpty(onedata.Content))
-                            para.ReplaceText(key, onedata.Content);                      
+                        var rdata = string.IsNullOrEmpty(onedata.Content) ? string.Empty : onedata.Content;
+                        _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", key, rdata, para.ParagraphText);
+                        para.ReplaceText(key, rdata);
+                        _log.LogError("替换后段落文本={0}---,", para.ParagraphText);
                     }
                     if (onedata.secondlist != null)
                     {
@@ -859,14 +954,15 @@ namespace trafficpolice.Controllers
                             var skey = string.Format("<{0}-{1}-{2}>", d.Unitid, onedata.Name, sd.name);
                             if (para.ParagraphText.Contains(skey))
                             {
-                                // _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, para.ParagraphText);
-                                if (!string.IsNullOrEmpty(sd.data))
-                                    para.ReplaceText(skey, sd.data);
-                               // _log.LogError("替换后段落文本={2}---,", para.ParagraphText);
+                                var srdata = string.IsNullOrEmpty(sd.data) ? string.Empty : sd.data;
+                                    _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, srdata, para.ParagraphText);
+                                
+                                    para.ReplaceText(skey, srdata);
+                                 _log.LogError("替换后段落文本={0}---,", para.ParagraphText);
                             }
                         }
                     }
-                }             
+                }
             }
         }
 
@@ -920,7 +1016,7 @@ namespace trafficpolice.Controllers
 
         private static string getnewdate(string datecalculate, DateTime now)
         {
-          //  Console.WriteLine("datecalculate={0}", datecalculate);
+            //  Console.WriteLine("datecalculate={0}", datecalculate);
             var ret = now.ToString("yyyy-MM-dd");
             string strRegex = @"\d+";
             Regex myRegex = new Regex(strRegex, RegexOptions.None);
@@ -938,7 +1034,7 @@ namespace trafficpolice.Controllers
                     date = date.AddDays(-day);
                 }
             }
-          //  Console.WriteLine("date={0}", date);
+            //  Console.WriteLine("date={0}", date);
 
             return date.ToString("yyyy年MM月dd日");
         }
@@ -947,119 +1043,36 @@ namespace trafficpolice.Controllers
             try
             {
                 if (System.IO.File.Exists(tfile)) System.IO.File.Delete(tfile);
-                var year = now.Year + "年";
-                var month = now.Month + "月";
-                var day = now.Day + "日";
-                var inspect = "审核：" + "哈哈哈";
-                var editor = "编辑：" + "呵呵呵";
-                var inspectstr = "审核：****";
-                var editorstr = "编辑：****";
-               // var dayindex = "<dayindex>";
-                var dayindex = "<日期序号>";
-                var sdayindex = now.DayOfYear.ToString();
-                var currentdate = "<当前日期";
-                var datecalculate1 = "<汇报日期";
+               
                 using (var fs = new FileStream(sfile, FileMode.Open, FileAccess.Read))
                 {
                     // XWPFDocument wdoc = new XWPFDocument(); 
                     XWPFDocument doc = new XWPFDocument(fs);
                     foreach (var para in doc.Paragraphs)
                     {
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(currentdate))
+                        docreplace(data, para, now);
+                     
+                    }
+                    foreach (var t in doc.Tables)
+                    {
+                        // var wt = wdoc.CreateTable();
+                        foreach (var r in t.Rows)
                         {
-                            var datecalculate = @"<当前日期[+-]\d+>";
-                            Regex myRegex = new Regex(datecalculate, RegexOptions.None);
-                            var ms = myRegex.Matches(para.ParagraphText);
-                            foreach (Match m in ms)
+                            // var wr = wt.CreateRow();
+                            var cs = r.GetTableCells();
+                            foreach (var c in cs)
                             {
-                                //  var m = myRegex.Match(para.ParagraphText);
-                                if (m.Success)
+                                //  var wc = wr.CreateCell();
+                               // _log.LogWarning("cell={0},para={1}", c.GetText(), c.Paragraphs == null ? -1 : c.Paragraphs.Count());
+                                foreach (var para in c?.Paragraphs)
                                 {
-                                    var newdate = getnewdate(m.Value, DateTime.Now);
-                                    para.ReplaceText(m.Value, newdate);
+                                  //  _log.LogWarning("para={1},cell={0},", c.GetText(), para.ParagraphText);
+                                    if (string.IsNullOrEmpty(para.ParagraphText) || string.IsNullOrWhiteSpace(para.ParagraphText)) continue;
+                                    docreplace(data, para, now);
                                 }
                             }
                         }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(datecalculate1))
-                        {
-                            var datecalculate = @"<汇报日期[+-]\d+>";
-                            Regex myRegex = new Regex(datecalculate, RegexOptions.None);
-                            var ms = myRegex.Matches(para.ParagraphText);
-                            _log.LogWarning("matches={0},{1}", ms.Count, para.Text);
-                            foreach (Match m in ms)
-                            {
-                                _log.LogWarning("matches={0},{1}", m.Success, m.Value);
-                                //if (m.Success)
-                                //{
-                                var newdate = getnewdate(m.Value, now);
-                                para.ReplaceText(m.Value, newdate);
-                                // }
-                            }
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(dayindex))
-                        {
-                            para.ReplaceText(dayindex, sdayindex);
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**月"))
-                        {
-                            para.ReplaceText("**月", month);
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**日"))
-                        {
-                            para.ReplaceText("**日", day);
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("****年"))
-                        {
-                            para.ReplaceText("****年", year);
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(editorstr))
-                        {
-                            para.ReplaceText(editorstr, editor);
-                        }
-                        if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(inspectstr))
-                        {
-                            para.ReplaceText(inspectstr, inspect);
-                        }
-                        datareplace(para, data);
                     }
-                    //foreach (var t in doc.Tables)
-                    //{
-                    //    foreach(var r in t.Rows)
-                    //    {
-                    //        var cs = r.GetTableCells();
-                    //        foreach(var c in cs)
-                    //        {
-                    //            var ct = c.GetText();
-                    //            {
-                    //                var datecalculate = @"<当前日期[+-]\d+>";
-                    //                Regex myRegex = new Regex(datecalculate, RegexOptions.None);
-                    //                var ms = myRegex.Matches(ct);
-                    //                foreach (Match m in ms)
-                    //                {
-                    //                    var newdate = getnewdate(m.Value, DateTime.Now);
-                    //                    ct = ct.Replace(m.Value, newdate);
-                    //                }
-                    //            }
-                    //            {
-                    //                var datesum = @"<汇报日期[+-]\d+>";
-                    //                Regex myRegex1 = new Regex(datesum, RegexOptions.None);
-                    //                var ms = myRegex1.Matches(ct);
-                    //                foreach (Match m in ms)
-                    //                {
-                    //                    var newdate = getnewdate(m.Value, now);
-                    //                    ct = ct.Replace(m.Value, newdate);
-                    //                }
-                    //            }
-                    //           // c.SetText(ct);
-                    //           //c.
-                    //           //foreach(var p in c.Paragraphs)
-                    //           // {
-                    //           //     p.ReplaceText(p.ParagraphText, ct);
-                    //           //     break;
-                    //           // }
-                    //        }
-                    //    }                     
-                    //}
                     using (var wfs = new FileStream(tfile, FileMode.Create))
                     {
                         doc.Write(wfs);
@@ -1071,6 +1084,78 @@ namespace trafficpolice.Controllers
                 return ex.Message;
             }
             return string.Empty;
+        }
+
+        private void docreplace(submitSumreq data, XWPFParagraph para, DateTime now)
+        {
+            var year = now.Year + "年";
+            var month = now.Month + "月";
+            var day = now.Day + "日";
+            var inspect = "审核：" + "哈哈哈";
+            var editor = "编辑：" + "呵呵呵";
+            var inspectstr = "审核：****";
+            var editorstr = "编辑：****";
+            // var dayindex = "<dayindex>";
+            var dayindex = "<日期序号>";
+            var sdayindex = now.DayOfYear.ToString();
+            var currentdate = "<当前日期";
+            var datecalculate1 = "<汇报日期";
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(currentdate))
+            {
+                var datecalculate = @"<当前日期[+-]\d+>";
+                Regex myRegex = new Regex(datecalculate, RegexOptions.None);
+                var ms = myRegex.Matches(para.ParagraphText);
+                foreach (Match m in ms)
+                {
+                    //  var m = myRegex.Match(para.ParagraphText);
+                    if (m.Success)
+                    {
+                        var newdate = getnewdate(m.Value, DateTime.Now);
+                        para.ReplaceText(m.Value, newdate);
+                    }
+                }
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(datecalculate1))
+            {
+                var datecalculate = @"<汇报日期[+-]\d+>";
+                Regex myRegex = new Regex(datecalculate, RegexOptions.None);
+                var ms = myRegex.Matches(para.ParagraphText);
+                _log.LogWarning("matches={0},{1}", ms.Count, para.Text);
+                foreach (Match m in ms)
+                {
+                    _log.LogWarning("matches={0},{1}", m.Success, m.Value);
+                    //if (m.Success)
+                    //{
+                    var newdate = getnewdate(m.Value, now);
+                    para.ReplaceText(m.Value, newdate);
+                    // }
+                }
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(dayindex))
+            {
+                para.ReplaceText(dayindex, sdayindex);
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**月"))
+            {
+                para.ReplaceText("**月", month);
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("**日"))
+            {
+                para.ReplaceText("**日", day);
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains("****年"))
+            {
+                para.ReplaceText("****年", year);
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(editorstr))
+            {
+                para.ReplaceText(editorstr, editor);
+            }
+            if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(inspectstr))
+            {
+                para.ReplaceText(inspectstr, inspect);
+            }
+            datareplace(para, data);
         }
 
         private string datareplaceEx(string paragraphText, submitSumreq data)
@@ -1111,19 +1196,20 @@ namespace trafficpolice.Controllers
                 if (para.ParagraphText.Contains(key))
                 {
                     _log.LogError("1content={0},rm={1}", d.Content, "");
-                    if (!d.Content.Contains("\n")) {
+                    if (!d.Content.Contains("\n"))
+                    {
                         para.ReplaceText(key, d.Content);
                     }
                     else
                     {
                         para.ReplaceText(key, "");
                         var r = para.CreateRun();
-                                var lines = d.Content.Split("\n");
-                                foreach(var o in lines)
-                                {
-                                    r.AppendText(o);
-                                    r.AddCarriageReturn();
-                                }
+                        var lines = d.Content.Split("\n");
+                        foreach (var o in lines)
+                        {
+                            r.AppendText(o);
+                            r.AddCarriageReturn();
+                        }
                     }
                 }
                 if (d.secondlist != null)
@@ -1137,7 +1223,7 @@ namespace trafficpolice.Controllers
                         {
                             _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, para.ParagraphText);
                             // paragraphText = paragraphText.Replace(skey, sd.data);
-                            
+
                             if (!sd.data.Contains("\n"))
                             {
                                 para.ReplaceText(skey, sd.data);
