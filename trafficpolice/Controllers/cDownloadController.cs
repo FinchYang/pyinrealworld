@@ -850,61 +850,49 @@ namespace trafficpolice.Controllers
 
         private void datareplaceudl(XWPFParagraph para, IQueryable<Reportsdata> sum, List<Models.Dataitem> dlist)
         {
-            if (string.IsNullOrEmpty(para.ParagraphText) || string.IsNullOrWhiteSpace(para.ParagraphText)) return;
+            if (string.IsNullOrEmpty(para?.ParagraphText) || string.IsNullOrWhiteSpace(para?.ParagraphText)) return;
             foreach (var d in sum)
-            {                
-                if (string.IsNullOrEmpty(d.Content)) continue;
-                var data = JsonConvert.DeserializeObject<submitreq>(d.Content);
-                _log.LogWarning("unit={0}-datacount-{1}-,", d.Unitid, data?.datalist.Count);
-                //foreach (var onedata in data.datalist)
-                //{                   
-                //        var key = string.Format("<{0}-{1}>", d.Unitid, onedata.Name);                  
-                //    if (para.ParagraphText.Contains(key))
-                //    {
-                //        var rdata = string.IsNullOrEmpty(onedata.Content) ? string.Empty : onedata.Content;
-                //        _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", key, rdata, para.ParagraphText);
-                //        para.ReplaceText(key, rdata);
-                //        _log.LogError("替换后段落文本={0}---,", para.ParagraphText);
-                //    }
-                //    if (onedata.secondlist != null)
-                //    {
-                //        foreach (var sd in onedata.secondlist)
-                //        {
-                //            var skey = string.Format("<{0}-{1}-{2}>", d.Unitid, onedata.Name, sd.name);
-                //            if (para.ParagraphText.Contains(skey))
-                //            {
-                //                var srdata = string.IsNullOrEmpty(sd.data) ? string.Empty : sd.data;
-                //                    _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, srdata, para.ParagraphText);                                
-                //                    para.ReplaceText(skey, srdata);
-                //                 _log.LogError("替换后段落文本={0}---,", para.ParagraphText);
-                //            }
-                //        }
-                //    }
-                //}
-                foreach(var dd in dlist)
+            {
+                try
                 {
-                    var key = string.Format("<{0}-{1}>", d.Unitid, dd.Name);
-                    if (para.ParagraphText.Contains(key))
+                    if (string.IsNullOrEmpty(d.Content)) continue;
+                    var data = JsonConvert.DeserializeObject<submitreq>(d.Content);                  
+                    foreach (var dd in dlist)
                     {
-                        var rdata = getdddata(dd,data);// string.IsNullOrEmpty(onedata.Content) ? string.Empty : onedata.Content;
-                        _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", key, rdata, para.ParagraphText);
-                        para.ReplaceText(key, rdata);
-                        _log.LogError("替换后段落文本={0}---,", para.ParagraphText);
-                    }
-                    if (dd.secondlist != null)
-                    {
-                        foreach (var sd in dd.secondlist)
+                        try
                         {
-                            var skey = string.Format("<{0}-{1}-{2}>", d.Unitid, dd.Name, sd.name);
-                            if (para.ParagraphText.Contains(skey))
+                            var key = string.Format("<{0}-{1}>", d.Unitid, dd.Name);
+                            if (para.ParagraphText.Contains(key))
                             {
-                                var srdata = getddsdata(sd,dd, data);// string.IsNullOrEmpty(sd.data) ? string.Empty : sd.data;
-                                _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, srdata, para.ParagraphText);
-                                para.ReplaceText(skey, srdata);
+                                var rdata = getdddata(dd, data);// string.IsNullOrEmpty(onedata.Content) ? string.Empty : onedata.Content;
+                                _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", key, rdata, para.ParagraphText);
+                                para.ReplaceText(key, rdata);
                                 _log.LogError("替换后段落文本={0}---,", para.ParagraphText);
                             }
+                            if (dd.secondlist != null)
+                            {
+                                foreach (var sd in dd.secondlist)
+                                {
+                                    var skey = string.Format("<{0}-{1}-{2}>", d.Unitid, dd.Name, sd.name);
+                                    if (para.ParagraphText.Contains(skey))
+                                    {
+                                        var srdata = getddsdata(sd, dd, data);// string.IsNullOrEmpty(sd.data) ? string.Empty : sd.data;
+                                        _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, srdata, para.ParagraphText);
+                                        para.ReplaceText(skey, srdata);
+                                        _log.LogError("替换后段落文本={0}---,", para.ParagraphText);
+                                    }
+                                }
+                            }
+                        }
+                        catch(Exception exx)
+                        {
+                            _log.LogError("inner loop={0}-{1}--,", dd.Name, exx.Message);
                         }
                     }
+                }
+                catch(Exception ex)
+                {
+                    _log.LogError("datareplaceudl={0}-{1}--,", d.Unitid,ex.Message);
                 }
             }
         }
@@ -1025,13 +1013,13 @@ namespace trafficpolice.Controllers
                 if (System.IO.File.Exists(tfile)) System.IO.File.Delete(tfile);               
                 using (var fs = new FileStream(sfile, FileMode.Open, FileAccess.Read))
                 {
-                    _log.LogWarning("para,cell={0},", 222);
+                    _log.LogError("para,cell={0},", 222);
                     XWPFDocument doc = new XWPFDocument(fs);
                     foreach (var para in doc.Paragraphs)
                     {
                         docreplace(data, para, now);                     
                     }
-                    _log.LogWarning("para,cell={0},", 333);
+                    _log.LogError("para,cell={0},", 333);
                     foreach (var t in doc.Tables)
                     {
                         // var wt = wdoc.CreateTable();
@@ -1052,10 +1040,10 @@ namespace trafficpolice.Controllers
                             }
                         }
                     }
-                    _log.LogWarning("para,cell={0},", 444);
+                    _log.LogError("para,cell={0},", 444);
                     using (var wfs = new FileStream(tfile, FileMode.Create))
                     {
-                        _log.LogWarning("para,cell={0},", 555);
+                        _log.LogError("para,cell={0},", 555);
                         doc.Write(wfs);
                     }
                 }
@@ -1177,37 +1165,44 @@ namespace trafficpolice.Controllers
         {
             foreach (var d in data.datalist)
             {
-                var key = string.Format("<{0}>", d.Name);
-                if (para.ParagraphText.Contains(key))
+                try
                 {
-                    if (!d.Content.Contains("\n"))
+                    var key = string.Format("<{0}>", d.Name);
+                    if (para.ParagraphText.Contains(key)&&!string.IsNullOrEmpty(d.Content))
                     {
-                        para.ReplaceText(key, d.Content);
-                    }
-                    else
-                    {
-                        multilineReplace(para, key, d.Content);                       
-                    }
-                }
-                if (d.secondlist != null)
-                {
-                    foreach (var sd in d.secondlist)
-                    {
-                        var skey = string.Format("<{0}-{1}>", d.Name, sd.name);
-                        if (para.ParagraphText.Contains(skey))
+                        if (!d.Content.Contains("\n"))
                         {
-                            _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, para.ParagraphText);
-                            if (!sd.data.Contains("\n"))
-                            {
-                                para.ReplaceText(skey, sd.data);
-                            }
-                            else
-                            {
-                                multilineReplace(para, skey, sd.data);                               
-                            }
-                            _log.LogError("替换后段落文本={0}---,", para.ParagraphText);
+                            para.ReplaceText(key, d.Content);
+                        }
+                        else
+                        {
+                            multilineReplace(para, key, d.Content);
                         }
                     }
+                    if (d.secondlist != null)
+                    {
+                        foreach (var sd in d.secondlist)
+                        {
+                            var skey = string.Format("<{0}-{1}>", d.Name, sd.name);
+                            if (para.ParagraphText.Contains(skey) && !string.IsNullOrEmpty(sd.data))
+                            {
+                                _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, para.ParagraphText);
+                                if (!sd.data.Contains("\n"))
+                                {
+                                    para.ReplaceText(skey, sd.data);
+                                }
+                                else
+                                {
+                                    multilineReplace(para, skey, sd.data);
+                                }
+                                _log.LogError("替换后段落文本={0}---,", para.ParagraphText);
+                            }
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    _log.LogError("data process error ={0}--{1}-,", d?.Name,ex.Message);
                 }
             }
         }
