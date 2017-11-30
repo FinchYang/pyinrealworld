@@ -693,7 +693,8 @@ namespace trafficpolice.Controllers
                     var od= getdddata(d, data);
                     if (!od.Contains("\n"))
                     {
-                        para.ReplaceText(key, od);
+                     //   para.ReplaceText(key, od);
+                        bugReplace(para, key, od);
                     }
                     else
                     {
@@ -711,7 +712,8 @@ namespace trafficpolice.Controllers
                             _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, srdata, para.ParagraphText);                           
                             if (!srdata.Contains("\n"))
                             {
-                                para.ReplaceText(skey, srdata);
+                            //    para.ReplaceText(skey, srdata);
+                                bugReplace(para, skey, srdata);
                             }
                             else
                             {
@@ -866,7 +868,8 @@ namespace trafficpolice.Controllers
                             {
                                 var rdata = getdddata(dd, data);// string.IsNullOrEmpty(onedata.Content) ? string.Empty : onedata.Content;
                                 _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", key, rdata, para.ParagraphText);
-                                para.ReplaceText(key, rdata);
+                              
+                                bugReplace(para, key, rdata);
                                 _log.LogError("替换后段落文本={0}---,", para.ParagraphText);
                             }
                             if (dd.secondlist != null)
@@ -878,7 +881,9 @@ namespace trafficpolice.Controllers
                                     {
                                         var srdata = getddsdata(sd, dd, data);// string.IsNullOrEmpty(sd.data) ? string.Empty : sd.data;
                                         _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, srdata, para.ParagraphText);
-                                        para.ReplaceText(skey, srdata);
+                                       // para.ReplaceText(skey, srdata);
+
+                                        bugReplace(para, skey, srdata);
                                         _log.LogError("替换后段落文本={0}---,", para.ParagraphText);
                                     }
                                 }
@@ -895,6 +900,25 @@ namespace trafficpolice.Controllers
                     _log.LogError("datareplaceudl={0}-{1}--,", d.Unitid,ex.Message);
                 }
             }
+        }
+
+        private void bugReplace(XWPFParagraph para, string key, string rdata)
+        {
+            var FontFamily = "microsoft yahei";
+            var FontSize = 18;
+            foreach (var rr in para.Runs)
+            {
+                FontFamily = rr.FontFamily;
+                FontSize = rr.FontSize;
+                break;
+            }
+            var t = para.ParagraphText.Replace(key, rdata);
+            para.ReplaceText(para.ParagraphText, "");
+           
+            var r = para.CreateRun();
+            r.FontSize = FontSize;
+            r.FontFamily = FontFamily;
+            r.SetText(t);
         }
 
         private string getddsdata(seconditemdata sd, Models.Dataitem dd, submitreq data)
@@ -1087,7 +1111,8 @@ namespace trafficpolice.Controllers
                     if (m.Success)
                     {
                         var newdate = getnewdate(m.Value, DateTime.Now);
-                        para.ReplaceText(m.Value, newdate);
+                     //   para.ReplaceText(m.Value, newdate);
+                        bugReplace(para, m.Value, newdate);
                     }
                 }
             }
@@ -1103,8 +1128,8 @@ namespace trafficpolice.Controllers
                     //if (m.Success)
                     //{
                     var newdate = getnewdate(m.Value, now);
-                    para.ReplaceText(m.Value, newdate);
-                    // }
+                  //  para.ReplaceText(m.Value, newdate);
+                    bugReplace(para, m.Value, newdate);
                 }
             }
             if (!string.IsNullOrEmpty(para.ParagraphText) && para.ParagraphText.Contains(dayindex))
@@ -1172,7 +1197,8 @@ namespace trafficpolice.Controllers
                     {
                         if (!d.Content.Contains("\n"))
                         {
-                            para.ReplaceText(key, d.Content);
+                          //  para.ReplaceText(key, d.Content);
+                            bugReplace(para, key, d.Content);
                         }
                         else
                         {
@@ -1189,7 +1215,8 @@ namespace trafficpolice.Controllers
                                 _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, para.ParagraphText);
                                 if (!sd.data.Contains("\n"))
                                 {
-                                    para.ReplaceText(skey, sd.data);
+                                  //  para.ReplaceText(skey, sd.data);
+                                    bugReplace(para, skey, sd.data);
                                 }
                                 else
                                 {
