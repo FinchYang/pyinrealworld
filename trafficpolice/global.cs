@@ -38,7 +38,7 @@ namespace trafficpolice
         }
         public static commonresponse commonreturn(responseStatus rs,string err="")
         {
-            var content = err == "" ? rs.ToString() : err;
+            var content = err == "" ? rs.ToString() : rs.ToString()+err;
             return new commonresponse { status = rs, content =content };
         }
         public static access_idinfo GetInfoByToken(IHeaderDictionary header)
