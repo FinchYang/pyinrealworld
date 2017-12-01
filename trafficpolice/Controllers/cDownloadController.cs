@@ -269,10 +269,7 @@ namespace trafficpolice.Controllers
             return ret;
         }
 
-        public class gtres : commonresponse
-        {
-            public List<onetemplate> tlist { get; set; }
-        }
+       
         [Route("centerDownloadCheckReport")]//中心导出考核表
         [HttpGet]
         public commonresponse centerDownloadCheckReport([FromServices]IHostingEnvironment env,
@@ -628,62 +625,7 @@ namespace trafficpolice.Controllers
         {
             if (string.IsNullOrEmpty(datar.Content)) return;
             var data = JsonConvert.DeserializeObject<submitreq>(datar.Content);
-            //   _log.LogError("data list count:{0}", data.datalist.Count);
-            //foreach (var d in data.datalist)
-            //{
-            //    //  _log.LogError("data description:{0},{1},{2}", d.Name,d.hasSecondItems,d.secondlist.Count);
-            //    var key = string.Format("<{0}>", d.Name);
-            //    if (para.ParagraphText.Contains(key))
-            //    {
-            //       // _log.LogError("1content={0},rm={1}", d.Content, "");
-            //        if (!d.Content.Contains("\n"))
-            //        {
-            //            para.ReplaceText(key, d.Content);
-            //        }
-            //        else
-            //        {
-            //            para.ReplaceText(key, "");
-            //            var r = para.CreateRun();
-            //            var lines = d.Content.Split("\n");
-            //            foreach (var o in lines)
-            //            {
-            //                r.AppendText(o);
-            //                r.AddCarriageReturn();
-            //            }
-            //        }
-            //    }
-            //    if (d.secondlist != null)
-            //    //  if (d.hasSecondItems && d.secondlist != null)
-            //    {
-            //        foreach (var sd in d.secondlist)
-            //        {
-            //            var skey = string.Format("<{0}-{1}>", d.Name, sd.name);
-            //            //  _log.LogError("seconde data description:--{0}---{1}---{2}---,", skey, sd.data, para.ParagraphText);
-            //            if (para.ParagraphText.Contains(skey))
-            //            {
-            //                _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, para.ParagraphText);
-            //                // paragraphText = paragraphText.Replace(skey, sd.data);
-
-            //                if (!sd.data.Contains("\n"))
-            //                {
-            //                    para.ReplaceText(skey, sd.data);
-            //                }
-            //                else
-            //                {
-            //                    para.ReplaceText(skey, "");
-            //                    var r = para.CreateRun();
-            //                    var lines = sd.data.Split("\n");
-            //                    foreach (var o in lines)
-            //                    {
-            //                        r.AppendText(o);
-            //                        r.AddCarriageReturn();
-            //                    }
-            //                }
-            //                _log.LogError("替换后段落文本={0}---,", para.ParagraphText);
-            //            }
-            //        }
-            //    }
-            //}
+           
             foreach (var d in dlist)
             {
                 //  _log.LogError("data description:{0},{1},{2}", d.Name,d.hasSecondItems,d.secondlist.Count);
@@ -784,7 +726,7 @@ namespace trafficpolice.Controllers
                                     var FontFamily = "microsoft yahei";
                                     var FontSize = 18;
                                     var found = false;
-                                    
+
                                     try
                                     {
                                         var ctext = string.Empty;
@@ -797,7 +739,7 @@ namespace trafficpolice.Controllers
                                         for (var i = 0; i < cell.Paragraphs.Count; ++i)
                                         {
                                             var ct = cell.Paragraphs[i].Text;
-                                            var com = commonReplace1(now, ct);
+                                            var com = commonReplace1s(now, ct);
                                             var afterreplace = datareplaceudl(com, sum, dlist);
                                             ctext += afterreplace;
                                             if (!found)
@@ -811,27 +753,27 @@ namespace trafficpolice.Controllers
                                                 }
                                             }
                                         }
-                                      //  _log.LogWarning("cell.Paragraphs.Count=={0},", cell.Paragraphs.Count);
-                                        while(cell.Paragraphs.Count>0)
-                                      //  for (var i = 0; i < cell.Paragraphs.Count; ++i)
-                                        {                                           
+                                        //  _log.LogWarning("cell.Paragraphs.Count=={0},", cell.Paragraphs.Count);
+                                        while (cell.Paragraphs.Count > 0)
+                                        //  for (var i = 0; i < cell.Paragraphs.Count; ++i)
+                                        {
                                             cell.RemoveParagraph(0);
                                         }
-                                      //  _log.LogWarning("after remove cell.Paragraphs.Count=={0},", cell?.Paragraphs?.Count);
+                                        //  _log.LogWarning("after remove cell.Paragraphs.Count=={0},", cell?.Paragraphs?.Count);
                                         //foreach (var sss in lpt)
                                         //{
                                         //    _log.LogWarning("old=={0},all={1}", sss, ctext);
                                         //    ctext = ctext.Replace(sss, "");
                                         //    _log.LogWarning("old 222=={0},all={1}", sss, ctext);
                                         //}
-                                       var p= cell.AddParagraph();
+                                        var p = cell.AddParagraph();
                                         var pr = p.CreateRun();
                                         pr.FontFamily = FontFamily;
-                                        pr.FontSize = FontSize;
+                                        pr.FontSize = FontSize>8?FontSize:8;
                                         pr.SetText(ctext);
-                                       // cell.SetText(ctext);
+                                        // cell.SetText(ctext);
                                     }
-                                    catch(Exception ex)
+                                    catch (Exception ex)
                                     {
                                         _log.LogError("cell={0}, process error,{1}", cell.GetText(), ex.Message);
                                     }
@@ -854,10 +796,10 @@ namespace trafficpolice.Controllers
             }
             return string.Empty;
         }
-
-        private string commonReplace1(DateTime now, string ParagraphText1p)
+        private string commonReplace1s(DateTime now, string ParagraphText1p)
         {
-            var ParagraphText = ParagraphText1p;
+              var ParagraphText = ParagraphText1p;
+            var ret = false;
             var year = now.Year + "年";
             var month = now.Month + "月";
             var day = now.Day + "日";
@@ -879,7 +821,8 @@ namespace trafficpolice.Controllers
                     if (m.Success)
                     {
                         var newdate = getnewdate(m.Value, DateTime.Now);
-                        ParagraphText= ParagraphText.Replace(m.Value, newdate);
+                        ParagraphText = ParagraphText.Replace(m.Value, newdate);
+                        ret = true;
                     }
                 }
             }
@@ -892,66 +835,46 @@ namespace trafficpolice.Controllers
                 {
                     var newdate = getnewdate(m.Value, now);
                     ParagraphText = ParagraphText.Replace(m.Value, newdate);
+                    ret = true;
                 }
             }
             if (!string.IsNullOrEmpty(ParagraphText) && ParagraphText.Contains(dayindex))
             {
                 ParagraphText = ParagraphText.Replace(dayindex, sdayindex);
+                ret = true;
             }
             if (!string.IsNullOrEmpty(ParagraphText) && ParagraphText.Contains("**月"))
             {
                 ParagraphText = ParagraphText.Replace("**月", month);
+                ret = true;
             }
             if (!string.IsNullOrEmpty(ParagraphText) && ParagraphText.Contains("**日"))
             {
                 ParagraphText = ParagraphText.Replace("**日", day);
+                ret = true;
             }
             if (!string.IsNullOrEmpty(ParagraphText) && ParagraphText.Contains("****年"))
             {
                 ParagraphText = ParagraphText.Replace("****年", year);
+                ret = true;
             }
             if (!string.IsNullOrEmpty(ParagraphText) && ParagraphText.Contains(editorstr))
             {
                 ParagraphText = ParagraphText.Replace(editorstr, editor);
+                ret = true;
             }
             if (!string.IsNullOrEmpty(ParagraphText) && ParagraphText.Contains(inspectstr))
             {
                 ParagraphText = ParagraphText.Replace(inspectstr, inspect);
+                ret = true;
             }
             return ParagraphText;
         }
-
-        private void parareplace(IQueryable<Reportsdata> sum, XWPFParagraph para, DateTime now, List<Models.Dataitem> dlist, XWPFTableCell cell)
-        {
-            commonReplace(now, para);
-
-          var afterreplace=  datareplaceudl(para.ParagraphText, sum, dlist);
-            //var FontFamily = "microsoft yahei";
-            //var FontSize = 18;
-            //foreach (var rr in para?.Runs)
-            //{
-            //    FontFamily = rr?.FontFamily;
-            //    FontSize = rr.FontSize;
-            //    break;
-            //}
-
-            for (var i = 0; i < cell.Paragraphs.Count; ++i)
-            {
-                cell.RemoveParagraph(i);
-            }
-            cell.SetText(afterreplace);
-
-           // var r = para.CreateRun();
-           //// _log.LogWarning("bugReplace={0}-{1}-333-,", key, rdata);
-           // r.FontSize = FontSize;
-           // r.FontFamily = FontFamily;
-           // r.SetText(t);
-
-        }
-
+     
+      
         private string datareplaceudl(string ret, IQueryable<Reportsdata> sum, List<Models.Dataitem> dlist)
         {
-            var ParagraphText  = ret;
+            var ParagraphText = ret;
             foreach (var d in sum)
             {
                 try
@@ -970,7 +893,7 @@ namespace trafficpolice.Controllers
                                 var rdata = getdddata(dd, data);// string.IsNullOrEmpty(onedata.Content) ? string.Empty : onedata.Content;
                                 _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", key, rdata, ParagraphText);
 
-                                ParagraphText= ParagraphText.Replace( key, rdata);
+                                ParagraphText = ParagraphText.Replace(key, rdata);
                                 _log.LogError("替换后段落文本={0}---,", ParagraphText);
                             }
                             if (dd.secondlist != null)
@@ -1004,10 +927,7 @@ namespace trafficpolice.Controllers
             return ParagraphText;
         }
 
-        private void bugReplace1(string paragraphText, string key, string rdata)
-        {
-            throw new NotImplementedException();
-        }
+    
 
         private void parareplace(IQueryable<Reportsdata> sum, XWPFParagraph para, DateTime now, List<Models.Dataitem> dlist)
         {
@@ -1016,46 +936,7 @@ namespace trafficpolice.Controllers
 
             datareplaceudl(para, sum, dlist);
         }
-
-        //private string datareplaceudlex(string ct, IQueryable<Reportsdata> sum)
-        //{
-        //    foreach (var d in sum)
-        //    {
-        //        if (string.IsNullOrEmpty(d.Content)) continue;
-        //        var data = JsonConvert.DeserializeObject<submitreq>(d.Content);
-        //        foreach (var onedata in data.datalist)
-        //        {
-        //            var key = string.Format("<{0}-{1}>", d.Unitid, onedata.Name);
-
-        //            if (ct.Contains(key))
-        //            {
-        //                _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", key, onedata.Content, ct);
-        //                if (!string.IsNullOrEmpty(onedata.Content))
-        //                {
-        //                    ct = ct.Replace(key, onedata.Content);
-        //                    _log.LogError("替换后段落文本={0}---,", ct);
-        //                }
-        //            }
-        //            if (onedata.secondlist != null)
-        //            {
-        //                foreach (var sd in onedata.secondlist)
-        //                {
-        //                    var skey = string.Format("<{0}-{1}-{2}>", d.Unitid, onedata.Name, sd.name);
-        //                    if (ct.Contains(skey))
-        //                    {
-        //                        _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, ct);
-        //                        if (!string.IsNullOrEmpty(sd.data))
-        //                        {
-        //                            ct = ct.Replace(skey, sd.data);
-        //                            _log.LogError("替换后段落文本={0}---,", ct);
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return ct;
-        //}
+        
 
         private void datareplaceudl(XWPFParagraph para, IQueryable<Reportsdata> sum, List<Models.Dataitem> dlist)
         {
@@ -1064,10 +945,10 @@ namespace trafficpolice.Controllers
             {
                 try
                 {
-                 //   _log.LogError("处理数据,unit={0}--data length={1}-,", d?.Unitid, d?.Content.Length);
+                    //   _log.LogError("处理数据,unit={0}--data length={1}-,", d?.Unitid, d?.Content.Length);
                     if (string.IsNullOrEmpty(d.Content)) continue;
                     var data = JsonConvert.DeserializeObject<submitreq>(d.Content);
-                  //  _log.LogError("处理数据,unit={0}--data item counts={1}-,", d?.Unitid, data?.datalist.Count);
+                    //  _log.LogError("处理数据,unit={0}--data item counts={1}-,", d?.Unitid, data?.datalist.Count);
                     foreach (var dd in dlist)
                     {
                         try
@@ -1127,9 +1008,10 @@ namespace trafficpolice.Controllers
                 _log.LogWarning("bugReplace={0}-{1}-111-,", key, rdata);
                 var t = pt.Replace(key, rdata);
                 _log.LogWarning("bugReplace={0}-{1}-444-,", key, rdata);
-                try {
+                try
+                {
                     para.ReplaceText(pt, "");
-                   
+
                 }
                 catch (Exception eee)
                 {
@@ -1139,7 +1021,7 @@ namespace trafficpolice.Controllers
                 _log.LogWarning("bugReplace={0}-{1}-222-,", key, rdata);
                 var r = para.CreateRun();
                 _log.LogWarning("bugReplace={0}-{1}-333-,", key, rdata);
-                r.FontSize = FontSize;
+                r.FontSize = FontSize>8?FontSize:8;
                 r.FontFamily = FontFamily;
                 r.SetText(t);
             }
@@ -1257,6 +1139,8 @@ namespace trafficpolice.Controllers
 
             return date.ToString("yyyy年MM月dd日");
         }
+
+        
         private string generateDoc(string sfile, string tfile, DateTime now, submitSumreq data)
         {
             try
@@ -1267,35 +1151,41 @@ namespace trafficpolice.Controllers
                 {
                     _log.LogError("para,cell={0},", 222);
                     XWPFDocument doc = new XWPFDocument(fs);
+                   // 
+                   foreach(var di in data.datalist)
+                    {
+                        var rdata = string.IsNullOrEmpty(di.Content) ? string.Empty : di.Content;
+                        var key = string.Format("<{0}>", di.Name);
+                        onekeyreplaceEX(doc, key, rdata);
+                        if (di.secondlist == null) continue;
+                        foreach(var sdi in di.secondlist)
+                        {
+                            var srdata = string.IsNullOrEmpty(sdi.data) ? string.Empty : sdi.data;
+                            var skey = string.Format("<{0}-{1}>", di.Name, sdi.name);
+                            onekeyreplaceEX(doc, skey, srdata);
+                        }
+                    }
                     foreach (var para in doc.Paragraphs)
                     {
-                        docreplace(data, para, now);
+                        commonReplace(now, para);
                     }
-                    _log.LogError("para,cell={0},", 333);
+                    
                     foreach (var t in doc.Tables)
                     {
-                        // var wt = wdoc.CreateTable();
                         foreach (var r in t.Rows)
                         {
-                            // var wr = wt.CreateRow();
-                            var cs = r.GetTableCells();
-                            foreach (var c in cs)
+                            foreach (var c in r.GetTableCells())
                             {
-                                //  var wc = wr.CreateCell();
-                                // _log.LogWarning("cell={0},para={1}", c.GetText(), c.Paragraphs == null ? -1 : c.Paragraphs.Count());
-                                foreach (var para in c?.Paragraphs)
+                                foreach (var para in c.Paragraphs)
                                 {
-                                    //  _log.LogWarning("para={1},cell={0},", c.GetText(), para.ParagraphText);
                                     if (string.IsNullOrEmpty(para.ParagraphText) || string.IsNullOrWhiteSpace(para.ParagraphText)) continue;
-                                    docreplace(data, para, now);
+                                    commonReplace(now, para);
                                 }
                             }
                         }
                     }
-                    _log.LogError("para,cell={0},", 444);
                     using (var wfs = new FileStream(tfile, FileMode.Create))
                     {
-                        _log.LogError("para,cell={0},", 555);
                         doc.Write(wfs);
                     }
                 }
@@ -1307,11 +1197,60 @@ namespace trafficpolice.Controllers
             return string.Empty;
         }
 
-        private void docreplace(submitSumreq data, XWPFParagraph para, DateTime now)
+        private void onekeyreplaceEX(XWPFDocument doc, string key, string replacedata)
         {
-            commonReplace(now, para);
+            foreach (var para in doc.Paragraphs)
+            {
+                if(para.Text.Contains(key))
+                replaceone( para, key,replacedata);
+            }
+            foreach (var t in doc.Tables)
+            {
+                foreach (var r in t.Rows)
+                {
+                    foreach (var c in r.GetTableCells())
+                    {
+                        foreach (var para in c.Paragraphs)
+                        {
+                            if (para.Text.Contains(key))
+                                replaceone(para, key, replacedata);
+                        }
+                    }
+                }
+            }
+        }
 
-            datareplace(para, data);
+        private void replaceone(XWPFParagraph para, string key, string replacedata)
+        {
+            if (!replacedata.Contains("\n"))
+            {
+                 para.ReplaceText(key, replacedata);
+              //  bugReplace(para, skey, sd.data);
+            }
+            else
+            {
+                var FontFamily = "microsoft yahei";
+                var FontSize = 18;
+                  var Fontcolor = "black";
+                foreach (var rr in para.Runs)
+                {
+                    FontFamily = rr.FontFamily;
+                    FontSize = rr.FontSize;
+                    Fontcolor = rr.GetColor();
+                    break;
+                }
+                para.ReplaceText(key, "");
+                var r = para.CreateRun();
+                r.FontSize = FontSize>8?FontSize:8;
+                r.FontFamily = FontFamily;
+                r.SetColor(Fontcolor);
+                var lines = replacedata.Split("\n");
+                foreach (var o in lines)
+                {
+                    r.AppendText(o);
+                    r.AddCarriageReturn();
+                }
+            }
         }
 
         private void commonReplace(DateTime now, XWPFParagraph para)
@@ -1384,84 +1323,9 @@ namespace trafficpolice.Controllers
             {
                 para.ReplaceText(inspectstr, inspect);
             }
-        }
+        }              
 
-        //private string datareplaceEx(string paragraphText, submitSumreq data)
-        //{
-        //    foreach (var d in data.datalist)
-        //    {
-        //        var key = string.Format("<{0}>", d.Name);
-        //        if (paragraphText.Contains(key))
-        //        {
-        //            //  paragraphText= paragraphText.Replace(key, d.Content.Replace("\r\n","\n\r"));
-        //            paragraphText = paragraphText.Replace(key, d.Content);
-        //        }
-        //        if (d.secondlist != null)
-        //        {
-        //            foreach (var sd in d.secondlist)
-        //            {
-        //                var skey = string.Format("<{0}-{1}>", d.Name, sd.name);
-
-        //                if (paragraphText.Contains(skey))
-        //                {
-        //                    _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, paragraphText);
-        //                    paragraphText = paragraphText.Replace(skey, sd.data);
-        //                    _log.LogError("替换后段落文本={2}---,", paragraphText);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return paragraphText;
-        //}
-
-        private void datareplace(XWPFParagraph para, submitSumreq data)
-        {
-            foreach (var d in data.datalist)
-            {
-                try
-                {
-                    var key = string.Format("<{0}>", d.Name);
-                    if (para.ParagraphText.Contains(key) && !string.IsNullOrEmpty(d.Content))
-                    {
-                        if (!d.Content.Contains("\n"))
-                        {
-                            //  para.ReplaceText(key, d.Content);
-                            bugReplace(para, key, d.Content);
-                        }
-                        else
-                        {
-                            multilineReplace(para, key, d.Content);
-                        }
-                    }
-                    if (d.secondlist != null)
-                    {
-                        foreach (var sd in d.secondlist)
-                        {
-                            var skey = string.Format("<{0}-{1}>", d.Name, sd.name);
-                            if (para.ParagraphText.Contains(skey) && !string.IsNullOrEmpty(sd.data))
-                            {
-                                _log.LogError("模板关键字={0}---预期替换数据={1}---原有段落文本={2}---,", skey, sd.data, para.ParagraphText);
-                                if (!sd.data.Contains("\n"))
-                                {
-                                    //  para.ReplaceText(skey, sd.data);
-                                    bugReplace(para, skey, sd.data);
-                                }
-                                else
-                                {
-                                    multilineReplace(para, skey, sd.data);
-                                }
-                                _log.LogError("替换后段落文本={0}---,", para.ParagraphText);
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _log.LogError("data process error ={0}--{1}-,", d?.Name, ex.Message);
-                }
-            }
-        }
-
+        
         private void multilineReplace(XWPFParagraph para, string key, string content)
         {
             var FontFamily = "microsoft yahei";
@@ -1476,7 +1340,7 @@ namespace trafficpolice.Controllers
             }
             para.ReplaceText(key, "");
             var r = para.CreateRun();
-            r.FontSize = FontSize;
+            r.FontSize = FontSize>8?FontSize:8;
             r.FontFamily = FontFamily;
             var lines = content.Split("\n");
             foreach (var o in lines)
@@ -1553,39 +1417,7 @@ namespace trafficpolice.Controllers
         //        return ex.Message;
         //    }
         //}
-        //public void Export()
-        //{
-
-        //    string filepath = Server.MapPath("/word/xmxx.docx");
-        //    using (FileStream stream = File.OpenRead(filepath))
-        //    {
-        //        XWPFDocument doc = new XWPFDocument(stream);
-        //        //遍历段落
-        //        foreach (var para in doc.Paragraphs)
-        //        {
-        //            ReplaceKey(para);
-        //        }
-        //        //遍历表格
-        //        var tables = doc.Tables;
-        //        foreach (var table in tables)
-        //        {
-        //            foreach (var row in table.Rows)
-        //            {
-        //                foreach (var cell in row.GetTableCells())
-        //                {
-        //                    foreach (var para in cell.Paragraphs)
-        //                    {
-        //                        ReplaceKey(para);
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        using (MemoryStream ms = new MemoryStream())
-        //        {
-        //            doc.Write(ms);
-        //            return ms;
-        //        }
-        //    }
+       
 
         //}
         //private void ReplaceKey(XWPFParagraph para)
@@ -1617,15 +1449,6 @@ namespace trafficpolice.Controllers
         //}
     }
 
-    public class downloadres : commonresponse
-    {
-        public string fileResoure { get; set; }
-    }
-    public class onetemplate
-    {
-        public string name { get; set; }
-        public DateTime time { get; set; }
-        public string reporttype { get; set; }
-        public string comment { get; set; }
-    }
+   
+   
 }

@@ -39,7 +39,7 @@ namespace trafficpolice.Controllers
             {
                 status = 0,
                 daydraft = new List<onedata>(),
-                weekdraft = new List<onedata>()
+             //   weekdraft = new List<onedata>()
             };
            
             try
@@ -52,19 +52,20 @@ namespace trafficpolice.Controllers
                    // var one = new onedata();
                   var  one = JsonConvert.DeserializeObject<onedata>(d.Content);
                     one.date = d.Date;
+                    one.createtime = d.Time;
+                    one.submittime = d.Time;
                     ret.daydraft.Add(one);
                 }
 
-                var weekdata = _db1.Weeksummarized.Where(c => c.Draft == 1
-             );
+                //var weekdata = _db1.Weeksummarized.Where(c => c.Draft == 1             );
 
-                foreach (var d in data)
-                {
-                  //  var one = new onedata();
-                  var  one = JsonConvert.DeserializeObject<onedata>(d.Content);
-                    one.date = d.Date;
-                    ret.weekdraft.Add(one);
-                }
+                //foreach (var d in data)
+                //{
+                //  //  var one = new onedata();
+                //  var  one = JsonConvert.DeserializeObject<onedata>(d.Content);
+                //    one.date = d.Date;
+                //    ret.weekdraft.Add(one);
+                //}
                 return ret;
             }
             catch (Exception ex)

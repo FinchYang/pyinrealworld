@@ -6,11 +6,5 @@ namespace trafficpolice.Models
     {
         public List<onereport> reports { set; get; }
     }
-    public class onereport
-    {
-        public string name { set; get; }
-        public string comment { set; get; }
-        public string reporttype { set; get; }
-        public List<unittype> units { set; get; }
-    }
+   
 }

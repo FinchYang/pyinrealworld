@@ -339,7 +339,7 @@ namespace trafficpolice.Controllers
             }
             catch (Exception ex)
             {
-                _log.LogError("{0}-{1}-{2}", DateTime.Now, "centerGetDraftData", ex.Message);
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "centerGetSumData", ex.Message);
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
