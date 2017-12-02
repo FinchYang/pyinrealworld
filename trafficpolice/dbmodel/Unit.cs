@@ -15,6 +15,7 @@ namespace trafficpolice.dbmodel
         public string Ip { get; set; }
         public string Name { get; set; }
         public short Level { get; set; }
+        public short SortIndex { get; set; }
 
         public ICollection<Reportlog> Reportlog { get; set; }
         public ICollection<User> User { get; set; }

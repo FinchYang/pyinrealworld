@@ -175,6 +175,7 @@ namespace trafficpolice.Controllers
                     secondlist = new List<seconditemdata>(),
                     Name = di.Name,
                     units = JsonConvert.DeserializeObject<List<unittype>>(di.Units),
+                    sumunits = JsonConvert.DeserializeObject<List<unittype>>(string.IsNullOrEmpty( di.Sumunits)?"[]":di.Sumunits),
                     Mandated = di.Mandated > 0 ? true : false,
                     Comment = di.Comment,
                     StatisticsType = JsonConvert.DeserializeObject<List<StatisticsType>>(di.Statisticstype),
@@ -277,7 +278,9 @@ namespace trafficpolice.Controllers
                 status = 0,
                 sumdata = new submitreq()
             };
-            var thelist = new List<oneunitdata>();
+            var thelist = new List<oneunitdata>();//thelist.OrderBy(c =>c.i)
+          //  var a = new Dictionary<int, oneunitdata>();
+          //  a.
             try
             {
                 _log.LogError("{0},{1},{2}", rname, theday, renew);
@@ -303,21 +306,24 @@ namespace trafficpolice.Controllers
                     if (string.IsNullOrEmpty(d.Content)) continue;
                     try
                     {
+                        var theunit = _db1.Unit.FirstOrDefault(c => c.Id == d.Unitid);
+                        if (theunit == null) continue;
                         var one = JsonConvert.DeserializeObject<oneunitdata>(d.Content);
-                        one.unitname = _db1.Unit.FirstOrDefault(c => c.Id == d.Unitid)?.Name;
+                        one.unitname = theunit.Name;
                         one.unitid =d.Unitid;
+                        one.si = theunit.SortIndex;
                         thelist.Add(one);
                     }
                     catch (Exception ex)
                     {
                         _log.LogError(" Reportsdata  table , content field is illegal" + ex.Message);
                     }
-        }
+                }
                 ret.sumdata.datalist = new List<Models.Dataitem>();
                 ret.sumdata.datalist = getdataitems(rname);
                 _log.LogError("--{0}--,", thelist.Count);
-
-                foreach (var a in thelist)
+                var sl = thelist.OrderBy(c => c.si);
+                foreach (var a in sl)
                 {                    
                     foreach(var b in a.datalist)
                     {
@@ -350,25 +356,24 @@ namespace trafficpolice.Controllers
             {
                 if (a.Name == b.Name)
                 {
-
-                    if (a.StatisticsType.Count > 0)
+                    if (a.sumunits.Contains(unittype.all) || a.sumunits.Contains(theu))
                     {
-                        if (!string.IsNullOrEmpty(b.Content))
+                        if (a.StatisticsType.Count > 0)
                         {
-                            a.Content += uname+"："+Environment.NewLine+ b.Content+"。"+Environment.NewLine;
+                            if (!string.IsNullOrEmpty(b.Content))
+                            {
+                                a.Content += uname + "：" + Environment.NewLine + b.Content + "。" + Environment.NewLine;
+                            }
                         }
+                        if (a.secondlist == null || a.secondlist.Count == 0 || b.secondlist == null)
+                        {
+                            break;
+                        }
+                        sumsecond(a.secondlist, b.secondlist, theu, uname);
                     }
-
-                    if (a.secondlist == null || a.secondlist.Count == 0 || b.secondlist == null)
-                    {
-                        break;
-                    }
-                    sumsecond(a.secondlist, b.secondlist, theu,uname);
-
                     break;
                 }
             }
-
         }
         private void SumData(List<Models.Dataitem> datalist, Models.Dataitem b)
         {
