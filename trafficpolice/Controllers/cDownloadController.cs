@@ -1247,6 +1247,7 @@ namespace trafficpolice.Controllers
                 var lines = replacedata.Split("\n");
                 foreach (var o in lines)
                 {
+                    if(string.IsNullOrEmpty(o)||string.IsNullOrWhiteSpace(o)) continue;
                     r.AppendText(o);
                     r.AddCarriageReturn();
                 }
@@ -1345,6 +1346,7 @@ namespace trafficpolice.Controllers
             var lines = content.Split("\n");
             foreach (var o in lines)
             {
+                if (string.IsNullOrEmpty(o) || string.IsNullOrWhiteSpace(o)) continue;
                 r.AppendText(o);
                 r.AddCarriageReturn();
             }

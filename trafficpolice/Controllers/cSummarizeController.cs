@@ -362,7 +362,7 @@ namespace trafficpolice.Controllers
                         {
                             if (!string.IsNullOrEmpty(b.Content))
                             {
-                                a.Content += uname + "：" + Environment.NewLine + b.Content + "。" + Environment.NewLine;
+                                a.Content += uname + "：" + Environment.NewLine + b.Content +  Environment.NewLine;
                             }
                         }
                         if (a.secondlist == null || a.secondlist.Count == 0 || b.secondlist == null)
@@ -375,30 +375,7 @@ namespace trafficpolice.Controllers
                 }
             }
         }
-        private void SumData(List<Models.Dataitem> datalist, Models.Dataitem b)
-        {
-            foreach(var a in datalist)
-            {
-                if (a.Name == b.Name)
-                {
-                    if (a.StatisticsType.Count > 0) {
-                        if (!string.IsNullOrEmpty(b.Content))
-                        {
-                            a.Content += b.Content;
-                        }                           
-                    }                    
-
-                    if (a.secondlist == null || a.secondlist.Count == 0||b.secondlist==null)
-                    {
-                        break;
-                    }
-                //    sumsecond(a.secondlist, b.secondlist);                   
-
-                    break;
-                }
-            }
-          
-        }
+       
 
         private void sumsecond(List<seconditemdata> sum, List<seconditemdata> source,unittype theu,string uname)
         {
@@ -433,7 +410,7 @@ namespace trafficpolice.Controllers
                             default:
                                 if (!string.IsNullOrEmpty(c.data))
                                 {
-                                    one.data += uname + "：" + Environment.NewLine + c.data + "。" + Environment.NewLine;
+                                    one.data += uname + "：" + Environment.NewLine + c.data +  Environment.NewLine;
                                 }
                               //  one.data += c.data;
                                 break;
