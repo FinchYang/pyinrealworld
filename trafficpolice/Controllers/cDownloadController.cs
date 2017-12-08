@@ -74,6 +74,120 @@ namespace trafficpolice.Controllers
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
         }
+        private string generateexcel(string sfile, string tfile, string start, string end, string ninereport, string fourreport)
+        {
+            try
+            {
+                if (System.IO.File.Exists(tfile)) System.IO.File.Delete(tfile);
+                //var aa = _db1.Reports.Where(c => c.Type == "four").Select(c => c.Name).ToList();
+                //var bb = _db1.Reports.Where(c => c.Type == "nine").Select(c => c.Name).ToList();
+                var aa = new List<string>();
+                aa.Add(fourreport);
+                var bb = new List<string>();
+                bb.Add(ninereport);
+                var days = DateTime.Parse(end).Subtract(DateTime.Parse(start)).Days + 1;
+                using (var fs = new FileStream(sfile, FileMode.Open, FileAccess.Read))
+                {
+                    IWorkbook workbook = new XSSFWorkbook(fs);
+                    var sheet1 = workbook.GetSheetAt(1);
+                    //  Console.WriteLine("222" + sheet1.SheetName);
+                    for (int i = 2; i < 19; i++)
+                    {
+                        var row = sheet1.GetRow(i);
+
+                        var cellunsubmit = row.CreateCell(7);
+                        // Console.WriteLine("444" + cell.StringCellValue);
+                        var ut = unittype.unknown;
+                        switch (i)
+                        {
+                            case 2:
+                                ut = unittype.fushan;
+                                break;
+                            case 3:
+                                ut = unittype.muping;
+                                break;
+                            case 4:
+                                ut = unittype.haiyang;
+                                break;
+                            case 5:
+                                ut = unittype.laiyang;
+                                break;
+                            case 6:
+                                ut = unittype.qixia;
+                                break;
+                            case 7:
+                                ut = unittype.penglai;
+                                break;
+                            case 8:
+                                ut = unittype.changdao;
+                                break;
+                            case 9:
+                                ut = unittype.longkou;
+                                break;
+                            case 10:
+                                ut = unittype.zhaoyuan;
+                                break;
+                            case 11:
+                                ut = unittype.laizhou;
+                                break;
+                            case 12:
+                                ut = unittype.kaifaqu;
+                                break;
+                            case 13:
+                                ut = unittype.yantaigang;
+                                break;
+                            case 14:
+                                ut = unittype.jichang;
+                                break;
+                            case 15:
+                                ut = unittype.one;
+                                break;
+                            case 16:
+                                ut = unittype.two;
+                                break;
+                            case 17:
+                                ut = unittype.three;
+                                break;
+                            case 18:
+                                ut = unittype.four;
+                                break;
+
+                            default:
+                                break;
+                        }
+                        int un = getunsubmit(ut, start, end, aa);
+
+                        cellunsubmit.SetCellValue(days * aa.Count - un);
+                        var celldelay = row.CreateCell(8);
+                        int delay = getdelaysubmit(ut, start, end, aa);
+                        celldelay.SetCellValue(delay);
+
+                        var notsigncell = row.CreateCell(10);
+                        int notsign = getnotsign(ut, start, end, bb);
+                        notsigncell.SetCellValue(notsign);
+
+                        var substitutecell = row.CreateCell(11);
+                        int substitute = getsubstitute(ut, start, end, bb);
+                        substitutecell.SetCellValue(substitute);
+
+                        var videodelaycell = row.CreateCell(12);
+                        int videodelay = getvideodelay(ut, start, end, bb);
+                        videodelaycell.SetCellValue(videodelay);
+                    }
+
+                    using (var wfs = new FileStream(tfile, FileMode.Create))
+                    {
+                        workbook.Write(wfs);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("excel process error:{0}",ex.Message);
+                return ex.Message;
+            }
+            return string.Empty;
+        }
         private string generateexcel(string sfile, string tfile, string start, string end)
         {
             try
@@ -273,7 +387,7 @@ namespace trafficpolice.Controllers
         [Route("centerDownloadCheckReport")]//中心导出考核表
         [HttpGet]
         public commonresponse centerDownloadCheckReport([FromServices]IHostingEnvironment env,
-            string startdate, string enddate, unittype ut = unittype.all)
+            string startdate, string enddate, string ninereport, string fourreport, unittype ut = unittype.all)
         {
             var accinfo = global.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
@@ -297,6 +411,14 @@ namespace trafficpolice.Controllers
             {
                 return global.commonreturn(responseStatus.enddateerror);
             }
+            if(string.IsNullOrEmpty(ninereport))
+            {
+                return global.commonreturn(responseStatus.requesterror,"视频点名报表名称输入不正确");
+            }
+            if (string.IsNullOrEmpty(fourreport))
+            {
+                return global.commonreturn(responseStatus.requesterror, "交管动态报表名称输入不正确");
+            }
             var ret = new downloadres
             {
                 status = 0,
@@ -305,17 +427,20 @@ namespace trafficpolice.Controllers
             try
             {
                 var spath = Path.Combine(env.WebRootPath, "upload", "考核表.xlsx");
+              //  var spath = Path.Combine(env.WebRootPath, "upload", "---.xlsx");
                 var tpath = Path.Combine(env.WebRootPath, "download");
                 if (!Directory.Exists(tpath)) Directory.CreateDirectory(tpath);
                 var tfbase = startdate + "考核表" + enddate + ".xlsx";
                 var tfile = Path.Combine(tpath, tfbase);
 
-
-                var aa = generateexcel(spath, tfile, start.ToString("yyyy-MM-dd"), end.ToString("yyyy-MM-dd"));
-                _log.LogWarning("para-{0},1", 444 + aa);
-                //  return @"download/" + tfbase;
-                ret.fileResoure = @"download/" + tfbase;
-                _log.LogWarning("para-{0},1", 111);
+                var aa = generateexcel(spath, tfile, start.ToString("yyyy-MM-dd"), end.ToString("yyyy-MM-dd"),ninereport,fourreport);
+                if (string.IsNullOrEmpty(aa))
+                    ret.fileResoure = @"download/" + tfbase;
+                else
+                {
+                    ret.fileResoure = aa;
+                    ret.status = responseStatus.processerror;
+                }
 
                 return ret;
             }
@@ -1248,7 +1373,7 @@ namespace trafficpolice.Controllers
                 foreach (var o in lines)
                 {
                     if(string.IsNullOrEmpty(o)||string.IsNullOrWhiteSpace(o)) continue;
-                    r.AppendText(o);
+                    r.AppendText("    " + o);// r.AppendText("    "+o);
                     r.AddCarriageReturn();
                 }
             }
@@ -1347,7 +1472,7 @@ namespace trafficpolice.Controllers
             foreach (var o in lines)
             {
                 if (string.IsNullOrEmpty(o) || string.IsNullOrWhiteSpace(o)) continue;
-                r.AppendText(o);
+                r.AppendText("    " + o);// r.AppendText(o);
                 r.AddCarriageReturn();
             }
         }

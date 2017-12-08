@@ -1,0 +1,5 @@
+-----2017/12/08 13:49:03-----
+Information:Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager
+User profile is available. Using 'C:\Users\Administrator\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+-----End-----
+

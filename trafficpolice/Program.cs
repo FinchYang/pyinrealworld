@@ -12,29 +12,20 @@ namespace trafficpolice
 {
     public class Program
     {
-      
-            public static void Main(string[] args)
-            {
-                BuildWebHost(args).Run();
-            }
+        private static int port = 8000;
 
-            public static IWebHost BuildWebHost(string[] args) =>
-                WebHost.CreateDefaultBuilder(args)
-                    .UseStartup<Startup>().UseUrls("http://*:8000")
-            .ConfigureLogging(builder => builder.AddFile())
-                    .Build();
-        
-        //public static void Main(string[] args)
-        //{
+        public static void Main(string[] args)
+        {
+            if (args.Length > 0 && !string.IsNullOrEmpty(args[0]))
+                int.TryParse(args[0], out port);
+            BuildWebHost(args).Run();
+        }
 
-        //    var host = new WebHostBuilder().UseUrls("http://*:8000")
-        //        .UseKestrel()
-        //        .UseContentRoot(Directory.GetCurrentDirectory())
-        //        .UseIISIntegration()
-        //        .UseStartup<Startup>()
-        //        .Build();
+        public static IWebHost BuildWebHost(string[] args) =>
+            WebHost.CreateDefaultBuilder()
+                .UseStartup<Startup>().UseUrls("http://*:" + port)
+        .ConfigureLogging(builder => builder.AddFile())
+                .Build();
 
-        //    host.Run();
-        //}
     }
 }

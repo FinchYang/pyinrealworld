@@ -1,0 +1,90 @@
+-----2017/12/06 15:51:23-----
+Information:Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager
+User profile is available. Using 'C:\Users\Administrator\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+-----End-----
+
+-----2017/12/06 15:52:10-----
+Information:Microsoft.AspNetCore.Hosting.Internal.WebHost
+Request starting HTTP/1.1 GET http://localhost:8000/index.html  
+-----End-----
+
+-----2017/12/06 15:52:10-----
+Information:Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware
+Sending file. Request path: '/index.html'. Physical path: 'F:\tp\wwwroot\index.html'
+-----End-----
+
+-----2017/12/06 15:52:10-----
+Information:Microsoft.AspNetCore.Hosting.Internal.WebHost
+Request starting HTTP/1.1 GET http://localhost:8000/static/js/main.0799edcc.js  
+-----End-----
+
+-----2017/12/06 15:52:10-----
+Information:Microsoft.AspNetCore.Hosting.Internal.WebHost
+Request finished in 62.1622ms 200 text/html
+-----End-----
+
+-----2017/12/06 15:52:10-----
+Information:Microsoft.AspNetCore.Hosting.Internal.WebHost
+Request starting HTTP/1.1 GET http://localhost:8000/static/css/main.8aec41cd.css  
+-----End-----
+
+-----2017/12/06 15:52:10-----
+Information:Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware
+Sending file. Request path: '/static/js/main.0799edcc.js'. Physical path: 'F:\tp\wwwroot\static\js\main.0799edcc.js'
+-----End-----
+
+-----2017/12/06 15:52:10-----
+Information:Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware
+Sending file. Request path: '/static/css/main.8aec41cd.css'. Physical path: 'F:\tp\wwwroot\static\css\main.8aec41cd.css'
+-----End-----
+
+-----2017/12/06 15:52:11-----
+Information:Microsoft.AspNetCore.Hosting.Internal.WebHost
+Request finished in 989.1138ms 200 text/css
+-----End-----
+
+-----2017/12/06 15:52:11-----
+Information:Microsoft.AspNetCore.Hosting.Internal.WebHost
+Request finished in 1194.254ms 200 application/javascript
+-----End-----
+
+-----2017/12/06 15:52:12-----
+Information:Microsoft.AspNetCore.Hosting.Internal.WebHost
+Request starting HTTP/1.1 GET http://localhost:8000/GetReportList  
+-----End-----
+
+-----2017/12/06 15:52:12-----
+Information:Microsoft.AspNetCore.Hosting.Internal.WebHost
+Request starting HTTP/1.1 GET http://localhost:8000/static/media/login1.e9db4c0a.png  
+-----End-----
+
+-----2017/12/06 15:52:12-----
+Information:Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware
+Sending file. Request path: '/static/media/login1.e9db4c0a.png'. Physical path: 'F:\tp\wwwroot\static\media\login1.e9db4c0a.png'
+-----End-----
+
+-----2017/12/06 15:52:12-----
+Information:Microsoft.AspNetCore.Hosting.Internal.WebHost
+Request finished in 171.265ms 200 image/png
+-----End-----
+
+-----2017/12/06 15:52:12-----
+Information:Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker
+Executing action method trafficpolice.Controllers.reportTypeController.GetReportList (trafficpolice) with arguments ((null)) - ModelState is Valid
+-----End-----
+
+-----2017/12/06 15:52:13-----
+Information:Microsoft.AspNetCore.Mvc.Internal.ObjectResultExecutor
+Executing ObjectResult, writing value Microsoft.AspNetCore.Mvc.ControllerContext.
+-----End-----
+
+-----2017/12/06 15:52:14-----
+Information:Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker
+Executed action trafficpolice.Controllers.reportTypeController.GetReportList (trafficpolice) in 1373.3684ms
+-----End-----
+
+-----2017/12/06 15:52:14-----
+Information:Microsoft.AspNetCore.Hosting.Internal.WebHost
+Request finished in 1577.2806ms 200 application/json; charset=utf-8
+-----End-----
+

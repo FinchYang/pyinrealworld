@@ -362,7 +362,8 @@ namespace trafficpolice.Controllers
                         {
                             if (!string.IsNullOrEmpty(b.Content))
                             {
-                                a.Content += uname + "：" + Environment.NewLine + b.Content +  Environment.NewLine;
+                               // a.Content += "    " + uname + "：" + Environment.NewLine +"    "+ b.Content +  Environment.NewLine;
+                                a.Content +=  uname + "：" + Environment.NewLine +  b.Content + Environment.NewLine;
                             }
                         }
                         if (a.secondlist == null || a.secondlist.Count == 0 || b.secondlist == null)
