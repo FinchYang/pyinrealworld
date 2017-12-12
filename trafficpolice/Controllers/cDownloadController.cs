@@ -1370,11 +1370,20 @@ namespace trafficpolice.Controllers
                 r.FontFamily = FontFamily;
                 r.SetColor(Fontcolor);
                 var lines = replacedata.Split("\n");
+                var newlines = new List<string>();
                 foreach (var o in lines)
                 {
-                    if(string.IsNullOrEmpty(o)||string.IsNullOrWhiteSpace(o)) continue;
+                    if (string.IsNullOrEmpty(o) || string.IsNullOrWhiteSpace(o)) continue;
+                    newlines.Add(o);
+                }
+                var index = 0;
+                foreach (var o in newlines)
+                {
+                    index++;
+                   // if (string.IsNullOrEmpty(o)||string.IsNullOrWhiteSpace(o)) continue;
                     r.AppendText("    " + o);// r.AppendText("    "+o);
-                    r.AddCarriageReturn();
+                    if (index < newlines.Count)
+                        r.AddCarriageReturn();
                 }
             }
         }
@@ -1469,10 +1478,18 @@ namespace trafficpolice.Controllers
             r.FontSize = FontSize>8?FontSize:8;
             r.FontFamily = FontFamily;
             var lines = content.Split("\n");
-            foreach (var o in lines)
+            var newlines = new List<string>();
+            foreach( var o in lines)
             {
                 if (string.IsNullOrEmpty(o) || string.IsNullOrWhiteSpace(o)) continue;
+                newlines.Add(o);
+            }
+            var index = 0;
+            foreach (var o in newlines)
+            {
+                index++;               
                 r.AppendText("    " + o);// r.AppendText(o);
+                if(index< newlines.Count)
                 r.AddCarriageReturn();
             }
         }
