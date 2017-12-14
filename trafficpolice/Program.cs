@@ -19,6 +19,29 @@ namespace trafficpolice
             if (args.Length > 0 && !string.IsNullOrEmpty(args[0]))
                 int.TryParse(args[0], out port);
             BuildWebHost(args).Run();
+            //var a = Models.StatisticsType.average;
+            //switch (a)
+            //{
+            //    case Models.StatisticsType.unknown:
+            //        break;
+            //    case Models.StatisticsType.sum:
+            //        break;
+            //    case Models.StatisticsType.average:
+            //        break;
+            //    case Models.StatisticsType.collect:
+            //        break;
+            //    case Models.StatisticsType.yearoveryear:
+            //        break;
+            //    case Models.StatisticsType.linkrelative:
+            //        break;
+            //    default:
+            //        break;
+            //}
+            //switch (a)
+            //{
+            //    default:
+            //        break;
+            //}
         }
 
         public static IWebHost BuildWebHost(string[] args) =>

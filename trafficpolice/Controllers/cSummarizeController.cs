@@ -297,8 +297,8 @@ namespace trafficpolice.Controllers
                 }
                
                 var data = _db1.Reportsdata.Where(c => c.Date== theday
-               // &&c.Draft>=3
-                 && (c.Draft >= 3||c.Draft==0)
+                &&c.Draft>=3
+               //  && (c.Draft >= 3||c.Draft==0)
                 && c.Rname == rname);
                 _log.LogError("没有汇总过--{0}条数据,", data.Count());
                 foreach (var d in data)

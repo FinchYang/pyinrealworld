@@ -452,8 +452,8 @@ namespace trafficpolice.Controllers
 
             var data = _db1.Reportsdata.Where(c => c.Date.CompareTo(start.ToString("yyyy-MM-dd")) >= 0
       && c.Date.CompareTo(end.ToString("yyyy-MM-dd")) <= 0
-    //  && c.Draft >= 3
-       && (c.Draft >= 3||c.Draft==0)
+      && c.Draft >= 3
+   //    && (c.Draft >= 3||c.Draft==0)
       && c.Unitid == ut
       && c.Rname == rname);
             audio = 0;
