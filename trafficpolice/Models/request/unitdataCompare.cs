@@ -11,5 +11,6 @@
         public unitdata current { set; get; }
         public unitdata yearoveryear { set; get; }//同比数据
         public unitdata linkrelative { set; get; }//环比数据
+        public short si { set; get; }//大队排序序号，后端使用，前端可忽略
     }
 }

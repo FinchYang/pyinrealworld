@@ -10,6 +10,6 @@ namespace trafficpolice.Models
     {
         public String unitname { set; get; }//大队名称
         public String unitid { set; get; }
-        public short si { set; get; }
+     //   public short si { set; get; }
     }
 }

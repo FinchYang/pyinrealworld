@@ -34,13 +34,36 @@ namespace ConsoleApp1
             }
             Console.WriteLine("Word  Done");
         }
+        class MyClass
+        {
+            public int MyProperty { get; set; }
+            public int MyProperty1 { get; set; }
+            public int MyProperty2 { get; set; }
+            public string MyProperty3 { get; set; }
+        }
+        class MyClass1
+        {
+            public int MyProperty { get; set; }
+            public int MyProperty1 { get; set; }
+            public string MyProperty3 { get; set; }
+        }
         static void Main(string[] args)
         {
-
+            var less = new MyClass1
+            {
+                MyProperty = 1,
+                MyProperty1 = 2,
+                MyProperty3 = "3"
+            };
+            var s = JsonConvert.SerializeObject(less);
+            Console.WriteLine(s);
+            var more = JsonConvert.DeserializeObject<MyClass>(s);
+            var ls = JsonConvert.SerializeObject(more);
+            Console.WriteLine(ls);
             //  var sfile = @"F:\prototype\每日交管动态汇报项目补充.docx";
-            var sfile = @"F:\temperature.docx";
-            var tfile = @"F:\111.doc";
-            string error = generateDoc(sfile, tfile, DateTime.Now);
+            //var sfile = @"F:\temperature.docx";
+            //var tfile = @"F:\111.doc";
+            //string error = generateDoc(sfile, tfile, DateTime.Now);
 
             //var sfile = @"F:\tp\trafficpolice\wwwroot\upload\考核表.xlsx";
             //var tfile = @"F:\tp\trafficpolice\wwwroot\download\333-444-考核.xlsx";

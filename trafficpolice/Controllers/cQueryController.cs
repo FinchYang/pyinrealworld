@@ -300,10 +300,11 @@ namespace trafficpolice.Controllers
                         //    _log.LogError("unitid {0} can not been parse", u.Id);
                         //    continue;
                         //}
+                     
                         ret.data.Add(getoneunit(start, end, u.Id, rname));
                     }
                 }
-
+                ret.data = ret.data.OrderBy(c => c.si).ToList();
                 return ret;
             }
             catch (Exception ex)
@@ -326,6 +327,10 @@ namespace trafficpolice.Controllers
                 yearoveryear = new unitdata(),
                 linkrelative = new unitdata()
             };
+            var theunit = _db1.Unit.FirstOrDefault(c => c.Id == ut);
+            if (theunit == null) ret.si = 0;
+            else ret.si = theunit.SortIndex;
+
             var sign = 0;
             var sub = 0;
             var video = 0;

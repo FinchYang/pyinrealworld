@@ -73,6 +73,10 @@ namespace trafficpolice.Controllers
                         one.draft = d.Draft;
                         one.date = d.Date;
                         one.unitid = d.Unitid;
+                        var theunit = _db1.Unit.FirstOrDefault(c => c.Id == d.Unitid);
+                        if (theunit == null) one.si = 0;
+                        else one.si = theunit.SortIndex;
+
                         ret.videodata.Add(one);
                     }
                    catch(Exception ex)
@@ -80,6 +84,7 @@ namespace trafficpolice.Controllers
                         _log.LogError(" Reportsdata  table , content field is illegal" + ex.Message);
                     }
                 }
+                ret.videodata=ret.videodata.OrderBy(c => c.si).ToList();
                 return ret;
             }
             catch (Exception ex)
@@ -128,14 +133,18 @@ namespace trafficpolice.Controllers
                         //a.reportname = d.Rname;
                         a.createtime = d.Time;
                         a.submittime = d.Submittime;
-                    ret.vsdata.Add(a);
+                        //var theunit = _db1.Unit.FirstOrDefault(c => c.Id == d.Unitid);
+                        //if (theunit == null) one.si = 0;
+                        //else
+                            a.si = unit.SortIndex;
+                        ret.vsdata.Add(a);
                     }
                     catch (Exception ex)
                     {
                         _log.LogError(" Reportsdata  table , content field is illegal" + ex.Message);
                     }
                 }
-
+                ret.vsdata = ret.vsdata.OrderBy(c => c.si).ToList();
                 return ret;
             }
             catch (Exception ex)
